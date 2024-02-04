@@ -3,6 +3,7 @@
 Fitness PR tracker created with React Native and NativeWind.
 
 # Installation
+Make sure you have [Node.js](https://nodejs.org/en) installed on your system first. 
 
 1. npm i nativewind
 2. npm i -D tailwindcss@3.3.2
