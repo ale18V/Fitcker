@@ -1,11 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import MyTabs from "./screens/myTabs";
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-red-500">My App!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <MyTabs />
+    </NavigationContainer>
   );
 }
