@@ -28,7 +28,11 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           tabBarLabel: "Create",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="clipboard-edit-outline"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -63,6 +67,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
+          headerShown: false,
         }}
       >
         {(props) => <ProfileTab {...props} setIsAuthorized={setIsAuthorized} />}
@@ -70,7 +75,11 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
     </Tab.Navigator>
   ) : (
     <Stack.Navigator initialRouteName="Landing">
-      <Stack.Screen name="Landing" component={Landing} />
+      <Stack.Screen
+        name="Landing"
+        component={Landing}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="SignUp">
         {(props) => <SignUp {...props} setIsAuthorized={setIsAuthorized} />}
       </Stack.Screen>
