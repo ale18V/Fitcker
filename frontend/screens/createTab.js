@@ -1,10 +1,13 @@
-import * as React from "react";
-import { Text, View } from "react-native";
+import React from "react";
+import { ScrollView } from "react-native";
+import CreateWorkout from "../components/createWorkout";
+import MyWorkouts from "../components/myWorkouts";
 
 export default function CreateTab() {
   return (
-    <View className="flex-1 items-center justify-center items-center">
-      <Text className="text-custom-teal">Create Tab!</Text>
-    </View>
+    <ScrollView className="flex-1 mt-14">
+      <CreateWorkout />
+      <MyWorkouts />
+    </ScrollView>
   );
 }
