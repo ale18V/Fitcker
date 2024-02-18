@@ -4,6 +4,10 @@ import Profile from "../components/profile";
 
 export default function ProfileTab() {
   return (
-      <Profile/>
+      <Profile
+        profile={{
+          username: "username",
+        }}
+      />
   );
 }
