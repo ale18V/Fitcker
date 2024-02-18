@@ -10,6 +10,7 @@ Make sure you have [Node.js](https://nodejs.org/en) installed on your system fir
 3. npm install @react-navigation/native
 4. npx expo install react-native-screens react-native-safe-area-context
 5. npm install @react-navigation/bottom-tabs
-6. Dowload expo app on phone
-7. npm start (to run)
-8. Scan qr code
+6. npx expo install expo-linear-gradient
+7. Dowload expo app on phone
+8. npm start (to run)
+9. Scan qr code
