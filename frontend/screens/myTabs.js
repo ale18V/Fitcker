@@ -1,15 +1,20 @@
-import * as React from "react";
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import CreateTab from "./createTab.js";
 import LogTab from "./logTab.js";
 import ProfileTab from "./profileTab.js";
 import StatsTab from "./statsTab.js";
+import Landing from "./landing.js";
+import SignIn from "./signIn.js";
+import SignUp from "./signUp.js";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-export default function MyTabs() {
-  return (
+export default function MyTabs({ authorized, setIsAuthorized }) {
+  return authorized ? (
     <Tab.Navigator
       initialRouteName="CreateTab"
       screenOptions={{
@@ -21,8 +26,13 @@ export default function MyTabs() {
         component={CreateTab}
         options={{
           tabBarLabel: "Create",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="clipboard-edit-outline"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -52,14 +62,30 @@ export default function MyTabs() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileTab}
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
+          headerShown: false,
         }}
-      />
+      >
+        {(props) => <ProfileTab {...props} setIsAuthorized={setIsAuthorized} />}
+      </Tab.Screen>
     </Tab.Navigator>
+  ) : (
+    <Stack.Navigator initialRouteName="Landing">
+      <Stack.Screen
+        name="Landing"
+        component={Landing}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="SignUp">
+        {(props) => <SignUp {...props} setIsAuthorized={setIsAuthorized} />}
+      </Stack.Screen>
+      <Stack.Screen name="SignIn">
+        {(props) => <SignIn {...props} setIsAuthorized={setIsAuthorized} />}
+      </Stack.Screen>
+    </Stack.Navigator>
   );
 }
