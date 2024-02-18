@@ -22,7 +22,7 @@ export default function MyTabs() {
         options={{
           tabBarLabel: "Create",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus" color={color} size={size} />
+            <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
           ),
         }}
       />
