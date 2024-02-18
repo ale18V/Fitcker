@@ -58,7 +58,7 @@ export default function MyTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
-          headerShown: false,
+          headerShown: true,
         }}
       />
     </Tab.Navigator>

@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function Profile({profile}) {
   const { username } = profile;
   return (
-    <View className="mx-10 mt-32 items-center">
+    <View className="flex flex-1 mx-10 justify-center items-center">
       <MaterialCommunityIcons name="account-circle" size={80} />
       <Text className="font-bold text-2xl mb-10">{ username }</Text>
 
@@ -35,7 +35,7 @@ export default function Profile({profile}) {
           <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
 
-        <Text className="text-center ml-52 mt-10 bg-red-500 p-3 rounded-lg text-white font-bold">Logout</Text>
+        <Text className="text-center ml-52 mt-10 bg-red-500 p-3 rounded-xl text-white font-bold">Logout</Text>
 
       </View>
 
