@@ -8,7 +8,7 @@ export default function Profile({profile}) {
   return (
     <View className="mx-10 mt-32 items-center">
       <MaterialCommunityIcons name="account-circle" size={80} />
-      <Text className="font-bold text-2xl mb-16">{ username }</Text>
+      <Text className="font-bold text-2xl mb-10">{ username }</Text>
 
       <View className="w-full">
         <LinearGradient colors={['rgba(56, 163, 165, 0.5)', 'rgba(128, 237, 153, 0.5)']} className="flex-row items-center p-4 rounded-xl justify-between mb-4">
@@ -16,7 +16,7 @@ export default function Profile({profile}) {
             <MaterialCommunityIcons name="information" size={28} />
             <Text className="font-bold ml-2">User Info</Text>
           </View>
-          <MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={28} />
+          <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
 
         <LinearGradient colors={['rgba(56, 163, 165, 0.5)', 'rgba(128, 237, 153, 0.5)']} className="flex-row items-center p-4 rounded-xl justify-between mb-4">
@@ -24,7 +24,7 @@ export default function Profile({profile}) {
             <MaterialCommunityIcons name="bell" size={28} />
             <Text className="font-bold ml-2">Notification Settings</Text>
           </View>
-          <MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={28} />
+          <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
 
         <LinearGradient colors={['rgba(56, 163, 165, 0.5)', 'rgba(128, 237, 153, 0.5)']} className="flex-row items-center p-4 rounded-xl justify-between">
@@ -32,9 +32,13 @@ export default function Profile({profile}) {
             <MaterialCommunityIcons name="scale-bathroom" size={28} />
             <Text className="font-bold ml-2">Biometrics</Text>
           </View>
-          <MaterialCommunityIcons name="arrow-right-drop-circle-outline" size={28} />
+          <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
+
+        <Text className="text-center ml-52 mt-10 bg-red-500 p-3 rounded-lg text-white font-bold">Logout</Text>
+
       </View>
+
     </View>
   );
 }
