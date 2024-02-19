@@ -12,7 +12,6 @@ export default function Profile({ profile, setIsAuthorized }) {
     <View className="flex flex-1 mx-10 justify-center items-center">
       <MaterialCommunityIcons name="account-circle" size={80} />
       <Text className="font-bold text-2xl mb-10">{username}</Text>
-
       <View className="w-full">
         <LinearGradient
           colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
