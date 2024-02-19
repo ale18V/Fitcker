@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+
 const SignUp = ({ navigation, setIsAuthorized }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,9 +18,12 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   };
 
   return (
-    <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md border border-green-900
-    bg-gradient-to-r from-green-400 to-blue-500">
-      <Text className="text-3xl mb-8">Sign Up</Text>
+    <LinearGradient
+    colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+    style={{ flex: 1 }}  
+    >
+    <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg"> 
+      <Text className="text-3xl mb-8 text-green-700">Sign Up</Text>
       <TextInput
         placeholder="Email"
         value={email}
@@ -33,6 +37,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
         secureTextEntry={true}
         className="border-b border-gray-400 mb-4 w-full px-4 py-2"
       />
+      
       <TextInput
         placeholder="Confirm Password"
         value={confirmPassword}
@@ -51,7 +56,8 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
           Already have an account? Sign In
         </Text>
       </TouchableOpacity>
-    </View>
+      </View>
+    </LinearGradient>
   );
 };
 
