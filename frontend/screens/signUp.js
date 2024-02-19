@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const SignUp = ({ navigation, setIsAuthorized }) => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,8 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md border border-green-900
+    bg-gradient-to-r from-green-400 to-blue-500">
       <Text className="text-3xl mb-8">Sign Up</Text>
       <TextInput
         placeholder="Email"
