@@ -67,7 +67,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
-          headerShown: false,
+          headerShown: true,
         }}
       >
         {(props) => <ProfileTab {...props} setIsAuthorized={setIsAuthorized} />}
