@@ -15,7 +15,7 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg">
       <Text className="text-3xl mb-8">Sign In</Text>
       <TextInput
         placeholder="Email"
