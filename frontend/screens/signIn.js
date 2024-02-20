@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const SignIn = ({ navigation, setIsAuthorized }) => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,10 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
   };
 
   return (
+    <LinearGradient
+    colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+    style={{ flex: 1 }}  
+    >
     <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg">
       <Text className="text-3xl mb-8">Sign In</Text>
       <TextInput
@@ -40,6 +45,7 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
         <Text className="text-custom-teal">Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 };
 
