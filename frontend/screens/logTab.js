@@ -10,10 +10,10 @@ const WorkoutInput = () => {
   const [sets,setSets] = React.useState(null);
   const [time,setTime] = React.useState(null);
   const [cals,setCals] = React.useState(null);
-  const [plan, setPlan] = React.useState("crd");
+  const [routine, setRoutine] = React.useState("crd");
   const [workout,setWorkout] = React.useState("");
   
-  const plans = [
+  const routines = [
     {key:'crd', value:'Cardio'},
     {key:'flx', value:'Flexibility'},
     {key:'str', value:'Strength'},
@@ -75,11 +75,11 @@ const WorkoutInput = () => {
     <View style={{paddingHorizontal:15,marginTop:15}}>
 
 
-      <SelectList setSelected={setPlan} data={plans} placeholder = {"Select your workout plan!"} onSelect={clear}
+      <SelectList setSelected={setRoutine} data={routines} placeholder = {"Select your workout plan!"} onSelect={clear}
           defaultOption = {{key:'crd', value:'Cardio'}}  />
 
-      <SelectList setSelected={setWorkout} data={workouts[plan]} placeholder = {"Select your workout plan!"} onSelect={clear}
-          defaultOption = {workouts[plan][0]}  />
+      <SelectList setSelected={setWorkout} data={workouts[routine]} placeholder = {"Select your workout plan!"} onSelect={clear}
+          defaultOption = {workouts[routine][0]}  />
 
       <Text>Weight lifted: </Text>
       <TextInput
