@@ -39,3 +39,6 @@ yarn-error.*
 
 # Vim
 *.swp
+
+# Python
+__pycache__/
