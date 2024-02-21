@@ -1,15 +1,16 @@
 from os import getenv
-from sqlmodel import *
+from sqlmodel import create_engine, SQLModel, Session
 
 conf = {
     "user": getenv("MYSQL_USER"),
     "password": getenv("MYSQL_PASSWORD"),
     "host": getenv("MYSQL_HOST"),
     "database": getenv("MYSQL_DATABASE"),
-    "debug": True,
+    "debug": getenv("DEBUG") is not None,
 }
 
-db_url = "sqlite:///:memory:" if conf["debug"] else f"mysql+mysqlconnector://{conf['user']}:{conf['password']}@{conf['host']}/{conf['database']}"
+pass
+db_url = f"mysql+mysqlconnector://{conf['user']}:{conf['password']}@{conf['host']}/{conf['database']}"
 engine = create_engine(db_url, 
                        echo=conf["debug"])
 
