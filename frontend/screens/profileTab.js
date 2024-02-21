@@ -1,10 +1,14 @@
 import * as React from "react";
-import { Text, View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
+import Profile from "../components/profile";
 
-export default function ProfileTab() {
+export default function ProfileTab({ setIsAuthorized }) {
   return (
-    <View className="flex-1 items-center justify-center items-center">
-      <Text className="text-custom-teal">Profile Tab!</Text>
-    </View>
+    <Profile
+      profile={{
+        username: "username",
+      }}
+      setIsAuthorized={setIsAuthorized}
+    />
   );
 }
