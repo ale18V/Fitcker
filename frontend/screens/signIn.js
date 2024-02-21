@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const SignIn = ({ navigation, setIsAuthorized }) => {
   const [email, setEmail] = useState("");
@@ -15,8 +16,12 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text className="text-3xl mb-8">Sign In</Text>
+    <LinearGradient
+    colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+    style={{ flex: 1 }}  
+    >
+    <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg">
+      <Text className="text-3xl mb-8 text-teal-600 font-semibold">Sign In</Text>
       <TextInput
         placeholder="Email"
         value={email}
@@ -30,16 +35,21 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
         secureTextEntry={true}
         className="border-b border-gray-400 mb-8 w-full px-4 py-2"
       />
+       <LinearGradient
+    colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+    >
       <TouchableOpacity
         onPress={handleSignIn}
-        className="bg-custom-teal px-6 py-3 rounded-lg mb-4"
+        className="py-2 px-6 rounded-xl justify-between"
       >
-        <Text className="text-white text-lg">Sign In</Text>
+        <Text className="flex items-center text-teal-700 font-medium text-lg">Sign In</Text>
       </TouchableOpacity>
+      </LinearGradient>
       <TouchableOpacity onPress={handleCreateAccount}>
-        <Text className="text-custom-teal">Don't have an account? Sign Up</Text>
+        <Text className="mt-5 text-custom-teal">Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 };
 
