@@ -9,16 +9,18 @@ conf = {
     "debug": getenv("DEBUG") is not None,
 }
 
-pass
+
 db_url = f"mysql+mysqlconnector://{conf['user']}:{conf['password']}@{conf['host']}/{conf['database']}"
-engine = create_engine(db_url, 
-                       echo=conf["debug"])
+engine = create_engine(db_url, echo=conf["debug"])
+
 
 def connect():
     return engine.connect()
 
-def create_db_and_tables(): # Want to run it only once
+
+def create_db_and_tables():  # Want to run it only once
     # Move to init.py
     SQLModel.metadata.create_all(engine)
+
 
 create_db_and_tables()

@@ -6,17 +6,21 @@ import db
 
 app = FastAPI()
 
+
 @app.post("/api/v1/user/register")
 async def register(user: User):
     con = db.connect()
     res = con.execute(select(User).where(User.email == user.email)).one_or_none()
     if res:
         return {"status": "error", "msg": "Email already used"}
-    
-    con.execute(insert(User).values(name=user.name, email=user.email, password=user.password))
+
+    con.execute(
+        insert(User).values(name=user.name, email=user.email, password=user.password)
+    )
     con.commit()
     con.close()
     return {"status": "success", "msg": "User registered successfully"}
+
 
 @app.post("/api/v1/user/login")
 async def login(user: User):
@@ -25,4 +29,3 @@ async def login(user: User):
             return {"status": "success", "msg": "User logged in"}
         else:
             return {"status": "error", "msg": "Wrong credentials"}
-
