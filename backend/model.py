@@ -18,26 +18,30 @@ class WorkoutPlan(SQLModel, table=True):
     start_date: Optional[date]
     end_date: Optional[date]
 
+    creator_id: Optional[int] = Field(foreign_key="user.id", nullable=False)
     creator: Optional["User"] = Relationship(back_populates="plans")
-    routines: List["WorkoutRoutine"] = Relationship(
-        back_populates="workout_plan")
+    routines: List["WorkoutRoutine"] = Relationship(back_populates="workout_plan")
 
 
 class RoutineExerciseLink(SQLModel, table=True):
     routine_id: Optional[int] = Field(
-        default=None, primary_key=True, foreign_key="workoutroutine.id")
+        default=None, primary_key=True, foreign_key="workoutroutine.id"
+    )
     exercise_id: Optional[int] = Field(
-        default=None, primary_key=True, foreign_key="exercise.id")
+        default=None, primary_key=True, foreign_key="exercise.id"
+    )
 
 
 class WorkoutRoutine(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: Optional[str]
 
+    plan_id: Optional[int] = Field(foreign_key="workoutplan.id", nullable=False)
     workout_plan: "WorkoutPlan" = Relationship(back_populates="routines")
     workouts: List["Workout"] = Relationship(back_populates="routine")
     exercises: List["Exercise"] = Relationship(
-        back_populates="routines", link_model=RoutineExerciseLink)
+        back_populates="routines", link_model=RoutineExerciseLink
+    )
 
 
 class WorkoutExerciseLink(SQLModel, table=True):
@@ -58,15 +62,15 @@ class Exercise(SQLModel, table=True):
     description: Optional[str]
 
     routines: List["WorkoutRoutine"] = Relationship(
-        back_populates="exercises", link_model=RoutineExerciseLink)
-    workout_links: List["WorkoutExerciseLink"] = Relationship(
-        back_populates="exercise", link_model=WorkoutExerciseLink)
+        back_populates="exercises", link_model=RoutineExerciseLink
+    )
+    workout_links: List["WorkoutExerciseLink"] = Relationship(back_populates="exercise")
 
 
 class Workout(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: date
 
+    routine_id: Optional[int] = Field(foreign_key="workoutroutine.id")
     routine: "WorkoutRoutine" = Relationship(back_populates="workouts")
-    exercise_links: List["WorkoutExerciseLink"] = Relationship(
-        back_populates="workout", link_model=WorkoutExerciseLink)
+    exercise_links: List["WorkoutExerciseLink"] = Relationship(back_populates="workout")
