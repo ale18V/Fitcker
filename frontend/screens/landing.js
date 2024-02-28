@@ -15,9 +15,9 @@ const Landing = ({ navigation }) => {
     style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}  
     >
       <Image
-          source={require("../assets/icon1.png")} // Path to your image file
-          style={{ width: 150, height: 150 }} // Adjust the width and height as needed
-          className="mt-20"
+          source={require("../assets/icon1.png")} 
+          style={{ width: 150, height: 150 }}
+          className="mt-20 shadow-md"
         />
       <Text className="text-2xl text-teal-700 font-bold mt-5">Fitness Tracker</Text>
       <TouchableOpacity
