@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
 
 const Landing = ({ navigation }) => {
   const handleOnPress = () => {
@@ -13,7 +14,12 @@ const Landing = ({ navigation }) => {
     colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
     style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}  
     >
-      <Text className="text-2xl mb-8 text-teal-700 font-bold mt-60">Fitness Tracker</Text>
+      <Image
+          source={require("../assets/icon1.png")} // Path to your image file
+          style={{ width: 150, height: 150 }} // Adjust the width and height as needed
+          className="mt-20"
+        />
+      <Text className="text-2xl text-teal-700 font-bold mt-5">Fitness Tracker</Text>
       <TouchableOpacity
         onPress={handleOnPress}
         className="bg-teal-600 px-6 py-2 rounded-lg mt-40"
