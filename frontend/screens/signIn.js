@@ -35,16 +35,14 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
         secureTextEntry={true}
         className="border-b border-gray-400 mb-8 w-full px-4 py-2"
       />
-       <LinearGradient
-    colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
-    >
+ 
       <TouchableOpacity
         onPress={handleSignIn}
-        className="py-2 px-6 rounded-xl justify-between"
+        className="py-2 px-6 bg-teal-600 px-6 py-2 rounded-lg"
       >
-        <Text className="flex items-center text-teal-700 font-medium text-lg">Sign In</Text>
+        <Text className="flex items-center text-white font-medium text-lg">Sign In</Text>
       </TouchableOpacity>
-      </LinearGradient>
+
       <TouchableOpacity onPress={handleCreateAccount}>
         <Text className="mt-5 text-custom-teal">Don't have an account? Sign Up</Text>
       </TouchableOpacity>
