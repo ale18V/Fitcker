@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-nat
 import { useForm, Controller } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Constants from 'expo-constants';
-import WorkoutSelect from "./workoutSelect";
+import WorkoutSelect from "./workoutSelect.js";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
