@@ -1,48 +1,85 @@
 import * as React from "react";
-import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-native";
+import { Text, View, StyleSheet, TextInput, ScrollView, Button, Pressable,} from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import WorkoutSelect from "../components/workoutInput";
+import MarkSets from "../components/markSets";
+import WorkoutInput from "../components/workoutInput";
 import Constants from 'expo-constants';
+
 
 export default function LogTab() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [mark, setMark] = React.useState(false);
 
-  function open() {
-    setIsOpen((isOpen) => true);
-  }
+  const handleOnPress = () => {
+    setIsOpen(true);
+  };
 
-  function done() {
-    setIsOpen((isOpen) => false);
+  const done = (status) => {
+    setIsOpen(status);
   }
 
   
 
   return (
-    <View style={styles.container}>
-        {!isOpen &&
-          <Button
-            onPress={open}
-            title="Add a workout"
-            color="#841584"
-          />} 
-      {isOpen && <WorkoutSelect toggle={done}></WorkoutSelect>}
-        {isOpen &&
-          <Button
-            onPress={done}
-            title="Done"
-            color="#841584"
-          />}
-    </View>
+    <ScrollView style={styles.container}>
+
+      <Text style={styles.label}>My Exercises</Text>
+      {/* {!mark &&
+        <Pressable
+          onPress={setMark(true)}
+          style={styles.button}
+        >
+          <Text style={styles.text}> Mark sets </Text>
+        </Pressable>}
+      {mark && <MarkSets></MarkSets>} */}
+      
+        
+      <Text style = {styles.label}>Log Exercises</Text>
+      {!isOpen &&
+        <Pressable
+          onPress={handleOnPress}
+          style={styles.button}
+        >
+          <Text style={styles.text}> Log a workout </Text>
+        </Pressable>}
+      {isOpen && <WorkoutInput toggle={done}></WorkoutInput>}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
     padding: 0,
-    backgroundColor: '#white',
+    backgroundColor: '#f3fff5',
+  },
+  label: {
+    fontSize: 30,
+    textAlign: 'left',
+    margin: 10,
+    fontWeight: 'bold',
+    justifyContent: 'flex-start',
+  },
+  button: {
+    alignItems: 'left',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 1,
+    elevation: 3,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    backgroundColor: '#f3fff5',
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: '#58a1a3',
   },
   
 });
