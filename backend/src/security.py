@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 import db
-from sqlmodel import select
+from sqlmodel import Session, select
 
 from model import User
 
@@ -32,26 +32,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+def get_password_hash(plain_password: str):
+    return pwd_context.hash(plain_password)
+
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-def get_user(username: str):
-    with db.Session() as con:
-        return con.exec(select(User).where(User.username == username)).one_or_none()
-
-
-def authenticate_user(username: str, password: str):
-    user = get_user(username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -81,8 +67,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
     except JWTError:
         raise credentials_exception
-
-    user = get_user(username=token_data.username)
+    user = None
+    # user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     return user

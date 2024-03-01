@@ -8,9 +8,9 @@ import db
 from security import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     Token,
-    authenticate_user,
     create_access_token,
 )
+import security
 
 
 def create_app(db_url=None):
@@ -23,28 +23,24 @@ def create_app(db_url=None):
     @app.post("/api/v1/user", status_code=201)
     async def register(user: User, con: Annotated[Session, Depends(db.get_session)]):
 
-        res = con.exec(select(User).where(User.email == user.email)).one_or_none()
+        res = con.exec(select(User).where(
+            User.name == user.name)).one_or_none()
         if res:
-            raise HTTPException(status_code=409, detail="User already registered")
+            raise HTTPException(
+                status_code=409, detail="User already registered")
 
+        user.password = security.get_password_hash(user.password)
         con.add(user)
         con.commit()
         con.refresh(user)
         return user
 
     @app.post("/api/v1/user/login")
-    async def login(user: User, con: Annotated[Session, Depends(db.get_session)]):
-        if con.exec(select(User).where(User.name == user.name)).one_or_none():
-            return {"status": "success", "msg": "User logged in"}
-        else:
-            return {"status": "error", "msg": "Wrong credentials"}
-
-    @app.post("/token")
-    async def login_for_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-    ) -> Token:
-        user = authenticate_user(form_data.username, form_data.password)
-        if not user:
+    async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                    con: Annotated[Session, Depends(db.get_session)]) -> Token:
+        user = con.exec(select(User).where(
+            User.name == form_data.username)).one_or_none()
+        if not user or not security.verify_password(plain_password=form_data.password, hashed_password=user.password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
@@ -52,7 +48,7 @@ def create_app(db_url=None):
             )
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": user.username}, expires_delta=access_token_expires
+            data={"sub": user.name}, expires_delta=access_token_expires
         )
         return Token(access_token=access_token, token_type="bearer")
 
