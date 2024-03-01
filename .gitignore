@@ -43,3 +43,10 @@ yarn-error.*
 # Python
 __pycache__/
 .venv/
+
+# VS Code https://stackoverflow.com/questions/32964920/should-i-commit-the-vscode-folder-to-source-control
+.vscode/*      
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
