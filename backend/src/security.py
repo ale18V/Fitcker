@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import sys
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
@@ -24,12 +25,12 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    user_id: int | None = None
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login")
 
 
 def get_password_hash(plain_password: str):
@@ -51,7 +52,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -60,18 +61,11 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-
+        id: int = payload.get("user_id")
     except JWTError:
         raise credentials_exception
-    user = None
-    # user = get_user(username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
+
+    return id
 
 
 """
