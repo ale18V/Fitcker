@@ -12,10 +12,12 @@ services:
     env_file:
       - conf/db.env
       - conf/app.env
-    command: "uvicorn app:app --reload --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    command: "uvicorn app:create_app --factory --reload --host 0.0.0.0 --port 8000"
     restart: always
     volumes:
-      - ./backend/:/srv/app/:ro
+      - ./backend/src/:/srv/app/:ro
     depends_on:
       db:
         condition: service_healthy
