@@ -7,7 +7,7 @@ conf = {
     "password": getenv("MYSQL_PASSWORD"),
     "host": getenv("MYSQL_HOST"),
     "database": getenv("MYSQL_DATABASE"),
-    "debug": getenv("DEBUG") or True,
+    "debug": getenv("DEBUG") is not None,
 }
 
 db_url = f"mysql+mysqlconnector://{conf['user']}:{conf['password']}@{conf['host']}/{conf['database']}"
