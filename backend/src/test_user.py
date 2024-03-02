@@ -70,7 +70,7 @@ def test_current_user(client: TestClient):
     resp = login(user, passw, email)
     print(resp.text)
     access_token = resp.json()["access_token"]
-    resp = client.get("/api/v1/user/me",
+    resp = client.get("/api/v1/users/me",
                       headers={"Authorization": f"Bearer {access_token}"})
     data = resp.json()
     print(resp.text)

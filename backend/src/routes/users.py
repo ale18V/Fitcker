@@ -7,7 +7,7 @@ import db
 from model import User
 import security
 
-router = APIRouter(prefix="/user")
+router = APIRouter(prefix="/users")
 
 
 @router.post("/", status_code=201)
