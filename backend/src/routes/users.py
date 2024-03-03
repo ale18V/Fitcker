@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 import db
-from model import User
+from models.user import User
 import security
 
 router = APIRouter(prefix="/users")
