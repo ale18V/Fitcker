@@ -18,6 +18,17 @@ async def read_workout_plans(con: Annotated[Session, Depends(db.get_session)],
     return plans
 
 
+@router.get("/{id}", response_model=WorkoutPlan)
+async def read_workout_plan(id: int,
+                            con: Annotated[Session, Depends(db.get_session)],
+                            user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
+    plan = con.get(WorkoutPlan, id)
+    if not plan:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Workout plan not found")
+    return plan
+
+
 @router.post("/", status_code=201, response_model=WorkoutPlan)
 async def create_workout_plan(
         workout_plan: WorkoutPlan,
@@ -31,13 +42,13 @@ async def create_workout_plan(
     return workout_plan
 
 
-@router.patch("/{workout_id}", response_model=WorkoutPlan)
-async def update_workout_plan(workout_id: int,
+@router.patch("/{id}", response_model=WorkoutPlan)
+async def update_workout_plan(id: int,
                               workout_plan: WorkoutPlan,
                               con: Annotated[Session, Depends(db.get_session)],
                               user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
 
-    db_workout_plan = con.get(WorkoutPlan, workout_id)
+    db_workout_plan = con.get(WorkoutPlan, id)
     if not db_workout_plan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Workout plan not found")
