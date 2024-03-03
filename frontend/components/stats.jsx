@@ -1,7 +1,7 @@
 import { Agenda } from 'react-native-calendars';
 import React from 'react';
 import {useState} from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 
 const timeToString=(time) => {
     const date = new Date(time);
@@ -23,14 +23,11 @@ export default function Stats() {
         if (!items[strTime]) {
           items[strTime] = [];
           
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
             items[strTime].push({
-              name: 'Item for ' + strTime + ' #' + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
+              name: 'Workout for ' + strTime,
               day: strTime
             });
-          }
+          
         }
       }
       const newItems = {};
@@ -41,14 +38,24 @@ export default function Stats() {
     }, 1000);
   };
 
-      
+  const today = timeToString(new Date().getTime());
+
+  const renderItem = (item) => {
+    return (
+        <Text>{item.name}</Text>
+    );
+  };
 
   return (
     <View className="flex-1">
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
-        selected={'2024-02-18'}
+        selected={today}
+        renderItem={renderItem}
+        pastScrollRange={1} 
+        futureScrollRange={2} 
+        
         />
 
     </View>
