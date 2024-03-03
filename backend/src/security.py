@@ -1,16 +1,12 @@
 from datetime import datetime, timedelta, timezone
-import sys
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
-import db
-from sqlmodel import Session, select
 
-from model import User
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -66,19 +62,3 @@ async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> 
         raise credentials_exception
 
     return id
-
-
-"""
-@app.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    return current_user
-
-
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-"""

@@ -11,9 +11,9 @@ router = APIRouter(prefix="/users")
 
 
 @router.post("/", status_code=201)
-async def register(user: User, con: Annotated[Session, Depends(db.get_session)]):
+async def register(user: User, con: Annotated[Session, Depends(db.get_session)]) -> User:
     res = con.exec(select(User).where(
-        User.name == user.name)).one_or_none()
+        User.username == user.username)).one_or_none()
     if res:
         raise HTTPException(
             status_code=409, detail="User already registered")
@@ -29,7 +29,7 @@ async def register(user: User, con: Annotated[Session, Depends(db.get_session)])
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 con: Annotated[Session, Depends(db.get_session)]) -> security.Token:
     user = con.exec(select(User).where(
-        User.name == form_data.username)).one_or_none()
+        User.username == form_data.username)).one_or_none()
     if not user or not security.verify_password(plain_password=form_data.password, hashed_password=user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

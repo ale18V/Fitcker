@@ -34,7 +34,7 @@ def client_fixture(session: Session):
 
 def register(user, passw, email):
     resp = client.post(
-        "/api/v1/users", json={"name": user, "email": email, "password": passw}
+        "/api/v1/users", json={"username": user, "email": email, "password": passw}
     )
     return resp
 
@@ -52,7 +52,7 @@ def test_register(client: TestClient):
     assert resp.status_code == status.HTTP_201_CREATED
     print(data)
     assert data["id"] is not None
-    assert data["name"] == user
+    assert data["username"] == user
     assert data["email"] == email
 
 
@@ -75,5 +75,5 @@ def test_current_user(client: TestClient):
     data = resp.json()
     print(resp.text)
     assert resp.status_code == status.HTTP_200_OK
-    assert data["name"] == user
+    assert data["username"] == user
     assert data["email"] == email
