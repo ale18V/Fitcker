@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import db
-from routes import users
+from routes import users, workout_plans
 
 
 def create_app():
@@ -11,5 +11,5 @@ def create_app():
         db.create_tables()
 
     app.include_router(router=users.router, prefix="/api/v1")
-
+    app.include_router(router=workout_plans.router, prefix="/api/v1")
     return app
