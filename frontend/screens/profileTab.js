@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
 import Profile from "../components/profile";
 
 export default function ProfileTab({ setIsAuthorized }) {
@@ -7,6 +6,9 @@ export default function ProfileTab({ setIsAuthorized }) {
     <Profile
       profile={{
         username: "username",
+        email: "user@gmail.com", 
+        gender: "male", 
+        DoB: "0000-00-00",
       }}
       setIsAuthorized={setIsAuthorized}
     />
