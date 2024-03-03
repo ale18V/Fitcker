@@ -1,4 +1,3 @@
-import * as React from "react";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Profile from "../components/profile";
@@ -48,11 +47,10 @@ export default function ProfileTab({ setIsAuthorized }) {
   return (
     <Profile
       profile={{
-        username: "username",
+        username: username,
         email: "user@gmail.com", 
         gender: "male", 
-        DoB: "0000-00-00",
-        username: username,
+        DoB: "0000-00-00", 
       }}
       setIsAuthorized={setIsAuthorized}
     />
