@@ -14,14 +14,15 @@ class User(UserBase, table=True):
 
     plans: List["WorkoutPlan"] = Relationship(
         back_populates="creator")
+    exercises: List["Exercise"] = Relationship(back_populates="creator")
 
 
 class WorkoutPlan(WorkoutPlanBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    creator_id: Optional[int] = Field(
+    creator_id: int = Field(
         foreign_key="user.id", nullable=False, default=None)
-    creator: Optional["User"] = Relationship(back_populates="plans")
+    creator: "User" = Relationship(back_populates="plans")
     routines: List["WorkoutRoutine"] = Relationship(
         back_populates="workout_plan")
 
@@ -38,7 +39,7 @@ class RoutineExerciseLink(SQLModel, table=True):
 class WorkoutRoutine(WorkoutRoutineBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    plan_id: Optional[int] = Field(
+    plan_id: int = Field(
         foreign_key="workoutplan.id", nullable=False)
     workout_plan: "WorkoutPlan" = Relationship(back_populates="routines")
     workouts: List["Workout"] = Relationship(back_populates="routine")
@@ -51,7 +52,7 @@ class Workout(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: date
 
-    routine_id: Optional[int] = Field(foreign_key="workoutroutine.id")
+    routine_id: int = Field(foreign_key="workoutroutine.id")
     routine: "WorkoutRoutine" = Relationship(back_populates="workouts")
     exercise_links: List["WorkoutExerciseLink"] = Relationship(
         back_populates="workout")
@@ -73,7 +74,10 @@ class Exercise(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True)
     description: Optional[str]
+    creator_id: int = Field(
+        default=None, nullable=False, foreign_key='user.id')
 
+    creator: User = Relationship(back_populates="excercises")
     routines: List["WorkoutRoutine"] = Relationship(
         back_populates="exercises", link_model=RoutineExerciseLink
     )
