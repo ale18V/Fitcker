@@ -1,11 +1,14 @@
+from datetime import date, timedelta
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.pool import StaticPool
 from app import create_app
 import pytest
 from db import get_session
-from model import WorkoutPlan
+from models.db import WorkoutPlan
 from fastapi.encoders import jsonable_encoder
+
+from models.workout_plan import WorkoutPlanCreate
 
 
 @pytest.fixture(name="session")
@@ -53,7 +56,15 @@ def get_token(client: TestClient):
     return resp.json()["access_token"]
 
 
-def add_workout(client: TestClient, plan: WorkoutPlan, token: str):
+@pytest.fixture(name="plan")
+def get_plan():
+    plan_name = "myplan"
+    plan = WorkoutPlanCreate(name=plan_name, start_date=date.today())
+    # end_date=date.today().__add__(timedelta(days=30))
+    return plan
+
+
+def add_workout(client: TestClient, plan: WorkoutPlanCreate, token: str):
     resp = client.post("/api/v1/workout-plans", json=jsonable_encoder(plan),
                        headers={'Authorization': f'Bearer {token}'})
     return resp
@@ -65,24 +76,19 @@ def get_workouts(client: TestClient, token: str):
     return resp
 
 
-def test_add_workout(client: TestClient, token: str):
-    plan_name = "myplan"
-    plan = WorkoutPlan(name=plan_name)
-
+def test_add_workout(client: TestClient, token: str, plan: WorkoutPlanCreate):
     resp = add_workout(client, plan, token)
     assert resp.status_code == 201
     data = resp.json()
     print(data)
-    assert data["name"] == plan_name
+    assert data["name"] == plan.name
 
 
-def test_get_workouts(client: TestClient, token: str):
-    plan_name = "myplan"
-    plan = WorkoutPlan(name=plan_name)
+def test_get_workouts(client: TestClient, token: str, plan: WorkoutPlanCreate):
     resp = add_workout(client, plan, token)
     resp = get_workouts(client, token)
     data = resp.json()
     assert isinstance(data, list)
     assert len(data) == 1
     data = data[0]
-    assert data["name"] == plan_name
+    assert data["name"] == plan.name
