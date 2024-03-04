@@ -15,6 +15,7 @@ class User(SQLModel, table=True):
 
 class WorkoutPlan(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    name: Optional[str]
     start_date: Optional[date]
     end_date: Optional[date]
 
