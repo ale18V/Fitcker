@@ -86,6 +86,14 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
       <Stack.Screen name="SignIn">
         {(props) => <SignIn {...props} setIsAuthorized={setIsAuthorized} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="Profile"
+        component={ProfileTab}
+        options={{
+          title: 'Profile',
+          headerShown: true,
+        }}
+      />
     </Stack.Navigator>
   );
 }

@@ -1,12 +1,9 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View } from "react-native";
 
-export default function UserInfo({ navigateBack }) {
+export default function UserInfo() {
   return (
     <View>
-      <TouchableOpacity onPress={navigateBack}>
-        <Text>Go Back</Text>
-      </TouchableOpacity>
       <Text>User Info</Text>
     </View>
   );

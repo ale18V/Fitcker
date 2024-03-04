@@ -6,21 +6,12 @@ import UserInfo from "./userInfo";
 
 export default function Profile({ profile, setIsAuthorized }) {
   const { username, email, gender, DoB } = profile;
-  const [showUserInfo, setShowUserInfo] = useState(false);
 
   const handleLogout = () => {
     setIsAuthorized(false);
   };
 
-  const navigateToUserInfo = () => {
-    setShowUserInfo(true);
-  };
-  const navigateBack = () => {
-    setShowUserInfo(false);
-  };
-  if (showUserInfo) {
-    return <UserInfo navigateBack={navigateBack} />;
-  }
+  
 
   return (
     <View className="flex flex-1 mx-10 justify-center items-center">
@@ -28,7 +19,7 @@ export default function Profile({ profile, setIsAuthorized }) {
       <Text className="font-bold text-2xl mb-10">{username}</Text>
       <View className="w-full">
         
-        <TouchableOpacity onPress={navigateToUserInfo} >
+        <TouchableOpacity >
           <LinearGradient
           colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
           className="flex-row items-center p-4 rounded-xl justify-between mb-4"

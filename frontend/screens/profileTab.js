@@ -14,7 +14,7 @@ export default function ProfileTab({ setIsAuthorized }) {
         if (token) {
           // Make a GET request to the API endpoint with the token included in the Authorization header
           const response = await fetch(
-            "http://localhost:8000/api/v1/users/me",
+            "http://192.168.1.17:8000/api/v1/users/me",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
