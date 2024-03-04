@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Constants.statusBarHeight,
     padding: 0,
-    backgroundColor: '#f3fff5',
+    /* backgroundColor: '#f3fff5', */
   },
   label: {
     fontSize: 30,
