@@ -3,14 +3,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from model import WorkoutPlan
+from models.workout_plan import WorkoutPlanCreate, WorkoutPlanRead, WorkoutPlanUpdate
+from models.db import WorkoutPlan
 import security
 
 
 router = APIRouter(prefix="/workout-plans")
 
 
-@router.get("/", response_model=List[WorkoutPlan])
+@router.get("/", response_model=List[WorkoutPlanRead])
 async def read_workout_plans(con: Annotated[Session, Depends(db.get_session)],
                              user_id: Annotated[int, Depends(security.get_current_user_id)]):
     plans = con.exec(select(WorkoutPlan).where(
@@ -18,7 +19,7 @@ async def read_workout_plans(con: Annotated[Session, Depends(db.get_session)],
     return plans
 
 
-@router.get("/{id}", response_model=WorkoutPlan)
+@router.get("/{id}", response_model=WorkoutPlanRead)
 async def read_workout_plan(id: int,
                             con: Annotated[Session, Depends(db.get_session)],
                             user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
@@ -29,22 +30,23 @@ async def read_workout_plan(id: int,
     return plan
 
 
-@router.post("/", status_code=201, response_model=WorkoutPlan)
+@router.post("/", status_code=201, response_model=WorkoutPlanRead)
 async def create_workout_plan(
-        workout_plan: WorkoutPlan,
+        workout_plan: WorkoutPlanCreate,
         con: Annotated[Session, Depends(db.get_session)],
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
-    workout_plan.creator_id = user_id
-    con.add(workout_plan)
+    db_workout_plan = WorkoutPlan.model_validate(workout_plan)
+    db_workout_plan.creator_id = user_id
+    con.add(db_workout_plan)
     con.commit()
-    con.refresh(workout_plan)
-    return workout_plan
+    con.refresh(db_workout_plan)
+    return db_workout_plan
 
 
-@router.patch("/{id}", response_model=WorkoutPlan)
+@router.patch("/{id}", response_model=WorkoutPlanRead)
 async def update_workout_plan(id: int,
-                              workout_plan: WorkoutPlan,
+                              workout_plan: WorkoutPlanUpdate,
                               con: Annotated[Session, Depends(db.get_session)],
                               user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
 
