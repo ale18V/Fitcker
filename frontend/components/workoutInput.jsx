@@ -2,13 +2,12 @@ import * as React from "react";
 import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-native";
 import { useForm, Controller } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Constants from 'expo-constants';
 import WorkoutSelect from "./workoutSelect.jsx";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const WorkoutInput = (props) => {
-  const [routine, setRoutine] = React.useState("crd");
+  const [routine, setRoutine] = React.useState("");
 
   const { handleSubmit, control, reset, formState: { errors } } = useForm({
     defaultValues: {
@@ -23,7 +22,7 @@ const WorkoutInput = (props) => {
   const onSubmit = async data => {
     await sleep(2000);
     alert(JSON.stringify(data));
-    
+
     /* try {
       const workoutSubmit = await fetch(
         "http://localhost:8000/api/v1/exercise/",
@@ -65,7 +64,7 @@ const WorkoutInput = (props) => {
             render={({ field: { onChange, value } }) => (
               <>
                 {errors.exercise_id && <Text style={styles.text}> {errors.exercise_id.message}</Text>}
-                <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout)}} />
+                <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout) }} />
               </>
             )}
           />
@@ -240,7 +239,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
+
     padding: 8,
     backgroundColor: '#white',
   },
@@ -256,3 +255,5 @@ export default WorkoutInput;
 
 
 //date for sql as yyyy-mm-dd
+//date saved as utc meaning it's offset from local time 
+//need to process date for use in table 

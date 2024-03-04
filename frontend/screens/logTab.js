@@ -1,48 +1,61 @@
 import * as React from "react";
-import { Text, View, StyleSheet, TextInput, ScrollView, Button, Pressable,} from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { useState, useEffect, } from "react";
+import { Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import MarkSets from "../components/markSets";
 import WorkoutInput from "../components/workoutInput";
-import Constants from 'expo-constants';
+import { MaterialIcons } from "@expo/vector-icons";
 
 
 export default function LogTab() {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [mark, setMark] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState(false);
+  const [workoutTemplates, setWorkoutTemplates] = useState([]);
 
-  const handleOnPress = () => {
-    setIsOpen(true);
-  };
 
   const done = (status) => {
     setIsOpen(status);
   }
 
-  
+   useEffect(() => {
+    const loadWorkoutTemplates = async () => {
+      try {
+        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+        if (storedTemplates !== null) {
+          setWorkoutTemplates(JSON.parse(storedTemplates));
+        }
+      } catch (error) {
+        console.error("Error loading workout templates:", error);
+        setError(true);
+      }
+    };
+    loadWorkoutTemplates();
+  }, [])
+
+
 
   return (
     <ScrollView style={styles.container}>
 
-      <Text style={styles.label}>My Exercises</Text>
-      {/* {!mark &&
-        <Pressable
-          onPress={setMark(true)}
-          style={styles.button}
-        >
-          <Text style={styles.text}> Mark sets </Text>
-        </Pressable>}
-      {mark && <MarkSets></MarkSets>} */}
-      
-        
-      <Text style = {styles.label}>Log Exercises</Text>
-      {!isOpen &&
-        <Pressable
-          onPress={handleOnPress}
-          style={styles.button}
-        >
-          <Text style={styles.text}> Log a workout </Text>
-        </Pressable>}
-      {isOpen && <WorkoutInput toggle={done}></WorkoutInput>}
+      <MarkSets></MarkSets>
+
+
+      <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Log Exercises</Text>
+          <MaterialIcons
+            name={
+              isOpen === true
+                ? ""
+                : "keyboard-arrow-down"
+            }
+            size={24}
+            color="black"
+          />
+        </View>
+      </TouchableOpacity>
+      {isOpen && !error && <WorkoutInput toggle={done}></WorkoutInput>}
+      {error && <Text>No workout templates made yet!!</Text>}
     </ScrollView>
   );
 }
@@ -50,7 +63,6 @@ export default function LogTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
     padding: 0,
     /* backgroundColor: '#f3fff5', */
   },
@@ -61,19 +73,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     justifyContent: 'flex-start',
   },
-  button: {
-    alignItems: 'left',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderRadius: 1,
-    elevation: 3,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    backgroundColor: '#f3fff5',
-  },
   text: {
     fontSize: 16,
     lineHeight: 21,
@@ -81,7 +80,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: '#58a1a3',
   },
-  
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
 });
 
 /* add in data validation
@@ -90,14 +95,7 @@ const styles = StyleSheet.create({
   2) if valid, post to database and then clear states 
  get data from database (workout ids, routine ids, plan ids, names)
 
- questions :
- should each workout have same options 
- what types of workouts will we accomodate
- plans vs routines
- how to submit data (webserver or not // which api to use)
- testing (how, what, where)
-  - possible framworks
-  : detox - e2e testing with simulator
-  : jest - unit test, integration test, etc.
-  : typescript - typechecking
-  : eslint - style/syntax errors */
+rework useEffect to check if plan exists or not (globalState ? or require user to make one plan before using other tabs)
+
+if no plan exists, don't even use either component
+ */

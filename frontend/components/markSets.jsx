@@ -1,116 +1,101 @@
 import * as React from "react";
-import { useState } from "react";
-import { Text, View, StyleSheet, SectionList, ScrollView, Button, Alert } from "react-native";
-import Constants from 'expo-constants';
-import Checkbox from 'expo-checkbox'
+import { useState, } from "react";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import Checkbox from 'expo-checkbox';
+import WorkoutSelect from "./workoutSelect.jsx";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MarkSets = () => {
 
-  const routines = [
-    { id: 'crd', name: 'Cardio', data: [
-      { key: 'crd1', value: 'Squat Jump' },
-      { key: 'crd2', value: 'Mountain Climber' },
-      { key: 'crd3', value: 'Running' },
-    ],},
-    { id: 'flx', name: 'Flexibility', data:  [
-      { key: 'flx1', value: 'Yoga' },
-      { key: 'flx2', value: 'Pilates' },
-      { key: 'flx3', value: 'Lunge with Spinal Twist' },
-    ],},
-    { id: 'str', name: 'Strength', data: [
-      { key: 'str1', value: 'Deadlift' },
-      { key: 'str2', value: 'Walking Lunge' },
-      { key: 'str3', value: 'Bench Press' },
-    ], },
-    { id: 'lgdy', name: 'Leg Day', data: [
-      { key: 'lgdy1', value: 'Back Squat' },
-      { key: 'lgdy2', value: 'Leg Press' },
-      { key: 'lgdy3', value: 'Leg Curl' },
-    ], },
-    { id: 'tu', name: 'Tuesdays', data: [
-      { key: 'tu1', value: 'Incline Jog' },
-      { key: 'tu2', value: 'Push-ups' },
-      { key: 'tu3', value: 'Squats' },
-    ], },
-    { id: 'th', name: 'Thursdays', data: [
-      { key: 'th1', value: 'Pull-ups' },
-      { key: 'th2', value: 'Spider Curl' },
-      { key: 'th3', value: 'Bench Dip' },
-    ], },
-    { id: '30m', name: '30 minute', data: [
-      { key: '30m1', value: 'Walking Lunge' },
-      { key: '30m2', value: 'Romanian Deadlift' },
-      { key: '30m3', value: 'Suitcase Carry' },
-    ] },
-  ]
+  const [routine, setRoutine] = React.useState("");
+  const [workout, setWorkout] = React.useState("");
+  const [showTemplates, setShowTemplates] = useState(false);
 
 
-  
 
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [checkboxes, setCheckboxes] = useState([
+    { label: 'Option 1', checked: false },
+    { label: 'Option 2', checked: false },
+    { label: 'Option 3', checked: false },
+  ]);
 
-  const Item = ({ item }) => {
-    return (
-        <View style={styles.item}>
-          <Text style={styles.title}>{item.value}</Text>
-        </View>
-    );
+  const toggleCheckbox = (index) => {
+    const updatedCheckboxes = [...checkboxes];
+    updatedCheckboxes[index].checked = !updatedCheckboxes[index].checked;
+    setCheckboxes(updatedCheckboxes);
   };
-
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Test:</Text>
-      
-      <SectionList
-      sections={routines}
-      keyExtractor={(item, index) => item.key}
-      renderItem={({ item }) => <Item item={item} />}
-      renderSectionHeader={({ section }) => (
-        <Text style={styles.header}>{section.name}</Text>
-      )}
-    />
-      
-      <View style={styles.row}>
-        <Checkbox
-          style={styles.button}
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
+      {<TouchableOpacity onPress={() => setShowTemplates(!showTemplates)}>
+        <View style={styles.row}>
+          <Text style={styles.header}>My Workouts</Text>
+          <MaterialIcons
+            name={
+              showTemplates === true
+                ? "keyboard-arrow-up"
+                : "keyboard-arrow-down"
+            }
+            size={24}
+            color="black"
+          />
 
-        <Checkbox
-          style={styles.button}
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
-        <Checkbox
-          style={styles.button}
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
-        <Checkbox
-          style={styles.button}
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
+        </View>
+      </TouchableOpacity>}
+
+      {showTemplates && <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout} />}
+
+      <View style={styles.row}>
+
       </View>
-    </View>
+
+      <View style={styles.row}>
+
+      </View>
+
+      {/* <View style={styles.checkRow}>
+                      {checkboxes.map((checkbox, index) => (
+                        <View key={index} style={styles.checkboxContainer}>
+                          <Checkbox
+                            value={checkbox.checked}
+                            onValueChange={() => toggleCheckbox(index)}
+                          />
+                        </View>
+                      ))}
+                      </View> */}
+
+    </View> 
   )
 }
 
 const styles = StyleSheet.create({
   label: {
-    color: 'black',
-    margin: 20,
-    marginLeft: 20,
+    fontSize: 24,
+    textAlign: 'left',
+    margin: 10,
+    fontWeight: 'bold',
+    justifyContent: 'flex-start',
+  },
+  text: {
+    fontSize: 16,
+    margin: 30,
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: '#58a1a3',
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  checkRow: {
+    flexDirection: 'row',
     flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   button: {
     marginLeft: 20,
@@ -121,22 +106,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-    padding: 8,
+    padding: 0,
     backgroundColor: '#white',
   },
-  item: {
-    backgroundColor: 'f3fff5',
-    padding: 10,
-    marginVertical: 5,
-    fontSize: 10,
+  initView: {
+    marginLeft: 4,
+    marginVertical: 1,
   },
   header: {
-    fontSize: 20,
-    backgroundColor: '#f3fff5',
-  },
-  title: {
-    fontSize: 10,
+    fontSize: 30,
+    textAlign: 'left',
+    margin: 10,
+    fontWeight: 'bold',
+    justifyContent: 'flex-start',
   },
 });
 

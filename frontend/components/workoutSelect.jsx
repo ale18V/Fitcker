@@ -1,68 +1,74 @@
 import * as React from "react";
-import { View, StyleSheet, } from "react-native";
+import { useState, useEffect, } from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from 'expo-constants';
 
 const WorkoutSelect = (props) => {
+  
+  const [workoutTemplates, setWorkoutTemplates] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [useCount, setUseCount] = useState(0);
 
-  const routines = [
-    { key: 'crd', value: 'Cardio' },
-    { key: 'flx', value: 'Flexibility' },
-    { key: 'str', value: 'Strength' },
-    { key: 'lgdy', value: 'Leg Day' },
-    { key: 'tu', value: 'Tuesdays' },
-    { key: 'th', value: 'Thursdays' },
-    { key: '30m', value: '30 minute' },
-  ]
-  const workouts = {
-    'crd': [
-      { key: 'crd1', value: 'Squat Jump' },
-      { key: 'crd2', value: 'Mountain Climber' },
-      { key: 'crd3', value: 'Running' },
-    ],
-    'flx': [
-      { key: 'flx1', value: 'Yoga' },
-      { key: 'flx2', value: 'Pilates' },
-      { key: 'flx3', value: 'Lunge with Spinal Twist' },
-    ],
-    'str': [
-      { key: 'str1', value: 'Deadlift' },
-      { key: 'str2', value: 'Walking Lunge' },
-      { key: 'str3', value: 'Bench Press' },
-    ],
-    'lgdy': [
-      { key: 'lgdy1', value: 'Back Squat' },
-      { key: 'lgdy2', value: 'Leg Press' },
-      { key: 'lgdy3', value: 'Leg Curl' },
-    ],
-    'tu': [
-      { key: 'tu1', value: 'Incline Jog' },
-      { key: 'tu2', value: 'Push-ups' },
-      { key: 'tu3', value: 'Squats' },
-    ],
-    'th': [
-      { key: 'th1', value: 'Pull-ups' },
-      { key: 'th2', value: 'Spider Curl' },
-      { key: 'th3', value: 'Bench Dip' },
-    ],
-    '30m': [
-      { key: '30m1', value: 'Walking Lunge' },
-      { key: '30m2', value: 'Romanian Deadlift' },
-      { key: '30m3', value: 'Suitcase Carry' },
-    ]
+  const routines = [];
+  const updateRoutine = () => {
+    workoutTemplates.map((template) => {
+      var tempName = template.templateName;
+      routines.push({ key: tempName, value: tempName });
+      tempWorkout = [];
+      workouts[tempName] = [];
+      template.exercises.map((exercise) => {
+        tempWorkout.push({ key: exercise, value: exercise });
+      })
+      workouts[tempName] = tempWorkout;
+    })
   }
 
+  useEffect(() => {
+    const loadWorkoutTemplates = async () => {
+      try {
+        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+        if (storedTemplates !== null) {
+          setWorkoutTemplates(JSON.parse(storedTemplates));
+        }
+      } catch (error) {
+        console.error("Error loading workout templates:", error);
+      }
+    };
+    updateRoutine();
+    loadWorkoutTemplates();
+  }, [])
+
+
+  const workouts = {};
+  var tempWorkout = [];
 
   return (
 
     <View>
+      {workoutTemplates.map((template) => {
+      var tempName = template.templateName;
+      routines.push({ key: tempName, value: tempName });
+      tempWorkout = [];
+      workouts[tempName] = [];
+      template.exercises.map((exercise) => {
+        tempWorkout.push({ key: exercise, value: exercise });
+      })
+      workouts[tempName] = tempWorkout;
+    })}
 
       <SelectList setSelected={props.setRoutine} data={routines} placeholder={"Select your workout plan!"}
-        defaultOption={{ key: 'crd', value: 'Cardio' }} />
+        defaultOption={routines[0]} onSelect={() => {{setUseCount(useCount+1)}}}/>
 
-      <SelectList setSelected={props.setWorkout} data={workouts[props.routine]} placeholder={"Select your workout plan!"}
-        defaultOption={workouts[props.routine][0]} />
+      {useCount === 0 && <SelectList setSelected={props.setWorkout} data={workouts[props.routine]}
+        placeholder={"Select your workout plan!"} />}
+      
+      {useCount != 0 && <SelectList setSelected={props.setWorkout} data={workouts[props.routine]}
+        placeholder={"Select your workout plan!"} defaultOption={workouts[props.routine][0]}/>}
 
+      
+      {/* {alert(JSON.stringify(workouts))} */}
     </View>
   )
 
@@ -103,3 +109,5 @@ const styles = StyleSheet.create({
 
 export default WorkoutSelect;
 
+//figure out how to have second list automatically change without using first state
+/// used dummy start
