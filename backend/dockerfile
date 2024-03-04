@@ -10,5 +10,5 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt && \
     rm -rdf /tmp/*
 
 WORKDIR /srv/app/
-COPY . .
+COPY src .
 ENV PYTHONPYCACHEPREFIX=/tmp
