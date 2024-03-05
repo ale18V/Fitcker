@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-native";
 import { useForm, Controller } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,7 +10,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const WorkoutInput = (props) => {
   const [routine, setRoutine] = React.useState("");
 
-  const { handleSubmit, control, reset, formState: { errors } } = useForm({
+  const { handleSubmit, control, reset, formState, formState: { isSubmitSuccessful }, formState: { errors } } = useForm({
     defaultValues: {
       exercise_id: '',
       weight: '',
@@ -19,10 +20,11 @@ const WorkoutInput = (props) => {
       day: new Date(),
     }
   });
+
   const onSubmit = async data => {
     await sleep(2000);
     alert(JSON.stringify(data));
-
+    props.toggle.bind(this, false);
     /* try {
       const workoutSubmit = await fetch(
         "http://localhost:8000/api/v1/exercise/",
@@ -49,11 +51,28 @@ const WorkoutInput = (props) => {
 
   console.log('errors', errors);
 
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({
+        weight: '',
+        reps: '',
+        sets: '',
+        rest: '',
+        day: new Date(),
+      });
+    }
+  }, [formState, reset])
+
+
   return (
 
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.container}>
+
+        <Text style={styles.header}>My Workouts</Text>
+
+
           <Controller
             control={control}
             name="exercise_id"
@@ -198,13 +217,13 @@ const WorkoutInput = (props) => {
             />
           </View>
 
-          <View style={styles.button}>
+          {/* <View style={styles.button}>
             <Button
               title="Done"
               color="#f3fff5"
               onPress={props.toggle.bind(this, false)}
             />
-          </View>
+          </View> */}
         </View>
 
 
@@ -248,6 +267,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 4,
     borderWidth: 1,
+  },
+  header: {
+    fontSize: 30,
+    textAlign: 'left',
+    margin: 5,
+    fontWeight: 'bold',
+    justifyContent: 'flex-start',
   },
 });
 

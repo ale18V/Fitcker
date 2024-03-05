@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     textAlign: 'left',
-    margin: 10,
+    margin: 5,
     fontWeight: 'bold',
     justifyContent: 'flex-start',
   },

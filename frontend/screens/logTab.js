@@ -1,20 +1,20 @@
 import * as React from "react";
 import { useState, useEffect, } from "react";
-import { Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, } from "react-native";
+import { Text, View, StyleSheet, Modal, ScrollView, Image, TouchableOpacity, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MarkSets from "../components/markSets";
 import WorkoutInput from "../components/workoutInput";
-import { MaterialIcons } from "@expo/vector-icons";
 
 
 export default function LogTab() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [markModalVisible, setMarkModalVisible] = useState(false);
+  const [logModal, setLogModal] = useState(false);
   const [error, setError] = useState(false);
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
 
 
   const done = (status) => {
-    setIsOpen(status);
+    setLogModal(status);
   }
 
    useEffect(() => {
@@ -35,12 +35,79 @@ export default function LogTab() {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.outerContainer}>
 
-      <MarkSets></MarkSets>
+      <View style={styles.row}>
+    <TouchableOpacity style={styles.touchable} onPress={() => setMarkModalVisible(true)}>
+            <View style={styles.buttonContainer}>
+            <Text style={styles.text}>My Workouts</Text>
+            <Image
+              source={require("../assets/icon1.png")} 
+              style={styles.image}
+              />
+            </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.touchable} onPress={() => setLogModal(true)}>
+            <View style={styles.buttonContainer}>
+            <Text style={styles.text2}>Log Workouts</Text>
+            <Image
+              source={require("../assets/icon2.png")} 
+              style={styles.logimage}
+              resizeMode='contain'
+              />
+            </View>
+        </TouchableOpacity>
+        
+        </View>
+
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={markModalVisible}
+        onRequestClose={() => {
+          setMarkModalVisible(false);
+        }}
+      >
+        <ScrollView style={styles.modalContainer}>
+          <View style={styles.container}>
+            <MarkSets></MarkSets>
+          </View>
+          <View style={styles.container}>
+          <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setMarkModalVisible(false)}>
+              <Text style={styles.text}>Close View</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </Modal>
+
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={logModal}
+        onRequestClose={() => {
+          setLogModal(false);
+        }}
+      >
+          <ScrollView style={styles.modalContainer}>
+          <View style={styles.container}>
+            {!error && <WorkoutInput toggle={done}></WorkoutInput>}
+          </View>
+          <View style={styles.container}>
+          <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setLogModal(false)}>
+              <Text style={styles.text}>Close View</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+
+      </Modal>
 
 
-      <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+      {/* <TouchableOpacity onPress={() => setLogModal(!logModal)}>
         <View style={styles.row}>
           <Text style={styles.label}>Log Exercises</Text>
           <MaterialIcons
@@ -54,8 +121,8 @@ export default function LogTab() {
           />
         </View>
       </TouchableOpacity>
-      {isOpen && !error && <WorkoutInput toggle={done}></WorkoutInput>}
-      {error && <Text>No workout templates made yet!!</Text>}
+      {logModal && !error && <WorkoutInput toggle={done}></WorkoutInput>}
+      {error && <Text>No workout templates made yet!!</Text>} */}
     </ScrollView>
   );
 }
@@ -63,8 +130,12 @@ export default function LogTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 0,
-    /* backgroundColor: '#f3fff5', */
+    padding: 10,
+  },
+  outerContainer: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: "#e4edea"
   },
   label: {
     fontSize: 30,
@@ -79,12 +150,85 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: '#58a1a3',
+    marginTop: 2,
+  },
+  text2: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: '#58a1a3',
+    marginBottom:4.5,
   },
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     marginTop: 20,
+    justifyContent: 'center',
+  },
+  touchable: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonContainer: {
+    flex: 1,
+    padding: 10,
+    height: 100,
+    borderWidth: 1.5,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    borderColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f3fff5',
+    margin: 5,
+  },
+  image: {
+    width: 50,
+    height: 50,
+  },
+  logimage: {
+    width: 44,
+    height: 44,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    alignContent: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  buttonClose: {
+    backgroundColor: '#d7faee',
+  },
+  modalContainer: {
+    height: 1000,
+    width: 375,
+    paddingTop: 10,
+    marginTop: 225,
+    marginBottom: 50,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#58a1a3',
+    backgroundColor: '#f3fff5',
+  },
+  doneButton: {
+    marginTop: 20,
+    color: '#f3fff5',
+    height: 40,
+    backgroundColor: '#58a1a3',
+    borderRadius: 4,
   },
 
 });
