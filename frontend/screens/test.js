@@ -28,4 +28,14 @@ describe("LogTab Component", () => {
       expect(addWorkoutButton).toBeTruthy();
     });
 
+    it("renders 'Done' button after pressing 'Add Workout' button", () => {
+        const { getByText, queryByText } = render(<LogTab />);
+        // 'Done' button should not be visible
+        expect(queryByText("Done")).toBeNull();
+        // Find and press the 'Add Workout' button
+        const addWorkoutButton = getByText("Add a workout");
+        fireEvent.press(addWorkoutButton);
+        // After pressing the button, the 'Done' button should appear
+        expect(getByText("Done")).toBeTruthy();
+      });
 });
