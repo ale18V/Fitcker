@@ -27,15 +27,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         component={CreateTab}
         options={{
           tabBarLabel: "Create",
-          headerShown: true,
-          headerBackground: () => (
-            <LinearGradient
-            colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
-            style={{ flex: 1 , justifyContent: 'center'}}  
-            >
-              <MaterialCommunityIcons name="clipboard-edit-outline" size={25} color='#58a1a3' style={{marginTop:18, marginLeft:255,}} />
-            </LinearGradient>
-          ),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="clipboard-edit-outline"
@@ -70,14 +62,6 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         component={StatsTab}
         options={{
           tabBarLabel: "Stats",
-          headerBackground: () => (
-            <LinearGradient
-            colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
-            style={{ flex: 1 , justifyContent: 'center'}}  
-            >
-              <MaterialCommunityIcons name="chart-line" size={25} color='#58a1a3' style={{marginTop:18, marginLeft:265,}} />
-            </LinearGradient>
-          ),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="chart-line"
@@ -91,14 +75,6 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         name="Profile"
         options={{
           tabBarLabel: "Profile",
-          headerBackground: () => (
-            <LinearGradient
-            colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
-            style={{ flex: 1 , justifyContent: 'center'}}  
-            >
-              <MaterialCommunityIcons name="account-circle" size={25} color='#58a1a3' style={{marginTop:20, marginLeft:220,}} />
-            </LinearGradient>
-          ),
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
