@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
 import db
-from routes import users, workout_plans, workout_routines
+from routes import exercises, users, workout_plans, workout_routines
 
 
 def create_app():
@@ -15,6 +15,7 @@ def create_app():
     api.include_router(router=users.router)
     api.include_router(router=workout_plans.router)
     api.include_router(router=workout_routines.router)
+    api.include_router(router=exercises.router)
 
     app.include_router(api)
     return app
