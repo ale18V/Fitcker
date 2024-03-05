@@ -1,3 +1,4 @@
+from models.exercise import ExercieseBase
 from models.user import UserBase
 from models.workout_plan import WorkoutPlanBase
 from sqlmodel import SQLModel, Field, Relationship
@@ -12,49 +13,41 @@ class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     password: str
 
-    plans: List["WorkoutPlan"] = Relationship(
-        back_populates="creator")
+    plans: List["WorkoutPlan"] = Relationship(back_populates="creator")
+    exercises: List["Exercise"] = Relationship(back_populates="creator")
 
 
 class WorkoutPlan(WorkoutPlanBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    creator_id: Optional[int] = Field(
-        foreign_key="user.id", nullable=False, default=None)
-    creator: Optional["User"] = Relationship(back_populates="plans")
-    routines: List["WorkoutRoutine"] = Relationship(
-        back_populates="workout_plan")
+    creator_id: int = Field(foreign_key="user.id", nullable=False, default=None)
+    creator: "User" = Relationship(back_populates="plans")
+    routines: List["WorkoutRoutine"] = Relationship(back_populates="workout_plan")
 
 
 class RoutineExerciseLink(SQLModel, table=True):
-    routine_id: Optional[int] = Field(
-        default=None, primary_key=True, foreign_key="workoutroutine.id"
-    )
-    exercise_id: Optional[int] = Field(
-        default=None, primary_key=True, foreign_key="exercise.id"
-    )
+    routine_id: Optional[int] = Field(default=None, primary_key=True,
+                                      foreign_key="workoutroutine.id")
+    exercise_id: Optional[int] = Field(default=None, primary_key=True, foreign_key="exercise.id")
 
 
 class WorkoutRoutine(WorkoutRoutineBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    plan_id: Optional[int] = Field(
-        foreign_key="workoutplan.id", nullable=False)
+    plan_id: int = Field(foreign_key="workoutplan.id", nullable=False)
     workout_plan: "WorkoutPlan" = Relationship(back_populates="routines")
     workouts: List["Workout"] = Relationship(back_populates="routine")
     exercises: List["Exercise"] = Relationship(
-        back_populates="routines", link_model=RoutineExerciseLink
-    )
+        back_populates="routines", link_model=RoutineExerciseLink)
 
 
 class Workout(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: date
 
-    routine_id: Optional[int] = Field(foreign_key="workoutroutine.id")
+    routine_id: int = Field(foreign_key="workoutroutine.id")
     routine: "WorkoutRoutine" = Relationship(back_populates="workouts")
-    exercise_links: List["WorkoutExerciseLink"] = Relationship(
-        back_populates="workout")
+    exercise_links: List["WorkoutExerciseLink"] = Relationship(back_populates="workout")
 
 
 class WorkoutExerciseLink(SQLModel, table=True):
@@ -69,13 +62,11 @@ class WorkoutExerciseLink(SQLModel, table=True):
     exercise: "Exercise" = Relationship(back_populates="workout_links")
 
 
-class Exercise(SQLModel, table=True):
+class Exercise(ExercieseBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(unique=True)
-    description: Optional[str]
+    creator_id: int = Field(default=None, nullable=False, foreign_key="user.id")
 
+    creator: User = Relationship(back_populates="exercises")
     routines: List["WorkoutRoutine"] = Relationship(
-        back_populates="exercises", link_model=RoutineExerciseLink
-    )
-    workout_links: List["WorkoutExerciseLink"] = Relationship(
-        back_populates="exercise")
+        back_populates="exercises", link_model=RoutineExerciseLink)
+    workout_links: List["WorkoutExerciseLink"] = Relationship(back_populates="exercise")
