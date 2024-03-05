@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, fireEvent} from '@testing-library/react-native';
 import Landing from './landing';
+import LogTab from './logTab.js'
+
 
 
 describe('Landing Page', () => {
@@ -19,3 +21,11 @@ describe('Landing Page', () => {
 
 });
 
+describe("LogTab Component", () => {
+    it("renders 'Add Workout' button", () => {
+      const { getByText } = render(<LogTab />);
+      const addWorkoutButton = getByText("Add a workout");
+      expect(addWorkoutButton).toBeTruthy();
+    });
+
+});
