@@ -6,9 +6,6 @@ from app import create_app
 import pytest
 from db import get_session
 
-app = create_app()
-client = TestClient(app)
-
 
 @pytest.fixture(name="session")
 def session_fixture():
@@ -24,7 +21,7 @@ def session_fixture():
 def client_fixture(session: Session):
     def get_session_override():
         return session
-
+    app = create_app()
     app.dependency_overrides[get_session] = get_session_override
 
     client = TestClient(app)
@@ -32,22 +29,22 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
-def register(user, passw, email):
+def register(client, user, passw, email):
     resp = client.post(
         "/api/v1/users", json={"username": user, "email": email, "password": passw}
     )
     return resp
 
 
-def login(user, passw, email):
+def login(client, user, passw, email):
     resp = resp = client.post("/api/v1/users/login", data={"username": user,
-                                                          "password": passw}, headers={"Content-Type": "application/x-www-form-urlencoded"})
+                                                           "password": passw}, headers={"Content-Type": "application/x-www-form-urlencoded"})
     return resp
 
 
 def test_register(client: TestClient):
     user, passw, email = "foo", "bar", "foo@bar.com"
-    resp = register(user, passw, email)
+    resp = register(client, user, passw, email)
     data = resp.json()
     assert resp.status_code == status.HTTP_201_CREATED
     print(data)
@@ -58,16 +55,16 @@ def test_register(client: TestClient):
 
 def test_login(client: TestClient):
     user, passw, email = "foo", "bar", "foo@bar.com"
-    register(user, passw, email)
-    resp = login(user, passw, email)
+    register(client, user, passw, email)
+    resp = login(client, user, passw, email)
     assert resp.status_code == status.HTTP_200_OK
     print(resp.text)
 
 
 def test_current_user(client: TestClient):
     user, passw, email = "foo", "bar", "foo@bar.com"
-    register(user, passw, email)
-    resp = login(user, passw, email)
+    register(client, user, passw, email)
+    resp = login(client, user, passw, email)
     print(resp.text)
     access_token = resp.json()["access_token"]
     resp = client.get("/api/v1/users/me",

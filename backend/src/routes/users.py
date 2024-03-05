@@ -4,28 +4,30 @@ from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 import db
-from model import User
+from models.user import UserCreate, UserRead
+from models.db import User
 import security
 
 router = APIRouter(prefix="/users")
 
 
-@router.post("/", status_code=201)
-async def register(user: User, con: Annotated[Session, Depends(db.get_session)]) -> User:
+@router.post("/", status_code=201, response_model=UserRead)
+async def register(user: UserCreate, con: Annotated[Session, Depends(db.get_session)]) -> User:
     res = con.exec(select(User).where(
         User.username == user.username)).one_or_none()
     if res:
         raise HTTPException(
             status_code=409, detail="User already registered")
 
-    user.password = security.get_password_hash(user.password)
-    con.add(user)
+    db_user: User = User.model_validate(user)
+    db_user.password = security.get_password_hash(user.password)
+    con.add(db_user)
     con.commit()
-    con.refresh(user)
-    return user
+    con.refresh(db_user)
+    return db_user
 
 
-@router.post("/login")
+@router.post("/login", response_model=security.Token)
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 con: Annotated[Session, Depends(db.get_session)]) -> security.Token:
     user = con.exec(select(User).where(
@@ -42,9 +44,9 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     return security.Token(access_token=access_token, token_type="bearer")
 
 
-@router.get("/me")
+@router.get("/me", response_model=UserRead)
 async def current_user(user_id: Annotated[int, Depends(security.get_current_user_id)],
-                       con: Annotated[Session, Depends(db.get_session)]) -> User:
+                       con: Annotated[Session, Depends(db.get_session)]):
     user = con.get(User, user_id)
     if not user:
         raise HTTPException(
