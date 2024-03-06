@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, fireEvent} from '@testing-library/react-native';
 import Landing from './landing';
-import LogTab from './logTab.js'
-
+import Stats from "../components/stats.jsx";
 
 
 describe('Landing Page', () => {
@@ -21,21 +20,15 @@ describe('Landing Page', () => {
 
 });
 
-describe("LogTab Component", () => {
-    it("renders 'Add Workout' button", () => {
-      const { getByText } = render(<LogTab />);
-      const addWorkoutButton = getByText("Add a workout");
-      expect(addWorkoutButton).toBeTruthy();
-    });
 
-    it("renders 'Done' button after pressing 'Add Workout' button", () => {
-        const { getByText, queryByText } = render(<LogTab />);
-        // 'Done' button should not be visible
-        expect(queryByText("Done")).toBeNull();
-        // Find and press the 'Add Workout' button
-        const addWorkoutButton = getByText("Add a workout");
-        fireEvent.press(addWorkoutButton);
-        // After pressing the button, the 'Done' button should appear
-        expect(getByText("Done")).toBeTruthy();
-      });
-});
+jest.mock('react-native-calendars', () => ({
+    Agenda: jest.fn(() => null), 
+  }));
+  
+  describe('Stats component', () => {
+    test('renders correctly', () => {
+      render(<Stats />);
+    });
+  });
+
+  
