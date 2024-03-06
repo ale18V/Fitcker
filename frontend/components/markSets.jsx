@@ -31,7 +31,7 @@ const MarkSets = () => {
       {<TouchableOpacity onPress={() => setShowTemplates(!showTemplates)}>
         <View style={styles.row}>
           <Text style={styles.header}>My Workouts</Text>
-          <MaterialIcons
+          {/* <MaterialIcons
             name={
               showTemplates === true
                 ? "keyboard-arrow-up"
@@ -39,7 +39,7 @@ const MarkSets = () => {
             }
             size={24}
             color="black"
-          />
+          /> */}
 
         </View>
       </TouchableOpacity>}

@@ -70,7 +70,7 @@ const MyWorkouts = ({ templateUpdated }) => {
 
   return (
     <View>
-      <Text className="text-2xl font-bold m-4">My Workouts</Text>
+      <Text className="text-2xl font-bold m-4">My Routines</Text>
       {workoutTemplates.map((template, index) => (
         <View key={index} className="mx-4 my-1">
           <TouchableOpacity onPress={() => toggleExercises(index)}>
