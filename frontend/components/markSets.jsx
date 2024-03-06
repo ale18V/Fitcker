@@ -8,19 +8,22 @@ import { set } from "react-hook-form";
 
 const MarkSets = () => {
 
-  const [routine, setRoutine] = React.useState("");
-  const [workout, setWorkout] = React.useState("");
-  const [weight, setWeight] = React.useState("");
-  const [sets, setSets] = React.useState("");
-  const [reps, setReps] = React.useState("");
-  const [rest, setRest] = React.useState("");
+  const [routine, setRoutine] = useState("");
+  const [workout, setWorkout] = useState("");
+  const [weight, setWeight] = useState("");
+  const [sets, setSets] = useState("");
+  const [reps, setReps] = useState("");
+  const [rest, setRest] = useState("");
+
   const [showTemplates, setShowTemplates] = useState(false);
   const [notes, setNotes] = useState([]);
+  //const [username2, setUsername2] = useState("");
 
   useEffect(() => {
     const loadWorkoutTemplates = async () => {
       try {
-        const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+        const username = await AsyncStorage.getItem("username");  
+        const storedTemplates = await AsyncStorage.getItem(username+"@workoutNotes");
         if (storedTemplates !== null) {
           setNotes(JSON.parse(storedTemplates));
         }
@@ -29,7 +32,42 @@ const MarkSets = () => {
       }
     };
 
+/*     const getUsernameFromApi = async () => {
+      try {
+        // Retrieve token from AsyncStorage
+        const token = await AsyncStorage.getItem("access_token");
+
+        if (token) {
+          // Make a GET request to the API endpoint with the token included in the Authorization header
+          const response = await fetch(
+            "http://localhost:8000/api/v1/users/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            // Extract the username from the response data
+            console.log(data);
+            setUsername(data.username);
+          } else {
+            // Handle error when API request fails
+            throw new Error("Failed to fetch user profile");
+          }
+        } else {
+          // Handle case when token is not found in AsyncStorage
+          throw new Error("Token not found");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }; */
+
     const findNote = async () => {
+      //await getUsernameFromApi();
       await loadWorkoutTemplates();
 
       var index = notes.findIndex(function (element) {
@@ -52,7 +90,8 @@ const MarkSets = () => {
     }
 
     findNote();
-  }, [setWorkout, setRoutine, routine, workout]);
+    //setUsername2(username);
+  }, [setWorkout, setRoutine]);
 
   const saveNotes = async () => {
     var index = notes.findIndex(function (element) {
@@ -69,13 +108,14 @@ const MarkSets = () => {
       const newTemplate = { workout: workout, routine: routine, weight: weight,
                                sets: sets, reps: reps, rest: rest, };
       let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+      const username = await AsyncStorage.getItem("username"); 
+      const storedTemplates = await AsyncStorage.getItem(username+"@workoutNotes");
       if (storedTemplates !== null) {
         updatedTemplates = JSON.parse(storedTemplates);
       }
       updatedTemplates.push(newTemplate);
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"@workoutNotes",
         JSON.stringify(updatedTemplates)
       );
       //alert(JSON.stringify(newTemplate));
@@ -92,14 +132,17 @@ const MarkSets = () => {
 
   const saveEditedNote = async () => {
     try {
+      //const token = await AsyncStorage.getItem("access_token");
+      
       const updatedTemplates = [...notes];
       var index = updatedTemplates.findIndex(function (element) {
         return (element.routine === routine && element.workout===workout)
       })
       updatedTemplates[index] = { workout: workout, routine: routine, weight: weight,
         sets: sets, reps: reps, rest: rest, };
+        const username = await AsyncStorage.getItem("username"); 
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"@workoutNotes",
         JSON.stringify(updatedTemplates)
       );
       setWorkoutTemplates(updatedTemplates);
@@ -132,7 +175,7 @@ const MarkSets = () => {
       </TouchableOpacity>}
 
       {showTemplates && <View>
-      <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout} />
+      <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout}/>
 
       <Text>Weight: </Text>
       <TextInput style={styles.input}
@@ -167,11 +210,13 @@ const MarkSets = () => {
           setRest(text);
         }} />
 
+      <View style={styles.button}>
       <Button
-        className="bg-blue-500 text-white p-2 rounded m-4"
+        color="#f3fff5"
         title="Save Notes"
         onPress={saveNotes}
       />
+      </View>
       </View>}
 
 
@@ -202,8 +247,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   button: {
-    marginLeft: 20,
+    marginTop: 20,
     color: '#f3fff5',
+    height: 40,
     backgroundColor: '#58a1a3',
     borderRadius: 4,
   },

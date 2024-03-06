@@ -8,8 +8,8 @@ import Constants from 'expo-constants';
 const WorkoutSelect = (props) => {
   
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
-  const [isEmpty, setIsEmpty] = useState(false);
   const [useCount, setUseCount] = useState(0);
+  //const [username, setUsername] = useState("");
 
   const routines = [];
   const updateRoutine = () => {
@@ -22,23 +22,64 @@ const WorkoutSelect = (props) => {
         tempWorkout.push({ key: exercise, value: exercise });
       })
       workouts[tempName] = tempWorkout;
+      console.log(JSON.stringify(workouts));
     })
   }
-
+ 
   useEffect(() => {
     const loadWorkoutTemplates = async () => {
-      try {
-        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+     // await getUsernameFromApi();
+      try { 
+        //const token = await AsyncStorage.getItem("access_token");
+        const username = await AsyncStorage.getItem("username");  
+        const storedTemplates = await AsyncStorage.getItem(username+"@workoutTemplates");
         if (storedTemplates !== null) {
           setWorkoutTemplates(JSON.parse(storedTemplates));
         }
       } catch (error) {
         console.error("Error loading workout templates:", error);
       }
-    };
+    }; 
+
+    /* const getUsernameFromApi = async () => {
+      try {
+        // Retrieve token from AsyncStorage
+        const token = await AsyncStorage.getItem("access_token");
+
+        if (token) {
+          // Make a GET request to the API endpoint with the token included in the Authorization header
+          const response = await fetch(
+            "http://localhost:8000/api/v1/users/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            // Extract the username from the response data
+            console.log(data);
+            setUsername(data.username);
+          } else {
+            // Handle error when API request fails
+            throw new Error("Failed to fetch user profile");
+          }
+        } else {
+          // Handle case when token is not found in AsyncStorage
+          throw new Error("Token not found");
+        }
+      } catch (error) {
+        console.error(error);
+        //setIsAuthorized(false); // Assuming you want to log the user out if there's an error
+      }
+    }; */
+ 
+    //getUsernameFromApi();
     loadWorkoutTemplates();
-    updateRoutine();
-  }, [])
+    //updateRoutine();
+  }, []);
 
 
   const workouts = {};
@@ -48,7 +89,9 @@ const WorkoutSelect = (props) => {
 
     
     <View>
-      {workoutTemplates.map((template) => {
+
+{
+    workoutTemplates.map((template) => {
       var tempName = template.name;
       routines.push({ key: tempName, value: tempName });
       tempWorkout = [];
@@ -57,7 +100,9 @@ const WorkoutSelect = (props) => {
         tempWorkout.push({ key: exercise, value: exercise });
       })
       workouts[tempName] = tempWorkout;
-    })}
+      //console.log(JSON.stringify(workouts));
+    })
+  }
 
       <SelectList setSelected={props.setRoutine} data={routines} placeholder={"Select your workout plan!"}
         defaultOption={routines[0]} onSelect={() => {{setUseCount(useCount+1)}}}/>

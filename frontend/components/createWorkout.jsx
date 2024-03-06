@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Button, TextInput, ScrollView, StyleSheet, TouchableOpacity, Image, Modal } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
+const CreateWorkout = ({ templateUpdated, setTemplateUpdated, planModal, setPlanModal }) => {
   //manage plans
   const [planName, setPlanName] = useState('');
   const [planStartDate, setStartDate] = useState(new Date());
@@ -22,7 +22,6 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
 
   //managing view states
   const [addRout, setAddRout] = useState(false);
-  const [planModal, setPlanModal] = useState(false);
 
   //groups for saving
   /* const [currentRoutines, setCurrentRoutines] = useState([]);
@@ -30,9 +29,50 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
   const [currentExercises, setCurrentExercises] = useState([]);
   const [currentExercise, setCurrentExercise] = useState(null); */
   const [planID, setPlanID] = useState(0);
+  const [username, setUsername] = useState("");
+
+
+  useEffect(() => {
+    const getUsernameFromApi = async () => {
+      try {
+        // Retrieve token from AsyncStorage
+        const token = await AsyncStorage.getItem("access_token");
+  
+        if (token) {
+          // Make a GET request to the API endpoint with the token included in the Authorization header
+          const response = await fetch(
+            "http://localhost:8000/api/v1/users/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (response.ok) {
+            const data = await response.json();
+            // Extract the username from the response data
+            console.log(data);
+            setUsername(data.username);
+          } else {
+            // Handle error when API request fails
+            throw new Error("Failed to fetch user profile");
+          }
+        } else {
+          // Handle case when token is not found in AsyncStorage
+          throw new Error("Token not found");
+        }
 
 
 
+      } catch (error) {
+        console.error(error);
+        //setIsAuthorized(false); // Assuming you want to log the user out if there's an error
+      }
+    };
+
+    getUsernameFromApi();
+  }, [])
 
   const handleExerciseChange = (index, text) => {
     const newExercises = [...exercises];
@@ -49,15 +89,6 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
     newExercises.splice(index, 1);
     setExercises(newExercises);
   };
-
-  const addPlan = () => {
-    currentPlan.name = planName;
-    var startDate = planStartDate.toISOString().split("T", 1)[0];
-    var endDate = planEndDate.toISOString().split("T", 1)[0];
-    currentPlan.startDate = startDate;
-    currentPlan.endDate = endDate;
-    alert(JSON.stringify(currentPlan));
-  }
 
   const savePlan = () => {
     currentPlan.name = planName;
@@ -189,20 +220,24 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
 
   const saveRoutines = async () => {
     try {
-
+      //const token = await AsyncStorage.getItem("access_token");
+      const username = await AsyncStorage.getItem("username");
       const newRegTemplate = { name: currentRoutine.name, exercises: currentRoutine.exercises.filter((exercise) => exercise.trim() !== "") };
       let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+      const storedTemplates = await AsyncStorage.getItem(username+"@workoutTemplates");
       if (storedTemplates !== null) {
         updatedTemplates = JSON.parse(storedTemplates);
       }
       updatedTemplates.push(newRegTemplate);
+      console.log(JSON.stringify(newRegTemplate));
+      console.log(JSON.stringify(updatedTemplates));
       await AsyncStorage.setItem(
-        "workoutTemplates",
+        username+"@workoutTemplates",
         JSON.stringify(updatedTemplates)
       );
       
       setTemplateUpdated(!templateUpdated);
+      console.log("Template saved successfully:", newRegTemplate);
     }
 
     catch (error) {
@@ -256,22 +291,27 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
   const saveTemplate = async () => {
     if (planName && currentPlan.routines.length != 0) {
 
+      //const token = await AsyncStorage.getItem("access_token");
+      //await getUsernameFromApi();
+
       const newPlanTemplate = {
         name: planName,
         startDate: planStartDate,
         endDate: planEndDate,
       }
-      alert(JSON.stringify(newPlanTemplate));
+
+      //alert(JSON.stringify(newPlanTemplate));
 
       try {
+        const username = await AsyncStorage.getItem("username");
         let updatedPlanTemplates = [];
-        const storedPlanTemplates = await AsyncStorage.getItem("planTemplates");
+        const storedPlanTemplates = await AsyncStorage.getItem(username+"@planTemplates");
         if (storedPlanTemplates !== null) {
           updatedPlanTemplates = JSON.parse(storedPlanTemplates);
         }
         updatedPlanTemplates.push(newPlanTemplate);
         await AsyncStorage.setItem(
-          "planTemplates",
+          username+"@planTemplates",
           JSON.stringify(updatedPlanTemplates)
         );
         setTemplateUpdated(!templateUpdated);
@@ -292,29 +332,12 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
 
 
 
+
+
   return (
     <ScrollView>
-      <Text className="text-black font-bold text-2xl m-4">My Plans</Text>
 
-      <TouchableOpacity style={styles.touchable} onPress={() => setPlanModal(true)}>
-        <View style={styles.buttonContainer}>
-          <Text style={styles.text}>Add Plan</Text>
-          <Image
-            source={require("../assets/icon2.png")}
-            style={styles.logimage}
-          />
-        </View>
-      </TouchableOpacity>
-
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={planModal}
-        onRequestClose={() => {
-          setPlanModal(false);
-        }}
-      >
-        <ScrollView style={styles.modalContainer}>
+        
           <View style={styles.container}>
 
             <View>
@@ -411,8 +434,7 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
               }
             />
           </View>
-        </ScrollView>
-      </Modal>
+
 
       {/* <Button
         className="bg-red-500 text-white p-2 rounded m-4"
@@ -489,10 +511,6 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
-  },
-  logimage: {
-    width: 44,
-    height: 44,
   },
   button: {
     borderRadius: 20,

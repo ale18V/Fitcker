@@ -7,8 +7,9 @@ import WorkoutSelect from "./workoutSelect.jsx";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const WorkoutInput = (props) => {
+const WorkoutInput = () => {
   const [routine, setRoutine] = React.useState("");
+  const [username2, setUsername2] = React.useState("");
 
   const { handleSubmit, control, reset, formState, formState: { isSubmitSuccessful }, formState: { errors } } = useForm({
     defaultValues: {
@@ -24,7 +25,7 @@ const WorkoutInput = (props) => {
   const onSubmit = async data => {
     await sleep(2000);
     alert(JSON.stringify(data));
-    props.toggle.bind(this, false);
+    //props.toggle.bind(this, false);
     /* try {
       const workoutSubmit = await fetch(
         "http://localhost:8000/api/v1/exercise/",
@@ -61,6 +62,9 @@ const WorkoutInput = (props) => {
         day: new Date(),
       });
     }
+
+    /* setUsername2(username);
+    console.log(username2); */
   }, [formState, reset])
 
 
@@ -83,7 +87,7 @@ const WorkoutInput = (props) => {
             render={({ field: { onChange, value } }) => (
               <>
                 {errors.exercise_id && <Text style={styles.text}> {errors.exercise_id.message}</Text>}
-                <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout) }} />
+                <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout) }}/>
               </>
             )}
           />

@@ -24,13 +24,16 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
   useEffect(() => {
     const loadBio = async () => {
       try {
-        const storedTemplates = await AsyncStorage.getItem("biometrics");
+        const storedTemplates = await AsyncStorage.getItem(username+"@biometrics");
+        if (storedTemplates != null)
+        {
           setBiometrics(JSON.parse(storedTemplates));
           setHeight(biometrics["height"]);
           setWeight(biometrics["weight"]);  
           /* alert(JSON.stringify(biometrics));
           alert(height);
           alert(weight); */
+        }
       } catch (error) {
         console.error("Error loading biometrics:", error);
       }
@@ -43,7 +46,7 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
     try {
       const newTemplate = { height: height, weight: weight};
       await AsyncStorage.setItem(
-        "biometrics",
+        username+"@biometrics",
         JSON.stringify(newTemplate),
       );
       //alert(JSON.stringify(newTemplate));
@@ -51,6 +54,10 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
     catch (error) {
       console.error("Error saving template:", error);
     }
+  }
+
+  const clearData = async () => {
+    //await AsyncStorage.multiRemove([username + "@biometrics",username + "@workoutTemplates",username + "@workoutNotes"]);
   }
 
   return (
@@ -72,16 +79,18 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
         </LinearGradient>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => clearData()}>
         <LinearGradient
           colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
           className="flex-row items-center p-4 rounded-xl justify-between mb-4"
         >
           <View className="flex-row items-center">
-            <MaterialCommunityIcons name="bell" size={28} />
-            <Text className="font-bold ml-2">Notification Settings</Text>
+            <MaterialCommunityIcons name="delete" size={28} />
+            <Text className="font-bold ml-2">Clear Data</Text>
           </View>
           <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setBioModal(true)}>
         <LinearGradient

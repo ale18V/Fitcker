@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState, useEffect, } from "react";
 import { Text, View, StyleSheet, Modal, ScrollView, Image, TouchableOpacity, Pressable } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MarkSets from "../components/markSets";
 import WorkoutInput from "../components/workoutInput";
@@ -11,7 +12,8 @@ export default function LogTab() {
   const [logModal, setLogModal] = useState(false);
   const [error, setError] = useState(false);
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
-
+  //const [username, setUsername] = useState("");
+  const [update, setUpdate] = useState(false);
 
 
   const done = (status) => {
@@ -21,7 +23,11 @@ export default function LogTab() {
    useEffect(() => {
     const loadWorkoutTemplates = async () => {
       try {
-        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+        if (username === ""){
+        await getUsernameFromApi();
+        }
+        const username = await AsyncStorage.getItem("username");  
+        const storedTemplates = await AsyncStorage.getItem(username+"@workoutTemplates");
         if (storedTemplates !== null) {
           setWorkoutTemplates(JSON.parse(storedTemplates));
         }
@@ -30,11 +36,106 @@ export default function LogTab() {
         setError(true);
       }
     };
+
+    const getUsernameFromApi = async () => {
+      try {
+        // Retrieve token from AsyncStorage
+        const token = await AsyncStorage.getItem("access_token");
+
+        if (token) {
+          // Make a GET request to the API endpoint with the token included in the Authorization header
+          const response = await fetch(
+            "http://localhost:8000/api/v1/users/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            // Extract the username from the response data
+            console.log(data);
+            setUsername(data.username);
+          } else {
+            // Handle error when API request fails
+            throw new Error("Failed to fetch user profile");
+          }
+        } else {
+          // Handle case when token is not found in AsyncStorage
+          throw new Error("Token not found");
+        }
+      } catch (error) {
+        console.error(error);
+        setIsAuthorized(false); // Assuming you want to log the user out if there's an error
+      }
+    };
+
+
     loadWorkoutTemplates();
     if (workoutTemplates.length === 0){
     //alert("You must create a plan first!")
     }
-  }, [LogTab])
+  });
+
+  /* useFocusEffect(
+    React.useCallback(() => {
+      const loadWorkoutTemplates = async () => {
+        try {
+          await getUsernameFromApi();
+          //const token = await AsyncStorage.getItem("access_token");  
+          const storedTemplates = await AsyncStorage.getItem(username+"@workoutTemplates");
+          if (storedTemplates !== null) {
+            setWorkoutTemplates(JSON.parse(storedTemplates));
+          }
+        } catch (error) {
+          console.error("Error loading workout templates:", error);
+          setError(true);
+        }
+      };
+  
+      const getUsernameFromApi = async () => {
+        try {
+          // Retrieve token from AsyncStorage
+          const token = await AsyncStorage.getItem("access_token");
+  
+          if (token) {
+            // Make a GET request to the API endpoint with the token included in the Authorization header
+            const response = await fetch(
+              "http://localhost:8000/api/v1/users/me",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+  
+            if (response.ok) {
+              const data = await response.json();
+              // Extract the username from the response data
+              console.log(data);
+              setUsername(data.username);
+            } else {
+              // Handle error when API request fails
+              throw new Error("Failed to fetch user profile");
+            }
+          } else {
+            // Handle case when token is not found in AsyncStorage
+            throw new Error("Token not found");
+          }
+        } catch (error) {
+          console.error(error);
+          setIsAuthorized(false); // Assuming you want to log the user out if there's an error
+        }
+      };
+   
+  
+      loadWorkoutTemplates();
+      if (workoutTemplates.length === 0){
+      //alert("You must create a plan first!")
+      }
+    }, [LogTab, update, setUpdate] )); */
 
 
 
@@ -72,6 +173,9 @@ export default function LogTab() {
         onRequestClose={() => {
           setMarkModalVisible(false);
         }}
+        onShow={() => {
+          //setUpdate(!update);
+        }}
       >
         <ScrollView style={styles.modalContainer}>
           <View style={styles.container}>
@@ -94,10 +198,13 @@ export default function LogTab() {
         onRequestClose={() => {
           setLogModal(false);
         }}
+        onShow={() => {
+          //setUpdate(!update);
+        }}
       >
           <ScrollView style={styles.modalContainer}>
           <View style={styles.container}>
-            {!error && <WorkoutInput toggle={done}></WorkoutInput>}
+            {!error && <WorkoutInput></WorkoutInput>}
           </View>
           <View style={styles.container}>
           <Pressable

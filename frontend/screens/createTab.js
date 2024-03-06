@@ -1,32 +1,74 @@
 import React, { useState } from "react";
 import { ScrollView, Modal, TouchableOpacity, Text, StyleSheet, View, Image, Pressable } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import CreateWorkout from "../components/createWorkout";
 import MyWorkouts from "../components/myWorkouts";
 
 export default function CreateTab() {
   const [templateUpdated, setTemplateUpdated] = useState(false);
-  const [myWorkoutsModal, setMyWorkoutsModal] = useState(false)
+  const [myWorkoutsModal, setMyWorkoutsModal] = useState(false);
+  const [planModal, setPlanModal] = useState(false);
   return (
     <ScrollView className="flex-1 mt-14">
-      <CreateWorkout
-        templateUpdated={templateUpdated}
-        setTemplateUpdated={setTemplateUpdated}
-      />
+
+<Text className="text-black font-bold text-2xl m-4">My Plans</Text>
+
+
+
+      <TouchableOpacity style={styles.touchable} onPress={() => setPlanModal(true)}>
+      <LinearGradient
+          colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+          className="flex-row items-center p-4 rounded-xl justify-between mb-4 w-4/5"
+        >
+          <Text style={styles.text}>Add Plan</Text>
+          <Image
+            source={require("../assets/icon2.png")}
+            style={styles.logimage}
+          />
+        </LinearGradient>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.touchable} onPress={() => setMyWorkoutsModal(true)}>
-        <View style={styles.buttonContainer}>
+      <LinearGradient
+          colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
+          className="flex-row items-center p-4 rounded-xl justify-between mb-4 w-4/5"
+        >
           <Text style={styles.text}>View My Routines</Text>
           <Image
             source={require("../assets/icon1.png")}
             style={styles.image}
           />
-        </View>
+        </LinearGradient>
       </TouchableOpacity>
+
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={planModal}
+        onRequestClose={() => {
+          setPlanModal(false);
+        }}
+      >
+        <ScrollView style={styles.modalContainer}>
+      <CreateWorkout
+        templateUpdated={templateUpdated}
+        setTemplateUpdated={setTemplateUpdated}
+        planModal={planModal}
+        setPlanModal={setPlanModal}
+      />
+      </ScrollView>
+
+      </Modal>
+
       <Modal
         animationType="fade"
         transparent={false}
         visible={myWorkoutsModal}
         onRequestClose={() => {
           setMyWorkoutsModal(false);
+        }}
+        onShow={() => {
+          setTemplateUpdated(!templateUpdated);
         }}
       >
       <ScrollView className="flex-1 mt-14">
@@ -87,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     height: 100,
-    width: 100,
+    width: 350,
     borderWidth: 1.5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
@@ -102,6 +144,10 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
+  },
+  logimage: {
+    width: 44,
+    height: 44,
   },
   button: {
     borderRadius: 20,

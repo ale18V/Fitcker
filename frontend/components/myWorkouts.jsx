@@ -8,18 +8,60 @@ const MyWorkouts = ({ templateUpdated }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editedExercise, setEditedExercise] = useState("");
+  //const [username, setUsername] = useState("");
 
   useEffect(() => {
     const loadWorkoutTemplates = async () => {
+      //await getUsernameFromApi();
       try {
-        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+        const username = await AsyncStorage.getItem("username");  
+        const storedTemplates = await AsyncStorage.getItem(username+"@workoutTemplates");
         if (storedTemplates !== null) {
+          //const tempTemplates = JSON.parse(storedTemplates);
           setWorkoutTemplates(JSON.parse(storedTemplates));
+          //setWorkoutTemplates(JSON.parse(workoutTemplates));
+          console.log(JSON.stringify(storedTemplates));
+          console.log(JSON.stringify(workoutTemplates)); 
         }
       } catch (error) {
         console.error("Error loading workout templates:", error);
       }
     };
+
+    /* const getUsernameFromApi = async () => {
+      try {
+        // Retrieve token from AsyncStorage
+        const token = await AsyncStorage.getItem("access_token");
+
+        if (token) {
+          // Make a GET request to the API endpoint with the token included in the Authorization header
+          const response = await fetch(
+            "http://localhost:8000/api/v1/users/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            // Extract the username from the response data
+            console.log(data);
+            setUsername(data.username);
+          } else {
+            // Handle error when API request fails
+            throw new Error("Failed to fetch user profile");
+          }
+        } else {
+          // Handle case when token is not found in AsyncStorage
+          throw new Error("Token not found");
+        }
+      } catch (error) {
+        console.error(error);
+        
+      }
+    }; */
 
     loadWorkoutTemplates();
   }, [templateUpdated]);
@@ -34,10 +76,12 @@ const MyWorkouts = ({ templateUpdated }) => {
 
   const handleDeleteTemplate = async (index) => {
     try {
+      //const token = await AsyncStorage.getItem("access_token");
+      const username = await AsyncStorage.getItem("username"); 
       const updatedTemplates = [...workoutTemplates];
       updatedTemplates.splice(index, 1);
       await AsyncStorage.setItem(
-        "workoutTemplates",
+        username+"@workoutTemplates",
         JSON.stringify(updatedTemplates)
       );
       setWorkoutTemplates(updatedTemplates);
@@ -54,10 +98,12 @@ const MyWorkouts = ({ templateUpdated }) => {
 
   const saveEditedExercise = async (index, exerciseIndex) => {
     try {
+      //const token = await AsyncStorage.getItem("access_token");
+      const username = await AsyncStorage.getItem("username"); 
       const updatedTemplates = [...workoutTemplates];
       updatedTemplates[index].exercises[exerciseIndex] = editedExercise;
       await AsyncStorage.setItem(
-        "workoutTemplates",
+        username+"@workoutTemplates",
         JSON.stringify(updatedTemplates)
       );
       setWorkoutTemplates(updatedTemplates);

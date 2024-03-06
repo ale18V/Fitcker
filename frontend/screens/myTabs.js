@@ -55,7 +55,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="dumbbell" color={color} size={size} />
           ),
-          //unmountOnBlur: true,
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
