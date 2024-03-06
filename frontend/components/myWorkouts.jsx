@@ -77,7 +77,7 @@ const MyWorkouts = ({ templateUpdated }) => {
             <View className="flex-row justify-between">
               <View className="flex-row items-center">
                 <Text className="font-bold text-lg">
-                  {template.templateName}
+                  {template.name}
                 </Text>
                 <MaterialIcons
                   name={

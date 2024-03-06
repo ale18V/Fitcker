@@ -14,7 +14,7 @@ const WorkoutSelect = (props) => {
   const routines = [];
   const updateRoutine = () => {
     workoutTemplates.map((template) => {
-      var tempName = template.templateName;
+      var tempName = template.name;
       routines.push({ key: tempName, value: tempName });
       tempWorkout = [];
       workouts[tempName] = [];
@@ -36,8 +36,8 @@ const WorkoutSelect = (props) => {
         console.error("Error loading workout templates:", error);
       }
     };
-    updateRoutine();
     loadWorkoutTemplates();
+    updateRoutine();
   }, [])
 
 
@@ -46,9 +46,10 @@ const WorkoutSelect = (props) => {
 
   return (
 
+    
     <View>
       {workoutTemplates.map((template) => {
-      var tempName = template.templateName;
+      var tempName = template.name;
       routines.push({ key: tempName, value: tempName });
       tempWorkout = [];
       workouts[tempName] = [];
@@ -69,8 +70,8 @@ const WorkoutSelect = (props) => {
 
       
       {/* {alert(JSON.stringify(workouts))} */}
-    </View>
-  )
+    </View> 
+  ) 
 
 };
 

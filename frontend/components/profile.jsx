@@ -1,8 +1,9 @@
 import React from "react";
-import { useState, } from "react";
+import { useState, useEffect} from "react";
 import { Text, View, TouchableOpacity, Modal, StyleSheet, Pressable, TextInput,} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile({ profile, profInfo, setIsAuthorized }) {
   const { username } = profile;
@@ -13,11 +14,45 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
 
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
+  const [biometrics, setBiometrics] = useState({height: "", weight: ""});
   const [editable, setEditable] = useState(true);
 
   const handleLogout = () => {
     setIsAuthorized(false);
   };
+
+  useEffect(() => {
+    const loadBio = async () => {
+      try {
+        const storedTemplates = await AsyncStorage.getItem("biometrics");
+          setBiometrics(JSON.parse(storedTemplates));
+          setHeight(biometrics["height"]);
+          setWeight(biometrics["weight"]);  
+          /* alert(JSON.stringify(biometrics));
+          alert(height);
+          alert(weight); */
+      } catch (error) {
+        console.error("Error loading biometrics:", error);
+      }
+    };
+
+    loadBio();
+  }, [bioModal, setBioModal, editable]);
+
+  const saveBio = async () => {
+    try {
+      const newTemplate = { height: height, weight: weight};
+      await AsyncStorage.setItem(
+        "biometrics",
+        JSON.stringify(newTemplate),
+      );
+      //alert(JSON.stringify(newTemplate));
+    }
+    catch (error) {
+      console.error("Error saving template:", error);
+    }
+  }
+
   return (
     <View className="flex flex-1 mx-10 justify-center items-center">
       <MaterialCommunityIcons name="account-circle" size={80} />
@@ -71,8 +106,8 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
         }}
       >
           <View style={styles.modalContainer}>
-              <Text>username: {username}</Text>
-              <Text>email: {email}</Text>
+              <Text style={styles.text}>Username: {username}</Text>
+              <Text style={styles.text}>Email: {email}</Text>
           <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setInfoModalVisible(false)}>
@@ -93,21 +128,19 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
               <Text>Height: </Text>
               <TextInput
                       style={styles.input}
-                      placeholder={''}
+                      value={height}
                       onChangeText={(text) => {
                         setHeight(text);
                       }}
-                      value={height}
                       editable={editable}
                 />
               <Text>Weight: </Text>
               <TextInput
                   style={styles.input}
-                  placeholder={''}
+                  value={weight}
                   onChangeText={(text) => {
                     setWeight(text);
                   }}
-                  value={weight}
                   editable={editable}
                 />
 
@@ -123,7 +156,7 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
                 </LinearGradient>
               </TouchableOpacity>}
 
-              {editable && <TouchableOpacity style={{padding: 10, margin: 10,}} onPress={() => setEditable(false)}>
+              {editable && <TouchableOpacity style={{padding: 10, margin: 10,}} onPress={() => {setEditable(false); saveBio();}}>
                 <LinearGradient
                   colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
                   className="flex-row items-center p-4 rounded-xl justify-between mb-4"
@@ -187,5 +220,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 4,
     borderWidth: 1,
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: '#58a1a3',
+    marginTop: 2,
   },
 })

@@ -3,25 +3,35 @@ import { View, Text, Button, TextInput, ScrollView, StyleSheet, TouchableOpacity
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
   //manage plans
-  const [plans, setPlan] = useState([]);
-  const [planName, setPlanName] = useState("");
+  const [planName, setPlanName] = useState('');
   const [planStartDate, setStartDate] = useState(new Date());
   const [planEndDate, setEndDate] = useState(new Date());
   const [currentPlan, setCurrentPlan] = useState({
-    name: "", id: "", startDate: new Date(), endDate: new Date(),
+    name: '', startDate: '', endDate: '',
     routines: []
   })
 
   //manage routines and exercises
-  const [currentRoutine, setCurrentRoutine] = useState({ name: "", id: "", exercises: [] });
-  const [templateName, setTemplateName] = useState("");
+  const [currentRoutine, setCurrentRoutine] = useState({ name: '', exercises: [] });
+  const [templateName, setTemplateName] = useState('');
   const [exercises, setExercises] = useState([]);
 
   //managing view states
   const [addRout, setAddRout] = useState(false);
   const [planModal, setPlanModal] = useState(false);
+
+  //groups for saving
+  /* const [currentRoutines, setCurrentRoutines] = useState([]);
+  const [currRoutine, setCurrRoutine] = useState(null);
+  const [currentExercises, setCurrentExercises] = useState([]);
+  const [currentExercise, setCurrentExercise] = useState(null); */
+  const [planID, setPlanID] = useState(0);
+
+
 
 
   const handleExerciseChange = (index, text) => {
@@ -31,7 +41,7 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
   };
 
   const addExerciseField = () => {
-    setExercises([...exercises, ""]);
+    setExercises([...exercises, '']);
   };
 
   const removeExerciseField = (index) => {
@@ -40,59 +50,232 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
     setExercises(newExercises);
   };
 
+  const addPlan = () => {
+    currentPlan.name = planName;
+    var startDate = planStartDate.toISOString().split("T", 1)[0];
+    var endDate = planEndDate.toISOString().split("T", 1)[0];
+    currentPlan.startDate = startDate;
+    currentPlan.endDate = endDate;
+    alert(JSON.stringify(currentPlan));
+  }
+
   const savePlan = () => {
     currentPlan.name = planName;
-    currentPlan.startDate = planStartDate;
-    currentPlan.endDate = planEndDate;
-    plans.push(currentPlan);
+    var startDate = planStartDate.toISOString().split("T", 1)[0];
+    var endDate = planEndDate.toISOString().split("T", 1)[0];
+    currentPlan.startDate = startDate;
+    currentPlan.endDate = endDate;
 
-    setPlanName("");
-    setplanStartDate(new Date());
-    setplanEndDate(new Date());
+
+    /* savePlans();
+
+    console.log(currentPlan);
+
+    setCurrentRoutines(currentPlan.routines);
+    currentRoutines.forEach(function(routine) {
+      setCurrentRoutine(routine);
+      console.log(currRoutine);
+      saveRoutines();
+      setCurrentExercises(routine.exercises);
+      currentExercises.forEach(function(exercise) {
+        setCurrentExercise(exercise);
+        console.log(currentExercise);
+        saveExercise();
+      })
+    }) */
+
+    saveTemplate();
+
+    setPlanName('');
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setPlanModal(false);
     setCurrentPlan({
-      name: "", id: "", startDate: new Date(), endDate: new Date(),
+      name: '', startDate: '', endDate: '',
       routines: []
     });
-    setPlanModal(false);
   }
 
   const addRoutine = () => {
     setAddRout(true);
   }
 
-  const saveRoutine = () => {
+  const saveRoutine = async () => {
     currentRoutine.exercises = exercises;
     currentRoutine.name = templateName;
-    currentRoutine.id = templateName;
     currentPlan.routines.push(currentRoutine);
+    await saveRoutines();
     setExercises([]);
-    setCurrentRoutine({ name: "", id: "", exercises: [] });
+    setCurrentRoutine({ name: '', exercises: [] });
     setAddRout(false);
-    setTemplateName("");
+    setTemplateName('');
+  }
+
+  const savePlans = async () => {
+    const token = await AsyncStorage.getItem("access_token");
+
+    if (token) {
+      /* const newTemplate = {
+        templateName: templateName,
+        exercises: exercises.filter((exercise) => exercise.trim() !== ""),
+      }; */
+      try {
+
+        const planResponse = await fetch(
+          "http://localhost:8000/api/v1/workout-plans/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: currentPlan.name,
+              start_date: currentPlan.startDate,
+              end_date: currentPlan.endDate,
+            }),
+          }
+        );
+
+        const planData = await planResponse.json();
+
+
+
+        console.log(planData);
+        console.log(planResponse.status)
+
+        // Check if the response was successful
+        if (!planResponse.ok) {
+          throw new Error(planData.detail || "Something went wrong");
+        }
+
+        //get plan id
+
+        const response = await fetch(
+          "http://localhost:8000/api/v1/workout-plans/",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+
+        const data = await response.json();
+        // Extract the username from the response data
+        console.log(data);
+
+
+
+        await sleep(1000);
+        setPlanID(planData.id);
+        console.log(planID);
+
+
+
+        
+
+
+
+      } catch (error) {
+        console.error("Error saving template:", error);
+      }
+    }
+    else {
+      console.error("No token found.");
+    }
+  }
+
+  const saveRoutines = async () => {
+    try {
+
+      const newRegTemplate = { name: currentRoutine.name, exercises: currentRoutine.exercises.filter((exercise) => exercise.trim() !== "") };
+      let updatedTemplates = [];
+      const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
+      if (storedTemplates !== null) {
+        updatedTemplates = JSON.parse(storedTemplates);
+      }
+      updatedTemplates.push(newRegTemplate);
+      await AsyncStorage.setItem(
+        "workoutTemplates",
+        JSON.stringify(updatedTemplates)
+      );
+      
+      setTemplateUpdated(!templateUpdated);
+    }
+
+    catch (error) {
+      console.error("Error saving template:", error);
+    }
+
+  }
+
+  const saveExercise = async () => {
+    const token = await AsyncStorage.getItem("access_token");
+
+    /* if (token) {
+ 
+      try {
+
+        const planResponse = await fetch(
+          "http://localhost:8000/api/v1/workout-plans/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: currentPlan.name,
+              start_date: currentPlan.startDate,
+              end_date: currentPlan.endDate,
+            }),
+          }
+        );
+
+        const planData = await planResponse.json();
+
+        console.log(planData);
+        console.log(planResponse.status);
+  
+        // Check if the response was successful
+        if (!planResponse.ok) {
+          throw new Error(planData.detail || "Something went wrong");
+        }
+
+      } catch (error) {
+        console.error("Error saving template:", error);
+      }
+    }
+    else {
+      console.error("No token found.");
+    }  */
   }
 
   const saveTemplate = async () => {
-    if (templateName && exercises.every((exercise) => exercise)) {
-      const newTemplate = {
-        templateName: templateName,
-        exercises: exercises.filter((exercise) => exercise.trim() !== ""),
-      };
+    if (planName && currentPlan.routines.length != 0) {
+
+      const newPlanTemplate = {
+        name: planName,
+        startDate: planStartDate,
+        endDate: planEndDate,
+      }
+      alert(JSON.stringify(newPlanTemplate));
+
       try {
-        // await AsyncStorage.clear();
-        let updatedTemplates = [];
-        const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
-        if (storedTemplates !== null) {
-          updatedTemplates = JSON.parse(storedTemplates);
+        let updatedPlanTemplates = [];
+        const storedPlanTemplates = await AsyncStorage.getItem("planTemplates");
+        if (storedPlanTemplates !== null) {
+          updatedPlanTemplates = JSON.parse(storedPlanTemplates);
         }
-        updatedTemplates.push(newTemplate);
+        updatedPlanTemplates.push(newPlanTemplate);
         await AsyncStorage.setItem(
-          "workoutTemplates",
-          JSON.stringify(updatedTemplates)
+          "planTemplates",
+          JSON.stringify(updatedPlanTemplates)
         );
         setTemplateUpdated(!templateUpdated);
-        setTemplateName("");
-        setExercises([]);
-        console.log("Template saved successfully:", newTemplate);
+        console.log("Template saved successfully:", newPlanTemplate);
       } catch (error) {
         console.error("Error saving template:", error);
       }
@@ -100,6 +283,11 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
       console.log("Template name or exercises are empty");
     }
   };
+
+
+
+
+
 
 
 
@@ -112,8 +300,8 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
         <View style={styles.buttonContainer}>
           <Text style={styles.text}>Add Plan</Text>
           <Image
-            source={require("../assets/icon1.png")}
-            style={styles.image}
+            source={require("../assets/icon2.png")}
+            style={styles.logimage}
           />
         </View>
       </TouchableOpacity>
@@ -130,6 +318,8 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
           <View style={styles.container}>
 
             <View>
+
+            <Text className="text-black font-bold text-2xl m-4">Create a Plan</Text>
               <TextInput
                 className="flex-1 border rounded p-2 m-4"
                 placeholder={`Plan`}
@@ -206,6 +396,12 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
 
             </View>}
 
+            {/* <Button
+              className="bg-red-500 text-white p-2 rounded m-4"
+              title="TempSave"
+              onPress={() => addPlan()}
+            /> */}
+
             <Button
               className="bg-red-500 text-white p-2 rounded m-4"
               title="Save Plan"
@@ -218,11 +414,11 @@ const CreateWorkout = ({ templateUpdated, setTemplateUpdated }) => {
         </ScrollView>
       </Modal>
 
-      <Button
+      {/* <Button
         className="bg-red-500 text-white p-2 rounded m-4"
         title="View"
         onPress={() => alert(JSON.stringify(plans))}
-      />
+      /> */}
 
     </ScrollView>
   );
@@ -278,6 +474,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     height: 100,
+    width: 100,
     borderWidth: 1.5,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
@@ -309,10 +506,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#d7faee',
   },
   modalContainer: {
-    height: 1000,
-    width: 375,
     paddingTop: 10,
-    marginBottom: 50,
+    margin: 0,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

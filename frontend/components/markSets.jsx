@@ -1,37 +1,124 @@
 import * as React from "react";
-import { useState, } from "react";
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, } from "react-native";
+import { useState, useEffect } from "react";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import Checkbox from 'expo-checkbox';
 import WorkoutSelect from "./workoutSelect.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { set } from "react-hook-form";
 
 const MarkSets = () => {
 
   const [routine, setRoutine] = React.useState("");
   const [workout, setWorkout] = React.useState("");
+  const [weight, setWeight] = React.useState("");
+  const [sets, setSets] = React.useState("");
+  const [reps, setReps] = React.useState("");
+  const [rest, setRest] = React.useState("");
   const [showTemplates, setShowTemplates] = useState(false);
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    const loadWorkoutTemplates = async () => {
+      try {
+        const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+        if (storedTemplates !== null) {
+          setNotes(JSON.parse(storedTemplates));
+        }
+      } catch (error) {
+        console.error("Error loading workout notes:", error);
+      }
+    };
+
+    const findNote = async () => {
+      await loadWorkoutTemplates();
+
+      var index = notes.findIndex(function (element) {
+        return (element.routine === routine && element.workout===workout)
+      })
+
+      if (index >= 0 && index < notes.length) {
+
+      setWeight(notes[index].weight);
+      setReps(notes[index].reps);
+      setRest(notes[index].rest);
+      setSets(notes[index].sets);
+      }
+      else{
+        setWeight("");
+      setReps("");
+      setRest("");
+      setSets("");
+      }
+    }
+
+    findNote();
+  }, [setWorkout, setRoutine, routine, workout]);
+
+  const saveNotes = async () => {
+    var index = notes.findIndex(function (element) {
+      return (element.routine === routine && element.workout===workout)
+    })
+
+    if (index >= 0 && index < notes.length) {
+      saveEditedExercise();
+    }
+    else {
+
+    try {
+
+      const newTemplate = { workout: workout, routine: routine, weight: weight,
+                               sets: sets, reps: reps, rest: rest, };
+      let updatedTemplates = [];
+      const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+      if (storedTemplates !== null) {
+        updatedTemplates = JSON.parse(storedTemplates);
+      }
+      updatedTemplates.push(newTemplate);
+      await AsyncStorage.setItem(
+        "workoutNotes",
+        JSON.stringify(updatedTemplates)
+      );
+      //alert(JSON.stringify(newTemplate));
+    }
+
+    catch (error) {
+      console.error("Error saving template:", error);
+    }
+  }
+
+  }
 
 
 
-  const [checkboxes, setCheckboxes] = useState([
-    { label: 'Option 1', checked: false },
-    { label: 'Option 2', checked: false },
-    { label: 'Option 3', checked: false },
-  ]);
-
-  const toggleCheckbox = (index) => {
-    const updatedCheckboxes = [...checkboxes];
-    updatedCheckboxes[index].checked = !updatedCheckboxes[index].checked;
-    setCheckboxes(updatedCheckboxes);
+  const saveEditedNote = async () => {
+    try {
+      const updatedTemplates = [...notes];
+      var index = updatedTemplates.findIndex(function (element) {
+        return (element.routine === routine && element.workout===workout)
+      })
+      updatedTemplates[index] = { workout: workout, routine: routine, weight: weight,
+        sets: sets, reps: reps, rest: rest, };
+      await AsyncStorage.setItem(
+        "workoutNotes",
+        JSON.stringify(updatedTemplates)
+      );
+      setWorkoutTemplates(updatedTemplates);
+      setEditingIndex(null);
+      console.log("Exercise edited successfully");
+    } catch (error) {
+      console.error("Error editing exercise:", error);
+    }
   };
+
+
+
 
   return (
     <View style={styles.container}>
       {<TouchableOpacity onPress={() => setShowTemplates(!showTemplates)}>
         <View style={styles.row}>
           <Text style={styles.header}>My Workouts</Text>
-          {/* <MaterialIcons
+          <MaterialIcons
             name={
               showTemplates === true
                 ? "keyboard-arrow-up"
@@ -39,33 +126,56 @@ const MarkSets = () => {
             }
             size={24}
             color="black"
-          /> */}
+          />
 
         </View>
       </TouchableOpacity>}
 
-      {showTemplates && <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout} />}
+      {showTemplates && <View>
+      <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout} />
 
-      <View style={styles.row}>
+      <Text>Weight: </Text>
+      <TextInput style={styles.input}
+        value={weight}
+        placeholder={''}
+        onChangeText={(text) => {
+          setWeight(text);
+        }} />
 
-      </View>
+      <Text>Sets: </Text>
+      <TextInput style={styles.input}
+        value={sets}
+        placeholder={''}
+        onChangeText={(text) => {
+          setSets(text);
+        }} />
 
-      <View style={styles.row}>
 
-      </View>
+      <Text>Reps: </Text>
+      <TextInput style={styles.input}
+        value={reps}
+        placeholder={''}
+        onChangeText={(text) => {
+          setReps(text);
+        }} />
 
-      {/* <View style={styles.checkRow}>
-                      {checkboxes.map((checkbox, index) => (
-                        <View key={index} style={styles.checkboxContainer}>
-                          <Checkbox
-                            value={checkbox.checked}
-                            onValueChange={() => toggleCheckbox(index)}
-                          />
-                        </View>
-                      ))}
-                      </View> */}
+      <Text>Rest: </Text>
+      <TextInput style={styles.input}
+        value={rest}
+        placeholder={''}
+        onChangeText={(text) => {
+          setRest(text);
+        }} />
 
-    </View> 
+      <Button
+        className="bg-blue-500 text-white p-2 rounded m-4"
+        title="Save Notes"
+        onPress={saveNotes}
+      />
+      </View>}
+
+
+    </View>
   )
 }
 
@@ -91,12 +201,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  checkRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
   button: {
     marginLeft: 20,
     color: '#f3fff5',
@@ -119,6 +223,12 @@ const styles = StyleSheet.create({
     margin: 5,
     fontWeight: 'bold',
     justifyContent: 'flex-start',
+  },
+  input: {
+    height: 40,
+    padding: 10,
+    borderRadius: 4,
+    borderWidth: 1,
   },
 });
 

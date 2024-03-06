@@ -13,6 +13,7 @@ export default function LogTab() {
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
 
 
+
   const done = (status) => {
     setLogModal(status);
   }
@@ -30,7 +31,10 @@ export default function LogTab() {
       }
     };
     loadWorkoutTemplates();
-  }, [])
+    if (workoutTemplates.length === 0){
+    //alert("You must create a plan first!")
+    }
+  }, [LogTab])
 
 
 
@@ -38,7 +42,7 @@ export default function LogTab() {
     <ScrollView style={styles.outerContainer}>
 
       <View style={styles.row}>
-    <TouchableOpacity style={styles.touchable} onPress={() => setMarkModalVisible(true)}>
+    <TouchableOpacity style={styles.touchable} onPress={() => setMarkModalVisible(true)} disabled={workoutTemplates.length === 0}>
             <View style={styles.buttonContainer}>
             <Text style={styles.text}>My Workouts</Text>
             <Image
@@ -48,7 +52,7 @@ export default function LogTab() {
             </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.touchable} onPress={() => setLogModal(true)}>
+      <TouchableOpacity style={styles.touchable} onPress={() => setLogModal(true)} disabled={workoutTemplates.length === 0}>
             <View style={styles.buttonContainer}>
             <Text style={styles.text2}>Log Workouts</Text>
             <Image
@@ -142,6 +146,15 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     margin: 10,
     fontWeight: 'bold',
+    justifyContent: 'flex-start',
+  },
+  label2: {
+    fontSize: 30,
+    textAlign: 'left',
+    margin: 10,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+    color: '#58a1a3',
     justifyContent: 'flex-start',
   },
   text: {
