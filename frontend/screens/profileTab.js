@@ -4,6 +4,7 @@ import Profile from "../components/profile";
 
 export default function ProfileTab({ setIsAuthorized }) {
   const [username, setUsername] = useState(null);
+  const [email, setEmail] = useState(null);
 
   useEffect(() => {
     const getUsernameFromApi = async () => {
@@ -27,6 +28,7 @@ export default function ProfileTab({ setIsAuthorized }) {
             // Extract the username from the response data
             console.log(data);
             setUsername(data.username);
+            setEmail(data.email);
           } else {
             // Handle error when API request fails
             throw new Error("Failed to fetch user profile");
@@ -48,6 +50,9 @@ export default function ProfileTab({ setIsAuthorized }) {
     <Profile
       profile={{
         username: username,
+      }}
+      profInfo={{
+        email: email,
       }}
       setIsAuthorized={setIsAuthorized}
     />
