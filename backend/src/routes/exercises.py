@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import Exercise, RoutineExerciseLink, WorkoutRoutine
+from models.db import Exercise, WorkoutRoutine
 from models.exercise import ExerciseCreate, ExerciseRead, ExerciseUpdate
 import security
 
