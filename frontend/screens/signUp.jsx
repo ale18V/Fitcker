@@ -13,7 +13,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   const handleSignUp = async () => {
     try {
       const signUpResponse = await fetch(
-        "http://192.168.1.17:8000/api/v1/users/",
+        "http://localhost:8000/api/v1/users/",
         {
           method: "POST",
           headers: {
