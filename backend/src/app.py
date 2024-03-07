@@ -18,7 +18,6 @@ def create_app():
     api.include_router(router=exercises.router)
     api.include_router(router=workouts.router)
     api.include_router(router=routines_exercises.router)
-    api.include_router(router=workout_exercises.router)
 
     app.include_router(api)
     return app
