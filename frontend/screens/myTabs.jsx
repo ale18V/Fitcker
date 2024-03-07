@@ -41,6 +41,16 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         component={LogTab}
         options={{
           tabBarLabel: "Log",
+          headerShown: true,
+          headerBackground: () => (
+            <LinearGradient
+            colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
+            style={{ flex: 1 , justifyContent: 'center'}}  
+            >
+              <MaterialCommunityIcons name="dumbbell" size={30} color='#58a1a3' style={{marginTop:15, marginLeft:275,}} />
+            </LinearGradient>
+          ),
+          headerTitle: 'Exercise Companion',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="dumbbell" color={color} size={size} />
           ),
