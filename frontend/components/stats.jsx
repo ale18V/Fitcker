@@ -1,7 +1,8 @@
 import { Agenda } from 'react-native-calendars';
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { View, StyleSheet, Text, } from 'react-native';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -94,6 +95,11 @@ export default function Stats() {
   const renderItem = (item) => {
     return (
       <View style={styles.item}>
+         {item.exercise && 
+         <MaterialCommunityIcons name="dumbbell" size={80} color='#58a1a3' style={{marginRight:10,}}/> }
+         {item.name && 
+         <MaterialCommunityIcons name="note" size={80} color='#58a1a3' style={{marginRight:10,}}/> }
+      <View style={{flexDirection: 'column', marginLeft: 20,}}>
         {item.name &&
         <Text>Plan: {item.name}</Text>
         }
@@ -121,7 +127,9 @@ export default function Stats() {
          {item.endDate &&
         <Text>End date: {timeToString(item.endDate)}</Text>
          }
+         </View>
 
+      
       </View>
     );
   };
@@ -129,6 +137,20 @@ export default function Stats() {
   const refreshItems = () => {
     setRefresh(!refresh);
   }
+
+  const renderDay = (day) => {
+    if (day) {
+      return <Text style={styles.customDay}>{day.getDay()}</Text>;
+    }
+    return <View style={styles.dayItem}/>;
+  };
+
+  const renderEmptyDate = () => {
+    return (
+      <View style={styles.emptyDate}>
+      </View>
+    );
+  };
 
       
 
@@ -148,6 +170,7 @@ export default function Stats() {
   }}
   // Specify how each item should be rendered in agenda
   renderItem={renderItem}
+  
   refreshing={false}
   onRefresh={() => {
     refreshItems();
@@ -182,10 +205,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   item: {
-    backgroundColor: '#f0f0f0',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 10,
+    backgroundColor: 'white',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17,
+    flexDirection: 'row',
   },
+  emptyDate: {
+    height: 15,
+    flex: 1,
+    paddingTop: 30
+  },
+  customDay: {
+    margin: 10,
+    fontSize: 24,
+    color: 'green'
+  },
+  dayItem: {
+    marginLeft: 34
+  }
 });
