@@ -30,6 +30,7 @@ async def register(user: UserCreate, con: Annotated[Session, Depends(db.get_sess
 @router.post("/login", response_model=security.Token)
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 con: Annotated[Session, Depends(db.get_session)]) -> security.Token:
+
     user = con.exec(select(User).where(
         User.username == form_data.username)).one_or_none()
     if not user or not security.verify_password(plain_password=form_data.password, hashed_password=user.password):

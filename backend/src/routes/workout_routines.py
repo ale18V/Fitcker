@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
@@ -14,11 +14,16 @@ router = APIRouter(prefix="/workout-routines")
 @router.get("/", response_model=List[WorkoutRoutineRead])
 async def read_routines(
         con: Annotated[Session, Depends(db.get_session)],
-        user_id: Annotated[int, Depends(security.get_current_user_id)]):
-    routines = con.exec(select(WorkoutRoutine)
-                        .join(WorkoutPlan)
-                        .where(WorkoutRoutine.plan_id == WorkoutPlan.id)
-                        .where(WorkoutPlan.creator_id == user_id)).all()
+        user_id: Annotated[int, Depends(security.get_current_user_id)],
+        plan_id: Optional[int] = None):
+
+    query = select(WorkoutRoutine).join(WorkoutPlan).where(WorkoutRoutine.plan_id ==
+                                                           WorkoutPlan.id).where(WorkoutPlan.creator_id == user_id)
+
+    if plan_id:
+        query = query.where(WorkoutPlan.id == plan_id)
+
+    routines = con.exec(query).all()
     return routines
 
 
