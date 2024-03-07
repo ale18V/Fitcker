@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Profile from "../components/profile";
+import { createStackNavigator } from "@react-navigation/stack";
+import UserInfo from "../components/userInfo";
+import UserNotif from "../components/userNotif";
+import UserBiometrics from "../components/userBiometrics";
+
+const Stack = createStackNavigator();
 
 export default function ProfileTab({ setIsAuthorized }) {
   const [username, setUsername] = useState(null);
+
 
   useEffect(() => {
     const getUsernameFromApi = async () => {
@@ -45,11 +52,24 @@ export default function ProfileTab({ setIsAuthorized }) {
   }, [setIsAuthorized]);
 
   return (
-    <Profile
-      profile={{
-        username: username,
-      }}
-      setIsAuthorized={setIsAuthorized}
-    />
+    <Stack.Navigator initialRouteName="Profile">
+      <Stack.Screen name="Profile">
+        {(props) => <Profile {...props} profile={{username:"username", email:"joemama", gender: "female", DoB:"1969"}} />}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="User Information"
+        component={UserInfo}
+      />
+      <Stack.Screen 
+        name="Notification Settings"
+        component={UserNotif}
+      />
+      <Stack.Screen 
+        name="Biometrics"
+        component={UserBiometrics}
+      />
+    
+    
+</Stack.Navigator>
   );
 }

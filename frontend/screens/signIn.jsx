@@ -7,7 +7,6 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-
   const handleSignIn = async () => {
     try {
       // Use form data for login backend api standard

@@ -2,14 +2,13 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import CreateTab from "./createTab.js";
-import LogTab from "./logTab.js";
-import ProfileTab from "./profileTab.js";
-import StatsTab from "./statsTab.js";
-import Landing from "./landing.js";
-import SignIn from "./signIn.js";
-import SignUp from "./signUp.js";
+import CreateTab from "./createTab.jsx";
+import LogTab from "./logTab.jsx";
+import ProfileTab from "./profileTab.jsx";
+import StatsTab from "./statsTab.jsx";
+import Landing from "./landing.jsx";
+import SignIn from "./signIn.jsx";
+import SignUp from "./signUp.jsx";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -78,7 +77,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
-          headerShown: true,
+          headerShown: false,
         }}
       >
         {(props) => <ProfileTab {...props} setIsAuthorized={setIsAuthorized} />}
