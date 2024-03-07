@@ -1,9 +1,9 @@
 from models.exercise import ExercieseBase
 from models.user import UserBase
+from models.workout import WorkoutBase
 from models.workout_plan import WorkoutPlanBase
 from sqlmodel import SQLModel, Field, Relationship
 from typing import List, Optional
-from datetime import date
 
 from models.workout_routine import WorkoutRoutineBase
 
@@ -41,11 +41,10 @@ class WorkoutRoutine(WorkoutRoutineBase, table=True):
         back_populates="routines", link_model=RoutineExerciseLink)
 
 
-class Workout(SQLModel, table=True):
+class Workout(WorkoutBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    date: date
-
     routine_id: int = Field(foreign_key="workoutroutine.id")
+
     routine: "WorkoutRoutine" = Relationship(back_populates="workouts")
     exercise_links: List["WorkoutExerciseLink"] = Relationship(back_populates="workout")
 
