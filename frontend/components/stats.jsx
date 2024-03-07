@@ -1,7 +1,9 @@
 import { Agenda } from 'react-native-calendars';
 import React from 'react';
-import {useState} from 'react';
-import { View } from 'react-native';
+import {useState, useEffect} from 'react';
+import { View, StyleSheet, Text, Button } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const timeToString=(time) => {
     const date = new Date(time);
@@ -11,26 +13,44 @@ const timeToString=(time) => {
 export default function Stats() {
   //const { username } = calendar;
   const [items, setItems] = useState({});
+  const [workouts, setWorkouts] = useState([]);
+  const [plans, setPlans] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   const loadItems = (day) => {
     const items = items || {};
 
     setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
+      refreshItems();
+      for (let i = -30; i < 30; i++) {
+        if (!day) {break;}
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = timeToString(time);
 
-        if (!items[strTime]) {
-          items[strTime] = [];
-          
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: 'Item for ' + strTime + ' #' + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-              day: strTime
-            });
+        items[strTime] = [];
+
+       workouts.map((workout) => {
+        //console.log(JSON.stringify(workout));
+          var date = timeToString(workout.day);
+          if (date === strTime)
+          {
+            items[strTime].push(workout);
           }
+        })
+        plans.map((plan) => {
+          var date = timeToString(plan.endDate);
+          var date2 = timeToString(plan.startDate);
+          if (date === strTime || date2 === strTime)
+          {
+            items[strTime].push(plan);
+          }
+        })
+
+        //console.log(items[strTime])
+        if (items[strTime].length != 0) {
+          //items[strTime] = [];
+          //console.log(items[strTime]);
+          
         }
       }
       const newItems = {};
@@ -41,6 +61,75 @@ export default function Stats() {
     }, 1000);
   };
 
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const username = await AsyncStorage.getItem("username");
+        const storedWorkouts = await AsyncStorage.getItem(username+"@workoutLogs");
+        if (storedWorkouts !== null) {
+          setWorkouts(JSON.parse(storedWorkouts));
+        }
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    };
+
+    const fetchPlans = async () => {
+      try {
+        const username = await AsyncStorage.getItem("username");
+        const storedPlans = await AsyncStorage.getItem(username+"@planTemplates");
+        if (storedPlans !== null) {
+          setPlans(JSON.parse(storedPlans));
+        }
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    }
+
+    fetchWorkouts();
+    fetchPlans();
+  }, [refresh]);
+
+  const renderItem = (item) => {
+    return (
+      <View style={styles.item}>
+        {item.name &&
+        <Text>Plan: {item.name}</Text>
+        }
+        {item.exercise &&
+          <Text>Exercise: {item.exercise}</Text>
+        }
+        { item.date && 
+        <Text>Date: {item.date}</Text>
+         }
+         {item.weight &&
+        <Text>Weight: {item.weight}</Text>
+         }
+         {item.rest &&
+        <Text>Rest: {item.rest}</Text>
+         } 
+         {item.reps &&
+        <Text>Reps: {item.reps}</Text>
+         }
+          {item.set &&
+        <Text>Sets: {item.set}</Text>
+         }
+          {item.startDate &&
+        <Text>Start date: {timeToString(item.startDate)}</Text>
+         }
+         {item.endDate &&
+        <Text>End date: {timeToString(item.endDate)}</Text>
+         }
+
+      </View>
+    );
+  };
+
+  const refreshItems = () => {
+    setRefresh(!refresh);
+  }
+
       
 
   return (
@@ -48,9 +137,55 @@ export default function Stats() {
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
-        selected={'2024-02-18'}
+        selected={'2024-03-05'}
+        // Callback that gets called on day press
+  onDayPress={day => {
+    console.log('day pressed');
+  }}
+  // Callback that gets called when day changes while scrolling agenda list
+  onDayChange={day => {
+    console.log('day changed');
+  }}
+  // Specify how each item should be rendered in agenda
+  renderItem={renderItem}
+  refreshing={false}
+  onRefresh={() => {
+    refreshItems();
+    refreshing = true;
+    loadItems()
+    //loadItems(day);
+  }}
+  
         />
+
+{/* <Button
+              title="Refresh"
+              color="#f3fff5"
+              onPress={refreshItems()}
+            /> */}
 
     </View>
   );
 }
+
+/* onRefresh={ () => this.setState({ refreshing: true },
+  () => {
+  this.setState({ items: {} });
+  this.loadItems(this.state.currentDay);
+  this.setState({ refreshing: false })
+  }) } */
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  item: {
+    backgroundColor: '#f0f0f0',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 10,
+  },
+});

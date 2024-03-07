@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-native";
 import { useForm, Controller } from 'react-hook-form';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import WorkoutSelect from "./workoutSelect.jsx";
 
@@ -24,7 +25,28 @@ const WorkoutInput = () => {
 
   const onSubmit = async data => {
     await sleep(2000);
-    alert(JSON.stringify(data));
+    try {
+      const username = await AsyncStorage.getItem("username");
+
+      const newTemplate = { exercise: data.exercise_id, weight: data.weight, reps: data.reps, set: data.sets, rest: data.rest, day: data.day };
+      //alert(JSON.stringify(newTemplate));
+      let updatedTemplates = [];
+      const storedTemplates = await AsyncStorage.getItem(username+"@workoutLogs");
+      if (storedTemplates !== null) {
+        updatedTemplates = JSON.parse(storedTemplates);
+      }
+      //alert(JSON.stringify(updatedTemplates));
+      updatedTemplates.push(newTemplate);
+      console.log(JSON.stringify(newTemplate));
+      console.log(JSON.stringify(updatedTemplates));
+      await AsyncStorage.setItem(
+        username+"@workoutLogs",
+        JSON.stringify(updatedTemplates)
+      ); 
+    } catch (error) {
+      alert(error.message);
+    }
+    //alert(JSON.stringify(data));
     //props.toggle.bind(this, false);
     /* try {
       const workoutSubmit = await fetch(
@@ -50,7 +72,7 @@ const WorkoutInput = () => {
     } */
   };
 
-  console.log('errors', errors);
+  //console.log('errors', errors);
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
@@ -77,7 +99,7 @@ const WorkoutInput = () => {
         <Text style={styles.header}>My Workouts</Text>
 
 
-          <Controller
+          {<Controller
             control={control}
             name="exercise_id"
             defaultValue=""
@@ -90,7 +112,7 @@ const WorkoutInput = () => {
                 <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout) }}/>
               </>
             )}
-          />
+          />}
 
 
           <Text style={styles.label}>Weight lifted:</Text>
