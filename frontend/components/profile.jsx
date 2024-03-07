@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect} from "react";
-import { Text, View, TouchableOpacity, Modal, StyleSheet, Pressable, TextInput,} from "react-native";
+import { Text, View, TouchableOpacity, Modal, StyleSheet, Pressable, TextInput, Switch,} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,11 +11,17 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
 
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [bioModal, setBioModal] = useState(false);
+  const [notifModal, setNotifModal] = useState(false);
 
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [biometrics, setBiometrics] = useState({height: "", weight: ""});
+  const [gender, setGender] = useState("");
+  const [BMI, setBMI] = useState("");
+  const [biometrics, setBiometrics] = useState({height: "", weight: "", gender: "", BMI: "",});
   const [editable, setEditable] = useState(true);
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const handleLogout = () => {
     setIsAuthorized(false);
@@ -30,6 +36,8 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
           setBiometrics(JSON.parse(storedTemplates));
           setHeight(biometrics["height"]);
           setWeight(biometrics["weight"]);  
+          setBMI(biometrics["BMI"]);
+          setGender(biometrics["gender"]);
           /* alert(JSON.stringify(biometrics));
           alert(height);
           alert(weight); */
@@ -44,7 +52,7 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
 
   const saveBio = async () => {
     try {
-      const newTemplate = { height: height, weight: weight};
+      const newTemplate = { height: height, weight: weight, gender: gender, BMI: BMI};
       await AsyncStorage.setItem(
         username+"@biometrics",
         JSON.stringify(newTemplate),
@@ -79,14 +87,14 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
         </LinearGradient>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => clearData()}>
+        <TouchableOpacity onPress={() => setNotifModal(true)}>
         <LinearGradient
           colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
           className="flex-row items-center p-4 rounded-xl justify-between mb-4"
         >
           <View className="flex-row items-center">
-            <MaterialCommunityIcons name="delete" size={28} />
-            <Text className="font-bold ml-2">Clear Data</Text>
+            <MaterialCommunityIcons name="bell" size={28} />
+            <Text className="font-bold ml-2">Notif Settings</Text>
           </View>
           <MaterialCommunityIcons name="chevron-right" size={28} />
         </LinearGradient>
@@ -117,6 +125,7 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
           <View style={styles.modalContainer}>
               <Text style={styles.text}>Username: {username}</Text>
               <Text style={styles.text}>Email: {email}</Text>
+              <Text style={styles.text}>DOB: 00-00-0000</Text>
           <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setInfoModalVisible(false)}>
@@ -152,6 +161,25 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
                   }}
                   editable={editable}
                 />
+             <Text>Gender: </Text>
+              <TextInput
+                      style={styles.input}
+                      value={gender}
+                      onChangeText={(text) => {
+                        setGender(text);
+                      }}
+                      editable={editable}
+                />
+              <Text>BMI: </Text>
+              <TextInput
+                  style={styles.input}
+                  value={BMI}
+                  onChangeText={(text) => {
+                    setBMI(text);
+                  }}
+                  editable={editable}
+                />
+
 
               {!editable && <TouchableOpacity style={{padding: 10, margin: 10,}} onPress={() => setEditable(true)}>
                 <LinearGradient
@@ -182,6 +210,47 @@ export default function Profile({ profile, profInfo, setIsAuthorized }) {
               <Text style={styles.text}>Close View</Text>
             </Pressable>
             </View>
+      </Modal>
+
+      <Modal 
+        animationType="fade"
+        transparent={false}
+        visible={notifModal}
+        onRequestClose={() => {
+          setNotifModal(false);
+        }}
+      >
+        <View className="flex-1 mx-10 justify-center items-center">
+      <View className="w-full">
+        <LinearGradient
+          colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.3)"]}
+          className="flex-row items-center p-2 rounded-xl justify-between mb-4"
+          >
+          <View className="flex-row items-center">
+            <Text className="font-bold ml-2">Allow Notifications</Text>
+          </View>
+          <Switch
+            trackColor={{false: '#767577', true: '#38A3A5'}}
+            thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#a3a3a3"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </LinearGradient>
+        <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setNotifModal(false)}>
+              <Text style={styles.text}>Close View</Text>
+            </Pressable>
+        
+      </View>
+
+
+
+
+
+    </View>
+      
       </Modal>
 
       <TouchableOpacity
