@@ -11,7 +11,6 @@ const Stack = createStackNavigator();
 export default function ProfileTab({ setIsAuthorized }) {
   const [username, setUsername] = useState(null);
 
-
   useEffect(() => {
     const getUsernameFromApi = async () => {
       try {
@@ -54,22 +53,22 @@ export default function ProfileTab({ setIsAuthorized }) {
   return (
     <Stack.Navigator initialRouteName="Profile">
       <Stack.Screen name="Profile">
-        {(props) => <Profile {...props} profile={{username:"username", email:"joemama", gender: "female", DoB:"1969"}} />}
+        {(props) => (
+          <Profile
+            {...props}
+            profile={{
+              username: "username",
+              email: "joemama",
+              gender: "female",
+              DoB: "1969",
+            }}
+            setIsAuthorized={setIsAuthorized}
+          />
+        )}
       </Stack.Screen>
-      <Stack.Screen 
-        name="User Information"
-        component={UserInfo}
-      />
-      <Stack.Screen 
-        name="Notification Settings"
-        component={UserNotif}
-      />
-      <Stack.Screen 
-        name="Biometrics"
-        component={UserBiometrics}
-      />
-    
-    
-</Stack.Navigator>
+      <Stack.Screen name="User Information" component={UserInfo} />
+      <Stack.Screen name="Notification Settings" component={UserNotif} />
+      <Stack.Screen name="Biometrics" component={UserBiometrics} />
+    </Stack.Navigator>
   );
 }

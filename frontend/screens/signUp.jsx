@@ -40,7 +40,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
       formData.append("password", password);
 
       const signInResponse = await fetch(
-        process.env.IPV4 + "/api/v1/users/login",
+        "http://localhost:8000/api/v1/users/login",
         {
           method: "POST",
           headers: {

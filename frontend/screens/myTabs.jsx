@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import CreateTab from "./createTab.jsx";
 import LogTab from "./logTab.jsx";
 import ProfileTab from "./profileTab.jsx";
@@ -44,13 +45,11 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
           headerShown: true,
           headerBackground: () => (
             <LinearGradient
-            colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
-            style={{ flex: 1 , justifyContent: 'center'}}  
-            >
-              <MaterialCommunityIcons name="dumbbell" size={30} color='#58a1a3' style={{marginTop:15, marginLeft:275,}} />
-            </LinearGradient>
+              colors={["rgba(56, 163, 165, 0.25)", "rgba(128, 237, 153, 0.75)"]}
+              style={{ flex: 1, justifyContent: "center" }}
+            ></LinearGradient>
           ),
-          headerTitle: 'Exercise Companion',
+          headerTitle: "Exercise Companion",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="dumbbell" color={color} size={size} />
           ),
@@ -71,7 +70,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfileTab"
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
