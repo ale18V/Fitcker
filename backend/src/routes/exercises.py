@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import Exercise, WorkoutRoutine
+from models.db import Exercise, Routine
 from models.exercise import ExerciseCreate, ExerciseRead, ExerciseUpdate
 import security
 
@@ -18,7 +18,7 @@ async def read_exercises(
 
     exercises: List[Exercise] | Sequence[Exercise]
     if routine_id:
-        routine = con.get(WorkoutRoutine, routine_id)
+        routine = con.get(Routine, routine_id)
         if not routine:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
         exercises = routine.exercises

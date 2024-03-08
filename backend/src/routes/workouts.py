@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import Workout, WorkoutPlan, WorkoutRoutine
+from models.db import Workout, Plan, Routine
 from models.workout import WorkoutCreate, WorkoutRead, WorkoutUpdate
 import security
 
@@ -16,11 +16,11 @@ async def read_workouts(
         con: Annotated[Session, Depends(db.get_session)],
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
     query = select(Workout) \
-        .join(WorkoutRoutine) \
-        .join(WorkoutPlan) \
-        .where(Workout.routine_id == WorkoutRoutine.id) \
-        .where(WorkoutRoutine.plan_id == WorkoutPlan.id) \
-        .where(WorkoutPlan.creator_id == user_id)
+        .join(Routine) \
+        .join(Plan) \
+        .where(Workout.routine_id == Routine.id) \
+        .where(Routine.plan_id == Plan.id) \
+        .where(Plan.creator_id == user_id)
 
     workouts = con.exec(query).all()
 

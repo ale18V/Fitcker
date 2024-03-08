@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 
 import db
 from models.db import RoutineExerciseLink
-from models.workout_routine import WorkoutRoutineRead
+from models.routine import RoutineRead
 import security
 
 
