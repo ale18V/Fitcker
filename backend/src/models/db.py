@@ -13,7 +13,7 @@ class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     password: str
 
-    plans: List["PlanBase"] = Relationship(back_populates="creator")
+    plans: List["Plan"] = Relationship(back_populates="creator")
     exercises: List["Exercise"] = Relationship(back_populates="creator")
 
 
@@ -35,7 +35,7 @@ class Routine(RoutineBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     plan_id: int = Field(foreign_key="plan.id", nullable=False)
-    workout_plan: "PlanBase" = Relationship(back_populates="routines")
+    workout_plan: "Plan" = Relationship(back_populates="routines")
     workouts: List["Workout"] = Relationship(back_populates="routine")
     exercises: List["Exercise"] = Relationship(
         back_populates="routines", link_model=RoutineExerciseLink)
