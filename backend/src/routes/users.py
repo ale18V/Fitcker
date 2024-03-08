@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
+from sqlalchemy.exc import IntegrityError
 import db
 from models.user import UserCreate, UserRead
 from models.db import User
@@ -13,16 +14,15 @@ router = APIRouter(prefix="/users")
 
 @router.post("/", status_code=201, response_model=UserRead)
 async def register(user: UserCreate, con: Annotated[Session, Depends(db.get_session)]) -> User:
-    res = con.exec(select(User).where(
-        User.username == user.username)).one_or_none()
-    if res:
-        raise HTTPException(
-            status_code=409, detail="User already registered")
-
     db_user: User = User.model_validate(user)
     db_user.password = security.get_password_hash(user.password)
     con.add(db_user)
-    con.commit()
+    try:
+        con.commit()
+    except IntegrityError:
+        con.rollback()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail="Username or mail already taken")
     con.refresh(db_user)
     return db_user
 
@@ -31,11 +31,13 @@ async def register(user: UserCreate, con: Annotated[Session, Depends(db.get_sess
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 con: Annotated[Session, Depends(db.get_session)]) -> security.Token:
 
-    user = con.exec(select(User).where(
-        User.username == form_data.username)).one_or_none()
-    if not user or not security.verify_password(plain_password=form_data.password, hashed_password=user.password):
+    query = select(User) \
+        .where(User.username == form_data.username)
+    user = con.exec(query).one_or_none()
+
+    if not user or not security.verify_password(form_data.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
