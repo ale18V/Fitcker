@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import WorkoutExerciseLink
+from models.db import Exercise, Routine, WorkoutExerciseLink
 import security
 
 
@@ -54,7 +54,7 @@ async def delete_exercise_from_routine(
         WorkoutExerciseLink, {"workout_id": workout_id, "exercise_id": exercise_id})
     if not routine_exercise_pair:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="Exercise not found in the routine")
+                            detail="Exercise-Routine pair not found")
 
     con.delete(routine_exercise_pair)
     con.commit()
