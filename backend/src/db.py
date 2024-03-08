@@ -21,3 +21,7 @@ def get_session():
 
 def create_tables():  # Want to run it only once
     SQLModel.metadata.create_all(engine)
+
+
+def drop_tables():
+    SQLModel.metadata.drop_all(engine)

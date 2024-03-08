@@ -2,14 +2,17 @@ from fastapi import FastAPI
 from fastapi.routing import APIRouter
 import db
 from routes import exercises, plans, routines, routines_exercises, users, workout_exercises, workouts
+from contextlib import asynccontextmanager
 
 
 def create_app():
-    app = FastAPI()
 
-    @app.on_event("startup")
-    async def setup_db():
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
         db.create_tables()
+        yield
+
+    app = FastAPI(lifespan=lifespan)
 
     api = APIRouter(prefix="/api/v1")
     api.include_router(router=users.router)
