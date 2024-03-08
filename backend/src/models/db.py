@@ -52,10 +52,10 @@ class Workout(WorkoutBase, table=True):
 class WorkoutExerciseLink(SQLModel, table=True):
     workout_id: int = Field(primary_key=True, foreign_key="workout.id")
     exercise_id: int = Field(primary_key=True, foreign_key="exercise.id")
-    sets: Optional[int]
-    reps: Optional[int]
-    rest: Optional[float]
-    weight: Optional[float]
+    sets: Optional[int] = None
+    reps: Optional[int] = None
+    seconds_of_rest: Optional[int] = None
+    weight: Optional[float] = None
 
     workout: "Workout" = Relationship(back_populates="exercise_links")
     exercise: "Exercise" = Relationship(back_populates="workout_links")
