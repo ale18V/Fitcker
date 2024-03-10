@@ -3,40 +3,40 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.workout_plan import WorkoutPlanCreate, WorkoutPlanRead, WorkoutPlanUpdate
-from models.db import WorkoutPlan
+from models.plan import PlanCreate, PlanRead, PlanUpdate
+from models.db import Plan
 import security
 
 
-router = APIRouter(prefix="/workout-plans")
+router = APIRouter(prefix="/plans")
 
 
-@router.get("/", response_model=List[WorkoutPlanRead])
+@router.get("/", response_model=List[PlanRead])
 async def read_workout_plans(con: Annotated[Session, Depends(db.get_session)],
                              user_id: Annotated[int, Depends(security.get_current_user_id)]):
-    plans = con.exec(select(WorkoutPlan).where(
-        WorkoutPlan.creator_id == user_id)).all()
+    plans = con.exec(select(Plan).where(
+        Plan.creator_id == user_id)).all()
     return plans
 
 
-@router.get("/{id}", response_model=WorkoutPlanRead)
+@router.get("/{id}", response_model=PlanRead)
 async def read_workout_plan(id: int,
                             con: Annotated[Session, Depends(db.get_session)],
-                            user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
-    plan = con.get(WorkoutPlan, id)
+                            user_id: Annotated[int, Depends(security.get_current_user_id)]) -> Plan:
+    plan = con.get(Plan, id)
     if not plan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Workout plan not found")
     return plan
 
 
-@router.post("/", status_code=201, response_model=WorkoutPlanRead)
+@router.post("/", status_code=201, response_model=PlanRead)
 async def create_workout_plan(
-        workout_plan: WorkoutPlanCreate,
+        workout_plan: PlanCreate,
         con: Annotated[Session, Depends(db.get_session)],
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
-    db_workout_plan = WorkoutPlan.model_validate(workout_plan)
+    db_workout_plan = Plan.model_validate(workout_plan)
     db_workout_plan.creator_id = user_id
     con.add(db_workout_plan)
     con.commit()
@@ -44,13 +44,13 @@ async def create_workout_plan(
     return db_workout_plan
 
 
-@router.patch("/{id}", response_model=WorkoutPlanRead)
+@router.patch("/{id}", response_model=PlanRead)
 async def update_workout_plan(id: int,
-                              workout_plan: WorkoutPlanUpdate,
+                              workout_plan: PlanUpdate,
                               con: Annotated[Session, Depends(db.get_session)],
-                              user_id: Annotated[int, Depends(security.get_current_user_id)]) -> WorkoutPlan:
+                              user_id: Annotated[int, Depends(security.get_current_user_id)]) -> Plan:
 
-    db_workout_plan = con.get(WorkoutPlan, id)
+    db_workout_plan = con.get(Plan, id)
     if not db_workout_plan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Workout plan not found")

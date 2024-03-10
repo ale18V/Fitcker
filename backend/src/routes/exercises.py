@@ -1,9 +1,9 @@
-from typing import Annotated, List
+from typing import Annotated, List, Optional, Sequence
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import Exercise
+from models.db import Exercise, Routine
 from models.exercise import ExerciseCreate, ExerciseRead, ExerciseUpdate
 import security
 
@@ -13,10 +13,18 @@ router = APIRouter(prefix="/exercises")
 @router.get("/", response_model=List[ExerciseRead])
 async def read_exercises(
         con: Annotated[Session, Depends(db.get_session)],
-        user_id: Annotated[int, Depends(security.get_current_user_id)]):
+        user_id: Annotated[int, Depends(security.get_current_user_id)],
+        routine_id: Optional[int] = None):
 
-    exercises = con.exec(select(Exercise)
-                         .where(Exercise.creator_id == user_id)).all()
+    exercises: List[Exercise] | Sequence[Exercise]
+    if routine_id:
+        routine = con.get(Routine, routine_id)
+        if not routine:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
+        exercises = routine.exercises
+    else:
+        exercises = con.exec(select(Exercise)
+                             .where(Exercise.creator_id == user_id)).all()
     return exercises
 
 
