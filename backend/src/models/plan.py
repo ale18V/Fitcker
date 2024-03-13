@@ -3,19 +3,19 @@ from datetime import date
 from typing import Optional
 
 
-class WorkoutPlanBase(SQLModel):
+class PlanBase(SQLModel):
     name: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
 
 
-class WorkoutPlanRead(WorkoutPlanBase):
+class PlanRead(PlanBase):
     id: int
 
 
-class WorkoutPlanCreate(WorkoutPlanBase):
+class PlanCreate(PlanBase):
     pass
 
 
-class WorkoutPlanUpdate(WorkoutPlanBase):
+class PlanUpdate(PlanBase):
     pass
