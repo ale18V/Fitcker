@@ -10,6 +10,7 @@ const Stack = createStackNavigator();
 
 export default function ProfileTab({ setIsAuthorized }) {
   const [username, setUsername] = useState(null);
+  const [email, setemail] = useState(null);
 
   useEffect(() => {
     const getUsernameFromApi = async () => {
@@ -20,7 +21,7 @@ export default function ProfileTab({ setIsAuthorized }) {
         if (token) {
           // Make a GET request to the API endpoint with the token included in the Authorization header
           const response = await fetch(
-            "http://localhost:8000/api/v1/users/me",
+            "http://10.13.51.144:8000/api/v1/users/me",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -33,6 +34,7 @@ export default function ProfileTab({ setIsAuthorized }) {
             // Extract the username from the response data
             console.log(data);
             setUsername(data.username);
+            setemail(data.email);
           } else {
             // Handle error when API request fails
             throw new Error("Failed to fetch user profile");
@@ -57,16 +59,24 @@ export default function ProfileTab({ setIsAuthorized }) {
           <Profile
             {...props}
             profile={{
-              username: "username",
-              email: "joemama",
-              gender: "female",
-              DoB: "1969",
+              username: username,
             }}
             setIsAuthorized={setIsAuthorized}
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name="User Information" component={UserInfo} />
+      <Stack.Screen name="User Information"> 
+        {() => (
+          <UserInfo 
+            userInfo={{
+              username: username,
+              email: email,
+              gender: "female",
+              DoB: "1969",
+            }}
+          />
+        )} 
+      </Stack.Screen>
       <Stack.Screen name="Notification Settings" component={UserNotif} />
       <Stack.Screen name="Biometrics" component={UserBiometrics} />
     </Stack.Navigator>

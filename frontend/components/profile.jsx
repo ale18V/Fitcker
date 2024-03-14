@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Profile({ navigation, profile, setIsAuthorized }) {
-  const { username, email, gender, DoB } = profile;
+  const { username } = profile;
 
   const handleLogout = () => {
     setIsAuthorized(false);
