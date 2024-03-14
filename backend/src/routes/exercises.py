@@ -48,6 +48,7 @@ async def create_exercise(
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
     db_exercise = Exercise.model_validate(exercise)
+    db_exercise.creator_id = user_id
     con.add(db_exercise)
     con.commit()
     con.refresh(db_exercise)
