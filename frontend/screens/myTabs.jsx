@@ -2,7 +2,10 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+<<<<<<< HEAD
 import { LinearGradient } from "expo-linear-gradient";
+=======
+>>>>>>> 7f417859d388d9c2c0b5fc62f0e088f25e5e931c
 import CreateTab from "./createTab.jsx";
 import LogTab from "./logTab.jsx";
 import ProfileTab from "./profileTab.jsx";
