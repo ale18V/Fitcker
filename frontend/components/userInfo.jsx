@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View, TextInput } from "react-native";
+import { Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function UserInfo() {
+export default function UserInfo({userInfo}) {
+  const { username, email, gender, DoB } = userInfo;
   return (
     <View className="flex-1 mx-10 justify-center items-center">
       <View className="w-full">
@@ -12,7 +13,7 @@ export default function UserInfo() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Email: </Text>
-            <Text>email@gmail.com </Text>
+            <Text>{email}</Text>
           </View>
         </LinearGradient>
         <LinearGradient
@@ -21,7 +22,7 @@ export default function UserInfo() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Username: </Text>
-            <Text>username </Text>
+            <Text>{username}</Text>
           </View>
         </LinearGradient>
         <LinearGradient
@@ -30,7 +31,7 @@ export default function UserInfo() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Gender: </Text>
-            <Text>female </Text>
+            <Text>{gender}</Text>
           </View>
         </LinearGradient>
 
@@ -40,7 +41,7 @@ export default function UserInfo() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Date of Birth: </Text>
-            <Text>0000-00-00 </Text>
+            <Text>{DoB}</Text>
           </View>
         </LinearGradient>
 

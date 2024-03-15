@@ -8,7 +8,7 @@ const timeToString=(time) => {
     return date.toISOString().split('T')[0];
   }
 
-export default function Stats() {
+export default function StatsCalendar() {
   //const { username } = calendar;
   const [items, setItems] = useState({});
 

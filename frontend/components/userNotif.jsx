@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { Text, View, Switch } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function UserNotif() {
   const [isEnabled, setIsEnabled] = useState(false);
