@@ -13,7 +13,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   const handleSignUp = async () => {
     try {
       const signUpResponse = await fetch(
-        "http://10.13.51.144:8000/api/v1/users/",
+        "http://192.168.1.12:8000/api/v1/users/",
         {
           method: "POST",
           headers: {
@@ -40,7 +40,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
       formData.append("password", password);
 
       const signInResponse = await fetch(
-        "http://10.13.51.144:8000/api/v1/users/login",
+        "http://192.168.1.12:8000/api/v1/users/login",
         {
           method: "POST",
           headers: {

@@ -21,7 +21,7 @@ export default function ProfileTab({ setIsAuthorized }) {
         if (token) {
           // Make a GET request to the API endpoint with the token included in the Authorization header
           const response = await fetch(
-            "http://10.13.51.144:8000/api/v1/users/me",
+            "http://192.168.1.12:8000/api/v1/users/me",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -78,7 +78,19 @@ export default function ProfileTab({ setIsAuthorized }) {
         )} 
       </Stack.Screen>
       <Stack.Screen name="Notification Settings" component={UserNotif} />
-      <Stack.Screen name="Biometrics" component={UserBiometrics} />
+      <Stack.Screen name="Biometrics">
+        {(props) => (
+          <UserBiometrics 
+            {...props}
+            biometrics={{
+              heightCM: 178, 
+              weightKG: 70, 
+              heightIN: 0, 
+              weightLBS: 0,
+            }}
+          />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }

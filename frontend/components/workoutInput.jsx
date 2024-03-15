@@ -27,7 +27,7 @@ const WorkoutInput = (props) => {
     props.toggle.bind(this, false);
     /* try {
       const workoutSubmit = await fetch(
-        "http://10.13.51.144:8000/api/v1/exercise/",
+        "http://192.168.1.12:8000/api/v1/exercise/",
         {
           method: "POST",
           headers: {
