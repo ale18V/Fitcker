@@ -11,8 +11,8 @@ import {
   Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MarkSets from "../components/markSets";
-import WorkoutInput from "../components/workoutInput";
+import MarkSets from "../components/markSets.jsx";
+import WorkoutInput from "../components/workoutInput.jsx";
 
 export default function LogTab() {
   const [markModalVisible, setMarkModalVisible] = useState(false);
