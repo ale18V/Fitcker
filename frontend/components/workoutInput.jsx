@@ -4,11 +4,12 @@ import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-nat
 import { useForm, Controller } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import WorkoutSelect from "./workoutSelect.jsx";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const WorkoutInput = (props) => {
-  const [routine, setRoutine] = React.useState("");
+  const [routine, setRoutine] = React.useState(-1);
 
   const { handleSubmit, control, reset, formState, formState: { isSubmitSuccessful }, formState: { errors } } = useForm({
     defaultValues: {
@@ -24,19 +25,25 @@ const WorkoutInput = (props) => {
   const onSubmit = async data => {
     await sleep(2000);
     alert(JSON.stringify(data));
-    props.toggle.bind(this, false);
-    /* try {
+    //props.toggle.bind(this, false);
+    try {
+
+      const token = await AsyncStorage.getItem("access_token");
+
+      if (token) {
       const workoutSubmit = await fetch(
-        "http://localhost:8000/api/v1/exercise/",
+        "http://localhost:8000/api/v1/workout/",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: data,
+          body: JSON.stringify({
+
+          }),
         }
       );
-
+        
       const workout = await workoutSubmit.json();
 
       // Check if the response was successful
@@ -44,9 +51,17 @@ const WorkoutInput = (props) => {
         throw new Error(workout.detail || "Something went wrong");
       }
 
+      } else {
+        // Handle case when token is not found in AsyncStorage
+        throw new Error("Token not found");
+      }
+
+
+  
+
     } catch (error) {
       alert(error.message);
-    } */
+    }
   };
 
   console.log('errors', errors);
@@ -72,6 +87,8 @@ const WorkoutInput = (props) => {
 
         <Text style={styles.header}>My Workouts</Text>
 
+          <SelectList save="key" setSelected={props.setRoutine} data={routines} placeholder={"Select your workout plan!"}
+          defaultOption={routines[0]} />
 
           <Controller
             control={control}
@@ -96,7 +113,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 500, message: "Invalid input" },
+              max: { value: 1000, message: "Invalid input" },
               min: { value: 0, message: "Cannot be negative" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -121,7 +138,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 100, message: "Invalid input" },
+              max: { value: 500, message: "Invalid input" },
               min: { value: 1, message: "Can't do less than one rep" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -146,7 +163,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 100, message: "Invalid input" },
+              max: { value: 500, message: "Invalid input" },
               min: { value: 1, message: "Can't do less than one set" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -171,7 +188,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 500, message: "Invalid input" },
+              max: { value: 1000, message: "Invalid input" },
               min: { value: 0, message: "Cannot be negative" },
             }}
             render={({ field: { onChange, value } }) => (
