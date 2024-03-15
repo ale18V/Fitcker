@@ -1,10 +1,18 @@
 import * as React from "react";
-import { useState, useEffect, } from "react";
-import { Text, View, StyleSheet, Modal, ScrollView, Image, TouchableOpacity, Pressable } from "react-native";
+import { useState, useEffect } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Modal,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MarkSets from "../components/markSets";
 import WorkoutInput from "../components/workoutInput";
-
 
 export default function LogTab() {
   const [markModalVisible, setMarkModalVisible] = useState(false);
@@ -12,12 +20,11 @@ export default function LogTab() {
   const [error, setError] = useState(false);
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
 
-
   const done = (status) => {
     setLogModal(status);
-  }
+  };
 
-   useEffect(() => {
+  useEffect(() => {
     const loadWorkoutTemplates = async () => {
       try {
         const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
@@ -30,38 +37,40 @@ export default function LogTab() {
       }
     };
     loadWorkoutTemplates();
-  }, [])
-
-
+  }, []);
 
   return (
     <ScrollView style={styles.outerContainer}>
-
       <View style={styles.row}>
-    <TouchableOpacity style={styles.touchable} onPress={() => setMarkModalVisible(true)}>
-            <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.touchable}
+          onPress={() => setMarkModalVisible(true)}
+        >
+          <View style={styles.buttonContainer}>
             <Text style={styles.text}>My Workouts</Text>
             <Image
-              source={require("../assets/icon1.png")} 
+              source={require("../assets/icon1.png")}
               style={styles.image}
-              />
-            </View>
-      </TouchableOpacity>
+            />
+          </View>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.touchable} onPress={() => setLogModal(true)}>
-            <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.touchable}
+          onPress={() => setLogModal(true)}
+        >
+          <View style={styles.buttonContainer}>
             <Text style={styles.text2}>Log Workouts</Text>
             <Image
-              source={require("../assets/icon2.png")} 
+              source={require("../assets/icon2.png")}
               style={styles.logimage}
-              resizeMode='contain'
-              />
-            </View>
+              resizeMode="contain"
+            />
+          </View>
         </TouchableOpacity>
-        
-        </View>
+      </View>
 
-      <Modal 
+      <Modal
         animationType="fade"
         transparent={true}
         visible={markModalVisible}
@@ -74,16 +83,17 @@ export default function LogTab() {
             <MarkSets></MarkSets>
           </View>
           <View style={styles.container}>
-          <Pressable
+            <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setMarkModalVisible(false)}>
+              onPress={() => setMarkModalVisible(false)}
+            >
               <Text style={styles.text}>Close View</Text>
             </Pressable>
           </View>
         </ScrollView>
       </Modal>
 
-      <Modal 
+      <Modal
         animationType="fade"
         transparent={true}
         visible={logModal}
@@ -91,21 +101,20 @@ export default function LogTab() {
           setLogModal(false);
         }}
       >
-          <ScrollView style={styles.modalContainer}>
+        <ScrollView style={styles.modalContainer}>
           <View style={styles.container}>
             {!error && <WorkoutInput toggle={done}></WorkoutInput>}
           </View>
           <View style={styles.container}>
-          <Pressable
+            <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setLogModal(false)}>
+              onPress={() => setLogModal(false)}
+            >
               <Text style={styles.text}>Close View</Text>
             </Pressable>
           </View>
         </ScrollView>
-
       </Modal>
-
 
       {/* <TouchableOpacity onPress={() => setLogModal(!logModal)}>
         <View style={styles.row}>
@@ -135,41 +144,41 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#e4edea"
+    backgroundColor: "#e4edea",
   },
   label: {
     fontSize: 30,
-    textAlign: 'left',
+    textAlign: "left",
     margin: 10,
-    fontWeight: 'bold',
-    justifyContent: 'flex-start',
+    fontWeight: "bold",
+    justifyContent: "flex-start",
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: 0.25,
-    color: '#58a1a3',
+    color: "#58a1a3",
     marginTop: 2,
   },
   text2: {
     fontSize: 16,
     lineHeight: 21,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     letterSpacing: 0.25,
-    color: '#58a1a3',
-    marginBottom:4.5,
+    color: "#58a1a3",
+    marginBottom: 4.5,
   },
   row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     marginTop: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   touchable: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContainer: {
     flex: 1,
@@ -180,10 +189,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
-    borderColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f3fff5',
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f3fff5",
     margin: 5,
   },
   image: {
@@ -198,12 +207,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    alignContent: 'center',
-    justifyContent: 'center',
+    alignContent: "center",
+    justifyContent: "center",
     marginBottom: 20,
   },
   buttonClose: {
-    backgroundColor: '#d7faee',
+    backgroundColor: "#d7faee",
   },
   modalContainer: {
     height: 1000,
@@ -211,7 +220,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     marginTop: 225,
     marginBottom: 50,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -220,17 +229,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     borderTopWidth: 1,
-    borderTopColor: '#58a1a3',
-    backgroundColor: '#f3fff5',
+    borderTopColor: "#58a1a3",
+    backgroundColor: "#f3fff5",
   },
   doneButton: {
     marginTop: 20,
-    color: '#f3fff5',
+    color: "#f3fff5",
     height: 40,
-    backgroundColor: '#58a1a3',
+    backgroundColor: "#58a1a3",
     borderRadius: 4,
   },
-
 });
 
 /* add in data validation
@@ -239,12 +247,6 @@ const styles = StyleSheet.create({
   2) if valid, post to database and then clear states 
  get data from database (workout ids, routine ids, plan ids, names)
 
-<<<<<<< HEAD
-rework useEffect to check if plan exists or not (globalState ? or require user to make one plan before using other tabs)
-
-if no plan exists, don't even use either component
- */
-=======
  questions :
  should each workout have same options 
  what types of workouts will we accomodate
@@ -256,4 +258,3 @@ if no plan exists, don't even use either component
   : jest - unit test, integration test, etc.
   : typescript - typechecking
   : eslint - style/syntax errors */
->>>>>>> 7f417859d388d9c2c0b5fc62f0e088f25e5e931c
