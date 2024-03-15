@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect} from "react";
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, } from "react-native";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Button, } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 //import Checkbox from 'expo-checkbox';
 import WorkoutSelect from "./workoutSelect.jsx";
@@ -61,7 +61,7 @@ const MarkSets = () => {
     })
 
     if (index >= 0 && index < notes.length) {
-      saveEditedExercise();
+      saveEditedNote();
     }
     else {
 
@@ -102,11 +102,10 @@ const MarkSets = () => {
         "workoutNotes",
         JSON.stringify(updatedTemplates)
       );
-      setWorkoutTemplates(updatedTemplates);
-      setEditingIndex(null);
-      console.log("Exercise edited successfully");
+
+      console.log("Notes edited successfully");
     } catch (error) {
-      console.error("Error editing exercise:", error);
+      console.error("Error editing note:", error);
     }
   };
 
@@ -128,11 +127,54 @@ const MarkSets = () => {
         </View>
       </TouchableOpacity>}
 
-      {showTemplates && <WorkoutSelect setRoutine={setRoutine} setWorkout={setWorkout} />}
+      {showTemplates && <View>
+      <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={workout} setWorkout={setWorkout}/>
+
+      <Text>Weight: </Text>
+      <TextInput style={styles.input}
+        value={weight}
+        placeholder={''}
+        onChangeText={(text) => {
+          setWeight(text);
+        }} />
+
+      <Text>Sets: </Text>
+      <TextInput style={styles.input}
+        value={sets}
+        placeholder={''}
+        onChangeText={(text) => {
+          setSets(text);
+        }} />
 
 
+      <Text>Reps: </Text>
+      <TextInput style={styles.input}
+        value={reps}
+        placeholder={''}
+        onChangeText={(text) => {
+          setReps(text);
+        }} />
 
-    </View> 
+      <Text>Rest: </Text>
+      <TextInput style={styles.input}
+        value={rest}
+        placeholder={''}
+        onChangeText={(text) => {
+          setRest(text);
+        }} />
+
+      <View style={styles.button}>
+      <Button
+        color="#f3fff5"
+        title="Save Notes"
+        onPress={saveNotes}
+      />
+      </View>
+      </View>}
+
+
+    </View>
+
   )
 }
 
@@ -165,6 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   button: {
+    marginTop: 10,
     marginLeft: 20,
     color: '#f3fff5',
     backgroundColor: '#58a1a3',
@@ -186,6 +229,12 @@ const styles = StyleSheet.create({
     margin: 5,
     fontWeight: 'bold',
     justifyContent: 'flex-start',
+  },
+  input: {
+    height: 40,
+    padding: 10,
+    borderRadius: 4,
+    borderWidth: 1,
   },
 });
 

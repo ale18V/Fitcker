@@ -13,13 +13,13 @@ const WorkoutSelect = (props) => {
   const [planID, setPlanID] = useState(-1);
   const [routineID, setRoutineID] = useState(-1);
   const [valid, setValid] = useState(false);
-  const [updatePlan, setUpdatePlan] = useState(false);
+  //const [updatePlan, setUpdatePlan] = useState(false);
   const [update, setUpdate] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
-  var routines = [];
-  var plans = [];
-  var workouts = [];
+  const [routines,setRoutines] = useState([]);
+  const [plans, setPlans] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
 
 
 
@@ -44,11 +44,11 @@ const WorkoutSelect = (props) => {
             if (planResponse.ok) {
               const planData = await planResponse.json();
               setPlan(planData);
-              console.log(plan);
+              console.log("got plan");
 
-              setPlanID(1); //temp
+              //setPlanID(1); //temp
 
-              if (plan.length != 0) {
+              /* if (plan.length != 0) {
 
                 plans.length = 0;
 
@@ -58,7 +58,7 @@ const WorkoutSelect = (props) => {
 
                 setPlanID(plans[0].key); //set default plan to first plan
 
-              }
+              } */
             } else {
               // Handle error when API request fails
               throw new Error("Failed to fetch plans");
@@ -73,11 +73,14 @@ const WorkoutSelect = (props) => {
           console.error("Error loading plans:", error);
         }
       }
+      else {
+        return;
+      }
     };
 
 
     const updateRoutines = async () => {
-      if ((updatePlan || routineID === -1) && planID != -1) { //if routine initialized or update plan
+      if (routineID === -1) { //if routine initialized or update plan
         try {
           const token = await AsyncStorage.getItem("access_token");
 
@@ -102,17 +105,17 @@ const WorkoutSelect = (props) => {
 
               setCurrRoutines(routData);
 
-              console.log(currRoutines);
+              console.log("got routines");
 
-              if (updatePlan) { //reset plan change bool
+              //if (updatePlan) { //reset plan change bool
 
-                setUpdatePlan(false);
+                //setUpdatePlan(false);
 
-              }
+              //}
 
-              routines.length = 0; //clear routines to repopulate
+              //routines.length = 0; //clear routines to repopulate
 
-              if (currRoutines.length != 0) {
+              /* if (currRoutines.length != 0) {
 
                 currRoutines.map((current) => {
                   routines.push({ key: current.id, value: current.name });
@@ -120,7 +123,7 @@ const WorkoutSelect = (props) => {
 
                 setRoutineID(routines[0].key); //set default routine to initial one
 
-              }
+              } */
 
             } else {
               // Handle error when API request fails
@@ -140,8 +143,8 @@ const WorkoutSelect = (props) => {
 
 
     const updateExercises = async () => { //always do when changing plan or routine
-      await updatePlans();
-      await updateRoutines();
+      //await updatePlans();
+      //await updateRoutines();
 
       try {
         const token = await AsyncStorage.getItem("access_token");
@@ -165,15 +168,15 @@ const WorkoutSelect = (props) => {
             // Extract the username from the response data
 
             setCurrExercises(exerData);
-            //console.log(currExercises);
+            console.log("got exercises");
 
-            workouts.length === 0;
+            //workouts.length === 0;
 
-            if (currExercises.length != 0) {
+            /* if (currExercises.length != 0) {
               currExercises.map((current) => {
                 workouts.push({ key: current.id, value: current.name });
               })
-            }
+            } */
 
           } else {
             // Handle error when API request fails
@@ -188,28 +191,17 @@ const WorkoutSelect = (props) => {
       } catch (error) {
         console.error("Error loading exercises:", error);
       }
+      
 
     };
 
 
-    const validate = () => {
+    const updateLists = async () => {
+      await updatePlans();
 
-      if ((plan.length != 0) && (currRoutines.length != 0) && (currExercises.length != 0)) { //each category must exist for us to use selection
-        setValid(true);
-      }
-      else {
-        setValid(false);
-      }
-      console.log("validate plan");
-      console.log(plan);
-      console.log(currRoutines);
-      console.log(currExercises);
-    }
+      //plans.length = 0;
 
-    const updateLists = () => {
-      plans.length = 0;
-
-      plans = plan;
+      /* plans = JSON.parse(JSON.stringify(plan));
       plans.forEach( function(data) {
         data['value'] = data['name'];
         data['key'] = data['id'];
@@ -217,25 +209,81 @@ const WorkoutSelect = (props) => {
         delete data['start_date'];
         delete data['id'];
         delete data['name'];
-      });
+      }); */
 
       console.log("plans are: ");
-      console.log(plan);
 
-      routines.length = 0;
+      var tempPlan = JSON.parse(JSON.stringify(plan));
+      tempPlan.forEach( function(data) {
+        data['value'] = data['name'];
+        data['key'] = data['id'];
+        delete data['end_date'];
+        delete data['start_date'];
+        delete data['id'];
+        delete data['name'];
+      });
+      setPlans(JSON.parse(JSON.stringify(tempPlan)));
 
-      routines = currRoutines;
+      if (plans.length != 0) {
+        if (planID === -1) {
+      setPlanID(plans[0].key);
+        }
+      console.log("planID: " + planID);
+      
+
+      console.log("plans: " + JSON.stringify(plans));
+
+      //routines.length = 0;
+
+      /* routines = JSON.parse(JSON.stringify(currRoutines));
+
       routines.forEach( function(data) {
+        data['value'] = data['name'];
+        data['key'] = data['id'];
+        delete data['id'];
+        delete data['name'];
+      }); */
+
+      /* currRoutines.map((current) => {
+        routines.push({ key: current.id, value: current.name });
+      }) */
+
+      await updateRoutines();
+
+      
+      //console.log(update);
+      var tempRoutine = JSON.parse(JSON.stringify(currRoutines))
+      tempRoutine.forEach( function(data) {
         data['value'] = data['name'];
         data['key'] = data['id'];
         delete data['id'];
         delete data['name'];
       });
 
-      workouts.length === 0;
+      setRoutines(JSON.parse(JSON.stringify(tempRoutine)));
+      
+      if (routines.length != 0) {
+      setRoutineID(routines[0].key);
+      console.log("routineID: " + routineID);
+      }
 
-      workouts = currExercises;
+      console.log("routines:" + JSON.stringify(routines));
+
+      //workouts.length === 0;
+
+      /* workouts = JSON.parse(JSON.stringify(currExercises));
       workouts.forEach( function(data) {
+        data['value'] = data['name'];
+        data['key'] = data['id'];
+        delete data['id'];
+        delete data['name'];
+        delete data['description'];
+      }); */
+
+      await updateExercises();
+
+      var tempExercise = JSON.parse(JSON.stringify(currExercises));
+      tempExercise.forEach( function(data) {
         data['value'] = data['name'];
         data['key'] = data['id'];
         delete data['id'];
@@ -243,21 +291,43 @@ const WorkoutSelect = (props) => {
         delete data['description'];
       });
 
+      setWorkouts(JSON.parse(JSON.stringify(tempExercise)));
+
+      currExercises.map((current) => {
+        workouts.push({ key: current.id, value: current.name });
+      })
+
+      console.log("exercises: " + JSON.stringify(workouts));
+    }
+
 
 
     }
 
 
+    const validate = async () => {
 
+      await updateLists();
 
-    updateExercises();
-    if (update < 3) {
-      setUpdate(update + 1);
+      if ((plans.length != 0) && (routines.length != 0) && (workouts.length != 0)) { //each category must exist for us to use selection
+        setValid(true);
+      }
+      else {
+        setValid(false);
+      }
+
+      console.log("validate plan");
+      console.log(plan);
+      console.log(currRoutines);
+      console.log(currExercises);
+
+      if (update < 4) {
+        setUpdate(update+1);
+      }
     }
+
     validate();
-    if (update === 3) {
-      updateLists();
-    }
+
   }, [planID, routineID, update, refresh])
   //on first render, initialize everything
   // on plan change, repopulate routines and exercises
@@ -268,18 +338,20 @@ const WorkoutSelect = (props) => {
 
     <View>
 
-      {!valid && <Text>Either no plan, routine, or exercise found! Please add missing category before trying to log workout.</Text>}
+      {!valid && <Text>Either no plan, routine, or exercise found! Please add missing category before trying to log workout. If you are receiving
+        this message incorrectly, click refresh data to update. </Text>}
 
-      {valid && <SelectList save="key" setSelected={(val) => { setUpdatePlan(true); setPlanID(val); }} data={plans} placeholder={"Select your workout plan!"}
-        defaultOption={plans[0]} />}
+      {valid && <SelectList setSelected={(val) => { setPlanID(val); setRoutineID(-1); setUpdate(0); }} data={plans} placeholder={"Select your workout plan"}
+         />}
 
-      {valid && <SelectList save="key" setSelected={(val) => { setRoutineID(val); props.setRoutine(val); }} data={routines} placeholder={"Select your workout routine!"}
-        defaultOption={routines[0]} />}
+      {valid && <SelectList setSelected={(val) => { setRoutineID(val); props.setRoutine(val); setUpdate(0);}} data={routines} placeholder={"Select your workout routine!"}
+         />}
 
       {valid && <SelectList save="key" setSelected={props.setWorkout} data={workouts}
-        placeholder={"Select your workout exercise!"} defaultOption={workouts[0]} />}
+        placeholder={"Select your workout exercise!"}  />}
 
-      {!valid && <Button title="Refresh data" onPress={() => setRefresh(!refresh)}/>}
+      {!valid && <Button title="Refresh data" onPress={() => {setRefresh(!refresh);}} />}
+
 
     </View>
   )
@@ -326,7 +398,10 @@ export default WorkoutSelect;
 
 
 
-/* const routineResponse = await fetch(
+/* forceRender((prev) => !prev);
+
+
+const routineResponse = await fetch(
   "http://localhost:8000/api/v1/routines/",
   {
     method: "GET",
