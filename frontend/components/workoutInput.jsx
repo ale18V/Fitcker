@@ -1,8 +1,15 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Text, View, StyleSheet, TextInput, ScrollView, Button } from "react-native";
-import { useForm, Controller } from 'react-hook-form';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  Button,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import WorkoutSelect from "./workoutSelect.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,18 +18,25 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const WorkoutInput = (props) => {
   const [routine, setRoutine] = React.useState(-1);
 
-  const { handleSubmit, control, reset, formState, formState: { isSubmitSuccessful }, formState: { errors } } = useForm({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState,
+    formState: { isSubmitSuccessful },
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      exercise_id: '',
-      weight: '',
-      reps: '',
-      sets: '',
-      rest: '',
+      exercise_id: "",
+      weight: "",
+      reps: "",
+      sets: "",
+      rest: "",
       day: new Date(),
-    }
+    },
   });
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     await sleep(2000);
     alert(JSON.stringify(data));
     //props.toggle.bind(this, false);
@@ -64,31 +78,26 @@ const WorkoutInput = (props) => {
     }
   };
 
-  console.log('errors', errors);
+  console.log("errors", errors);
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({
-        weight: '',
-        reps: '',
-        sets: '',
-        rest: '',
+        weight: "",
+        reps: "",
+        sets: "",
+        rest: "",
         day: new Date(),
       });
     }
-  }, [formState, reset])
-
+  }, [formState, reset]);
 
   return (
-
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.container}>
 
         <Text style={styles.header}>My Workouts</Text>
-
-          <SelectList save="key" setSelected={props.setRoutine} data={routines} placeholder={"Select your workout plan!"}
-          defaultOption={routines[0]} />
 
           <Controller
             control={control}
@@ -99,12 +108,20 @@ const WorkoutInput = (props) => {
             }}
             render={({ field: { onChange, value } }) => (
               <>
-                {errors.exercise_id && <Text style={styles.text}> {errors.exercise_id.message}</Text>}
-                <WorkoutSelect routine={routine} setRoutine={setRoutine} workout={value} setWorkout={workout => { onChange(workout) }} />
+                {errors.exercise_id && (
+                  <Text style={styles.text}> {errors.exercise_id.message}</Text>
+                )}
+                <WorkoutSelect
+                  routine={routine}
+                  setRoutine={setRoutine}
+                  workout={value}
+                  setWorkout={(workout) => {
+                    onChange(workout);
+                  }}
+                />
               </>
             )}
           />
-
 
           <Text style={styles.label}>Weight lifted:</Text>
           <Controller
@@ -118,11 +135,13 @@ const WorkoutInput = (props) => {
             }}
             render={({ field: { onChange, value } }) => (
               <>
-                {errors.weight && <Text style={styles.text}> {errors.weight.message}</Text>}
+                {errors.weight && (
+                  <Text style={styles.text}> {errors.weight.message}</Text>
+                )}
                 <TextInput
                   style={styles.input}
                   value={value}
-                  placeholder={''}
+                  placeholder={""}
                   onChangeText={(text) => {
                     onChange(text);
                   }}
@@ -143,11 +162,13 @@ const WorkoutInput = (props) => {
             }}
             render={({ field: { onChange, value } }) => (
               <>
-                {errors.reps && <Text style={styles.text}> {errors.reps.message}</Text>}
+                {errors.reps && (
+                  <Text style={styles.text}> {errors.reps.message}</Text>
+                )}
                 <TextInput
                   style={styles.input}
                   value={value}
-                  placeholder={''}
+                  placeholder={""}
                   onChangeText={(text) => {
                     onChange(text);
                   }}
@@ -168,11 +189,13 @@ const WorkoutInput = (props) => {
             }}
             render={({ field: { onChange, value } }) => (
               <>
-                {errors.sets && <Text style={styles.text}> {errors.sets.message}</Text>}
+                {errors.sets && (
+                  <Text style={styles.text}> {errors.sets.message}</Text>
+                )}
                 <TextInput
                   style={styles.input}
                   value={value}
-                  placeholder={''}
+                  placeholder={""}
                   onChangeText={(text) => {
                     onChange(text);
                   }}
@@ -193,11 +216,13 @@ const WorkoutInput = (props) => {
             }}
             render={({ field: { onChange, value } }) => (
               <>
-                {errors.rest && <Text style={styles.text}> {errors.rest.message}</Text>}
+                {errors.rest && (
+                  <Text style={styles.text}> {errors.rest.message}</Text>
+                )}
                 <TextInput
                   style={styles.input}
                   value={value}
-                  placeholder={''}
+                  placeholder={""}
                   onChangeText={(text) => {
                     onChange(text);
                   }}
@@ -209,14 +234,14 @@ const WorkoutInput = (props) => {
           <Text style={styles.label}>Date:</Text>
           <Controller
             control={control}
-            name='day'
+            name="day"
             defaultValue={new Date()}
             render={({ field }) => (
               <DateTimePicker
                 value={field.value || new Date()} // Provide a default value if value is empty
                 mode="date" // You can use "time" or "datetime" for different modes
                 is24Hour={true}
-                timeZoneName={'US/Pacific'}
+                timeZoneName={"US/Pacific"}
                 display="default"
                 onChange={(event, selectedDate) => {
                   const localDate = new Date(selectedDate);
@@ -243,41 +268,39 @@ const WorkoutInput = (props) => {
           </View> */}
         </View>
 
-
         {/* <Text> {routine} </Text>
         <Text> {workout} </Text> */}
       </ScrollView>
     </View>
-  )
-
+  );
 };
 
 const styles = StyleSheet.create({
   label: {
-    color: 'black',
+    color: "black",
     margin: 20,
     marginLeft: 0,
   },
   text: {
-    color: 'red',
+    color: "red",
     marginLeft: 0,
   },
   button: {
     marginTop: 20,
-    color: '#f3fff5',
+    color: "#f3fff5",
     height: 40,
-    backgroundColor: '#58a1a3',
+    backgroundColor: "#58a1a3",
     borderRadius: 4,
   },
   buttonLab: {
-    color: '#58a1a3',
+    color: "#58a1a3",
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
 
     padding: 8,
-    backgroundColor: '#white',
+    backgroundColor: "#white",
   },
   input: {
     height: 40,
@@ -287,16 +310,15 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 30,
-    textAlign: 'left',
+    textAlign: "left",
     margin: 5,
-    fontWeight: 'bold',
-    justifyContent: 'flex-start',
+    fontWeight: "bold",
+    justifyContent: "flex-start",
   },
 });
 
 export default WorkoutInput;
 
-
 //date for sql as yyyy-mm-dd
-//date saved as utc meaning it's offset from local time 
-//need to process date for use in table 
+//date saved as utc meaning it's offset from local time
+//need to process date for use in table
