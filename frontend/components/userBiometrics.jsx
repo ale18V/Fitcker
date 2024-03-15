@@ -2,8 +2,12 @@ import React from 'react';
 import { Text, View, Switch } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function UserBiometrics() {
-  
+export default function UserBiometrics({biometrics}) {
+  const { heightCM, weightKG, heightIN, weightLBS } = biometrics;
+
+  const heightM = heightCM / 100; 
+  const bmi = weightKG / (heightM * heightM); 
+
   return (
     
     <View className="flex-1 mx-10 justify-center items-center">
@@ -14,7 +18,7 @@ export default function UserBiometrics() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Height: </Text>
-            <Text>170cm </Text>
+            <Text>{heightCM} </Text>
           </View>
         </LinearGradient>
         <LinearGradient
@@ -23,7 +27,7 @@ export default function UserBiometrics() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">Weight: </Text>
-            <Text>200lbs </Text>
+            <Text>{weightKG} </Text>
           </View>
         </LinearGradient>
         <LinearGradient
@@ -32,7 +36,7 @@ export default function UserBiometrics() {
           >
           <View className="flex-row items-center">
             <Text className="font-bold ml-2">BMI: </Text>
-            <Text>Weight/Height^2 </Text>
+            <Text>{bmi.toFixed(2)}</Text>
           </View>
         </LinearGradient>
 

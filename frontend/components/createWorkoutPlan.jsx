@@ -43,6 +43,9 @@ const CreateWorkoutPlan = () => {
     if (!name || !startDate || !endDate) {
       setErrorMessage("Name, start date, and end date are required.");
       setSuccessMessage("");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
       return;
     }
 
@@ -110,14 +113,6 @@ const CreateWorkoutPlan = () => {
       </TouchableOpacity>
       {expanded && (
         <View className="p-4">
-          {successMessage ? (
-            <Text className="bg-green-300 p-3 mb-10 rounded-md">
-              {successMessage}
-            </Text>
-          ) : null}
-          {errorMessage ? (
-            <Text className="bg-red-300 p-3 mb-10 rounded">{errorMessage}</Text>
-          ) : null}
           <Text className="font-bold mb-2">Workout Plan Name</Text>
           <TextInput
             className="border border-gray-400 rounded px-4 py-2 mb-4 placeholder-gray-500"
@@ -159,6 +154,14 @@ const CreateWorkoutPlan = () => {
               />
             )}
           </View>
+          {successMessage ? (
+            <Text className="bg-green-300 p-3 border border-gray-400 rounded-md">
+              {successMessage}
+            </Text>
+          ) : null}
+          {errorMessage ? (
+            <Text className="bg-red-300 p-3 rounded-lg">{errorMessage}</Text>
+          ) : null}
           <Button title="Create Plan" onPress={createPlan} />
         </View>
       )}

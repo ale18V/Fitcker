@@ -59,6 +59,7 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         name="Workout Statistics"
         component={StatsTab}
         options={{
+          headerShown: false,
           tabBarLabel: "Stats",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
