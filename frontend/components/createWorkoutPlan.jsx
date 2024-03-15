@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const CreateWorkoutPlan = () => {
+const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -85,6 +85,7 @@ const CreateWorkoutPlan = () => {
         setName("");
         setStartDate(new Date());
         setEndDate(new Date());
+        setNewWorkoutPlan(!newWorkoutPlan);
         setTimeout(() => {
           setSuccessMessage("");
         }, 3000);

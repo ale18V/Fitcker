@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNPickerSelect from "react-native-picker-select";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const CreateRoutine = () => {
+const CreateRoutine = ({ newWorkoutPlan }) => {
   const [name, setName] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -22,6 +22,7 @@ const CreateRoutine = () => {
   useEffect(() => {
     // Fetch workout plans from local storage
     const fetchWorkoutPlans = async () => {
+      console.log("FETCH");
       try {
         const plansString = await AsyncStorage.getItem("workoutPlans");
         if (plansString) {
@@ -34,7 +35,7 @@ const CreateRoutine = () => {
     };
 
     fetchWorkoutPlans();
-  }, []);
+  }, [newWorkoutPlan]);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
