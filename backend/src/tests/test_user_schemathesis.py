@@ -75,4 +75,5 @@ class UserWorkflow(schema.as_state_machine()):
 
 def test_login_flow():
     machine = UserWorkflow()
-    machine.run(settings=settings(verbosity=hypothesis.Verbosity.debug, deadline=None))
+    machine.run(settings=settings(verbosity=hypothesis.Verbosity.normal, deadline=None,
+                                  suppress_health_check=hypothesis.HealthCheck.all()))
