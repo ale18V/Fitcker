@@ -17,6 +17,7 @@ export default function UserNotif() {
             <Text className="font-bold ml-2">Allow Notifications</Text>
           </View>
           <Switch
+            testID="notification-switch"
             trackColor={{false: '#767577', true: '#38A3A5'}}
             thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
             ios_backgroundColor="#a3a3a3"

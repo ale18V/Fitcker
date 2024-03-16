@@ -33,7 +33,7 @@ async def create_workout(
         con: Annotated[Session, Depends(db.get_session)],
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
-    db_workout: Workout = Workout.model_validate(WorkoutCreate)
+    db_workout: Workout = Workout.model_validate(workout)
     con.add(db_workout)
     con.commit()
     con.refresh(db_workout)
