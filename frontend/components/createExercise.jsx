@@ -125,7 +125,7 @@ const CreateExercise = () => {
               {errorMessage}
             </Text>
           ) : null}
-          <Button title="Create Exercise" onPress={createExercise} />
+          <Button title="Create Exercise" testID="exerciseButton" onPress={createExercise} />
         </View>
       )}
     </ScrollView>

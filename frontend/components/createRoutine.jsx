@@ -174,7 +174,7 @@ const CreateRoutine = ({ newWorkoutPlan }) => {
               {errorMessage}
             </Text>
           ) : null}
-          <Button title="Create Routine" onPress={createRoutine} />
+          <Button title="Create Routine" testID="routineButton" onPress={createRoutine} />
         </View>
       )}
     </ScrollView>

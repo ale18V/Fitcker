@@ -117,7 +117,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
         {errorMessage && <Text className="text-red-500">{errorMessage}</Text>}
 
         <TouchableOpacity onPress={handleAlreadyHaveAccount}>
-          <Text className="mt-5 text-custom-teal">
+          <Text className="mt-5 text-custom-teal" testID="signUpp">
             Already have an account? Sign In
           </Text>
         </TouchableOpacity>
