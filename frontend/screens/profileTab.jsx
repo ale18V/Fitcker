@@ -11,6 +11,8 @@ const Stack = createStackNavigator();
 export default function ProfileTab({ setIsAuthorized }) {
   const [username, setUsername] = useState(null);
   const [email, setemail] = useState(null);
+  const [height, setHeight]= useState(null);
+  const [weight, setWeight] = useState(null);
 
   useEffect(() => {
     const getUsernameFromApi = async () => {
@@ -49,8 +51,25 @@ export default function ProfileTab({ setIsAuthorized }) {
       }
     };
 
+    const retrieveBiometricsFromStorage = async () => {
+      try {
+        const token = await AsyncStorage.getItem("access_token");
+        const biometricsData = await AsyncStorage.getItem(token+'@biometrics');
+        if (biometricsData !== null) {
+          const { heightCM, weightKG } = JSON.parse(biometricsData);
+          setHeight(heightCM);
+          setWeight(weightKG);
+        }
+      } catch (error) {
+        console.error('Error retrieving biometrics data:', error);
+      }
+    };
+
     getUsernameFromApi();
+    retrieveBiometricsFromStorage();
   }, [setIsAuthorized]);
+
+  
 
   return (
     <Stack.Navigator initialRouteName="Profile">
@@ -83,10 +102,8 @@ export default function ProfileTab({ setIsAuthorized }) {
           <UserBiometrics
             {...props}
             biometrics={{
-              heightCM: 178,
-              weightKG: 70,
-              heightIN: 0,
-              weightLBS: 0,
+              heightCM: height,
+              weightKG: weight,
             }}
           />
         )}
@@ -94,3 +111,5 @@ export default function ProfileTab({ setIsAuthorized }) {
     </Stack.Navigator>
   );
 }
+
+

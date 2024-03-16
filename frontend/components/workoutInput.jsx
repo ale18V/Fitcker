@@ -11,11 +11,13 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import WorkoutSelect from "./workoutSelect.jsx";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const WorkoutInput = (props) => {
-  const [routine, setRoutine] = React.useState("");
+  const [routine, setRoutine] = React.useState(-1);
+  const [workoutID, setWorkoutID] = React.useState(0);
 
   const {
     handleSubmit,
@@ -37,30 +39,98 @@ const WorkoutInput = (props) => {
 
   const onSubmit = async (data) => {
     await sleep(2000);
-    alert(JSON.stringify(data));
-    props.toggle.bind(this, false);
-    /* try {
-      const workoutSubmit = await fetch(
-        "http://localhost:8000/api/v1/exercise/",
-        {
+    alert(JSON.stringify(data) + "{routine: " + routine + "}");
+    //props.toggle.bind(this, false);
+    try {
+
+      const token = await AsyncStorage.getItem("access_token");
+
+      if (token) {
+
+        //var date = data.day.toISOString().split("T", 1)[0];
+
+        const workoutCreateData = {
+          "date": data.day.toISOString().split("T")[0],
+          "routine_id": routine
+        };
+
+        console.log(JSON.stringify(workoutCreateData));
+
+        const workoutCreate = await fetch("http://localhost:8000/api/v1/workouts/", {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: data,
-        }
-      );
-
-      const workout = await workoutSubmit.json();
+          body: JSON.stringify(workoutCreateData),
+        });
+        
+      const workout = await workoutCreate.json();
 
       // Check if the response was successful
-      if (!workoutSubmit.ok) {
+      if (!workoutCreate.ok) {
         throw new Error(workout.detail || "Something went wrong");
       }
 
+     setWorkoutID(workout.id);
+
+      /* const statSubmit = {
+        "workout_id": workoutID,
+        "exercise_id": data.exercise_id,
+        "sets": data.sets,
+        "reps": data.reps,
+        "seconds_of_rest": data.rest,
+        "weight": data.weight
+      }
+
+      const workExerLink = await fetch(
+        "http://localhost:8000/api/v1/workout-exercises/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(statSubmit),
+        }
+      );
+        
+      const link = await workExerLink.json();
+
+      // Check if the response was successful
+      if (!workExerLink.ok) {
+        throw new Error(workout.detail || "Something went wrong");
+      } */
+
+
+
+      } else {
+        // Handle case when token is not found in AsyncStorage
+        throw new Error("Token not found");
+      }
+
+      /* const newTemplate = { exercise: data.exercise_id, weight: data.weight, reps: data.reps, set: data.sets, rest: data.rest, day: data.day };
+      //alert(JSON.stringify(newTemplate));
+      let updatedTemplates = [];
+      const storedTemplates = await AsyncStorage.getItem(token+"@workoutLogs");
+      if (storedTemplates !== null) {
+        updatedTemplates = JSON.parse(storedTemplates);
+      }
+      //alert(JSON.stringify(updatedTemplates));
+      updatedTemplates.push(newTemplate);
+      console.log(JSON.stringify(newTemplate));
+      console.log(JSON.stringify(updatedTemplates));
+      await AsyncStorage.setItem(
+        username+"@workoutLogs",
+        JSON.stringify(updatedTemplates)
+      );  */
+
+
+  
+
     } catch (error) {
       alert(error.message);
-    } */
+    }
   };
 
   console.log("errors", errors);
@@ -81,7 +151,8 @@ const WorkoutInput = (props) => {
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.header}>My Workouts</Text>
+
+        <Text style={styles.header}>My Workouts</Text>
 
           <Controller
             control={control}
@@ -114,7 +185,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 500, message: "Invalid input" },
+              max: { value: 1000, message: "Invalid input" },
               min: { value: 0, message: "Cannot be negative" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -141,7 +212,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 100, message: "Invalid input" },
+              max: { value: 500, message: "Invalid input" },
               min: { value: 1, message: "Can't do less than one rep" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -168,7 +239,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 100, message: "Invalid input" },
+              max: { value: 500, message: "Invalid input" },
               min: { value: 1, message: "Can't do less than one set" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -195,7 +266,7 @@ const WorkoutInput = (props) => {
             defaultValue=""
             rules={{
               required: { value: true, message: "Required input" },
-              max: { value: 500, message: "Invalid input" },
+              max: { value: 1000, message: "Invalid input" },
               min: { value: 0, message: "Cannot be negative" },
             }}
             render={({ field: { onChange, value } }) => (
@@ -226,10 +297,11 @@ const WorkoutInput = (props) => {
                 mode="date" // You can use "time" or "datetime" for different modes
                 is24Hour={true}
                 timeZoneName={"US/Pacific"}
-                display="default"
+                display="spinner"
                 onChange={(event, selectedDate) => {
-                  const localDate = new Date(selectedDate);
-                  field.onChange(localDate);
+                  if (selectedDate) {
+                  field.onChange(selectedDate);
+                  }
                 }}
               />
             )}
