@@ -18,6 +18,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const WorkoutInput = (props) => {
   const [routine, setRoutine] = React.useState(-1);
   const [workoutID, setWorkoutID] = React.useState(0);
+  const [exerciseName, setExerciseName]= React.useState("");
 
   const {
     handleSubmit,
@@ -39,13 +40,13 @@ const WorkoutInput = (props) => {
 
   const onSubmit = async (data) => {
     await sleep(2000);
-    alert(JSON.stringify(data) + "{routine: " + routine + "}");
+    //alert(JSON.stringify(data) + "{routine: " + routine + "}");
     //props.toggle.bind(this, false);
     try {
 
-      const token = await AsyncStorage.getItem("access_token");
+      //const token = await AsyncStorage.getItem("access_token");
 
-      if (token) {
+      /* if (token) {
 
         //var date = data.day.toISOString().split("T", 1)[0];
 
@@ -100,19 +101,37 @@ const WorkoutInput = (props) => {
       // Check if the response was successful
       if (!workExerLink.ok) {
         throw new Error(workout.detail || "Something went wrong");
-      } */
+      } 
 
 
 
       } else {
         // Handle case when token is not found in AsyncStorage
         throw new Error("Token not found");
-      }
-      //add routine id
-      /* const newTemplate = { exercise: data.exercise_id, weight: data.weight, reps: data.reps, set: data.sets, rest: data.rest, day: data.day };
-      //alert(JSON.stringify(newTemplate));
+      } */
+
+      const existingExercises = await AsyncStorage.getItem("exercises");
+        let exercises = [];
+        if (existingExercises) {
+          exercises = JSON.parse(existingExercises);
+        }
+
+        let found = exercises.findIndex(function (element) {
+          return (element.id === data.exercise_id);
+      });
+
+      let tempName = exercises[found].name;
+      setExerciseName(tempName);
+
+
+      const username = await AsyncStorage.getItem("username");
+
+      const newTemplate = { exerID: data.exercise_id, weight: data.weight, reps: data.reps, 
+                            set: data.sets, rest: data.rest, day: data.day, exercise: exerciseName, 
+                            routine_id: routine };
+      alert(JSON.stringify(newTemplate));
       let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem(token+"@workoutLogs");
+      const storedTemplates = await AsyncStorage.getItem(username+"@workoutLogs");
       if (storedTemplates !== null) {
         updatedTemplates = JSON.parse(storedTemplates);
       }
@@ -123,7 +142,7 @@ const WorkoutInput = (props) => {
       await AsyncStorage.setItem(
         username+"@workoutLogs",
         JSON.stringify(updatedTemplates)
-      );  */
+      );
 
 
   
