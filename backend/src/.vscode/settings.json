@@ -1,0 +1,17 @@
+{
+    "flake8.args": [
+        "--max-line-length=100"
+    ],
+    "autopep8.args": [
+        "--max-line-length=100"
+    ],
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ],
+        "editor.formatOnType": true,
+        "editor.wordBasedSuggestions": "off",
+        "editor.formatOnSave": true
+    }
+}
