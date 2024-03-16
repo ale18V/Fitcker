@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile({ navigation, profile, setIsAuthorized }) {
   const { username } = profile;
   const [image, setImage] = useState(null);
   const [defaultPic, setDefaultPic] = useState(true);
 
-  const handleLogout = () => {
-    setIsAuthorized(false);
+  const handleLogout = async () => {
+    try {
+      // clear local storage
+      await AsyncStorage.removeItem("workoutPlans");
+      await AsyncStorage.removeItem("exercises");
+      await AsyncStorage.removeItem("routines");
+
+      setIsAuthorized(false);
+    } catch (error) {
+      console.error("Error clearing local storage:", error);
+    }
   };
   const navigateToInfo = () => {
     navigation.navigate("User Information");
@@ -21,7 +31,6 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
   const navigateToBiometrics = () => {
     navigation.navigate("Biometrics");
   };
-
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -37,8 +46,7 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       setDefaultPic(false);
-    }
-    else {
+    } else {
       setImage(null);
       setDefaultPic(true);
     }
@@ -46,31 +54,41 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
 
   return (
     <View className="flex flex-1 mx-10 justify-center items-center">
-
-
-
-      <TouchableOpacity onPress={pickImage} style={{
-        marginTop: 75, marginLeft: 10,
-        height: 80,
-        width: 80,
-        borderRadius: 40, overflow: "hidden",
-      }}>
-        {image && <Image source={{ uri: image }} style={{
-          height: 75,
-          width: 75,
-          borderRadius: 35,
-        }} />}
-        {defaultPic && <Image source={require("../assets/account.png")} style={{
-          height: 75,
-          width: 75,
-          borderRadius: 35,
-        }} />}
+      <TouchableOpacity
+        onPress={pickImage}
+        style={{
+          marginTop: 75,
+          marginLeft: 10,
+          height: 80,
+          width: 80,
+          borderRadius: 40,
+          overflow: "hidden",
+        }}
+      >
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{
+              height: 75,
+              width: 75,
+              borderRadius: 35,
+            }}
+          />
+        )}
+        {defaultPic && (
+          <Image
+            source={require("../assets/account.png")}
+            style={{
+              height: 75,
+              width: 75,
+              borderRadius: 35,
+            }}
+          />
+        )}
         {/* <MaterialCommunityIcons name="account-circle" size={80} /> */}
       </TouchableOpacity>
 
       <Text className="font-bold text-2xl mb-10 mx-5">{username}</Text>
-
-
 
       {/*       <TouchableOpacity onPress={pickImage}>
       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
@@ -79,7 +97,6 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
       </TouchableOpacity>
       <Text className="font-bold text-2xl mb-10">{username}</Text> */}
       <View className="w-full">
-
         <TouchableOpacity onPress={navigateToInfo}>
           <LinearGradient
             colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
@@ -129,6 +146,3 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
     </View>
   );
 }
-
-
-

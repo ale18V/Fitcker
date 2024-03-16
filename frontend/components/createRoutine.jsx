@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNPickerSelect from "react-native-picker-select";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const CreateRoutine = ({ newWorkoutPlan }) => {
+const CreateRoutine = ({ reRender }) => {
   const [name, setName] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -35,7 +35,7 @@ const CreateRoutine = ({ newWorkoutPlan }) => {
     };
 
     fetchWorkoutPlans();
-  }, [newWorkoutPlan]);
+  }, [reRender]);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);

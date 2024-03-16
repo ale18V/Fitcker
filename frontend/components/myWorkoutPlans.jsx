@@ -2,34 +2,59 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
-export default function MyWorkoutPlans({ newWorkoutPlan }) {
+export default function MyWorkoutPlans({ reRender, navigation }) {
   const [workoutPlans, setWorkoutPlans] = useState([]);
   const [expanded, setExpanded] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loadedFromServer, setLoadedFromServer] = useState(false);
+
+  const navigateToEditWorkoutPlan = (plan) => {
+    console.log(plan);
+    navigation.navigate("EditWorkoutPlan", { plan });
+  };
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
 
   useEffect(() => {
-    // Fetch workout plans from local storage
     const fetchWorkoutPlans = async () => {
-      console.log("FETCH");
       try {
-        const plansString = await AsyncStorage.getItem("workoutPlans");
-        if (plansString) {
-          const plans = JSON.parse(plansString);
-          setWorkoutPlans(plans);
+        // Check if data is already loaded from the server
+        if (!loadedFromServer) {
+          const token = await AsyncStorage.getItem("access_token");
+          let response = await fetch("http://localhost:8000/api/v1/plans/", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            // Set workout plans from the server response
+            setWorkoutPlans(data);
+            // Store workout plans in local storage
+            await AsyncStorage.setItem("workoutPlans", JSON.stringify(data));
+            // Set loadedFromServer to true to avoid repeated API calls
+            setLoadedFromServer(true);
+          }
+        } else {
+          // Fetch workout plans from local storage
+          const plansString = await AsyncStorage.getItem("workoutPlans");
+          if (plansString) {
+            const plans = JSON.parse(plansString);
+            setWorkoutPlans(plans);
+          }
         }
       } catch (error) {
-        console.error("Error fetching workout plans:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchWorkoutPlans();
-  }, [newWorkoutPlan]);
+  }, [reRender]);
 
   return (
     <ScrollView>
@@ -48,21 +73,30 @@ export default function MyWorkoutPlans({ newWorkoutPlan }) {
         <View className="p-4">
           {workoutPlans.length > 0 ? (
             workoutPlans.map((plan) => (
-              <View key={plan.id} style={{ marginBottom: 10 }}>
-                <Text className="font-bold mb-2">{plan.name}</Text>
-              </View>
+              <TouchableOpacity
+                key={plan.id}
+                onPress={() => navigateToEditWorkoutPlan(plan)}
+              >
+                <LinearGradient
+                  colors={[
+                    "rgba(56, 163, 165, 0.5)",
+                    "rgba(128, 237, 153, 0.5)",
+                  ]}
+                  className="p-4 rounded-xl mb-4"
+                >
+                  <View
+                    key={plan.id}
+                    className="text-lg flex-row items-center justify-between"
+                  >
+                    <Text className="font-bold ">{plan.name}</Text>
+                    <MaterialIcons name="edit" size={20} color="teal" />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
             ))
           ) : (
             <Text>No workout plans exist.</Text>
           )}
-          {successMessage ? (
-            <Text className="bg-green-300 p-3 border border-gray-400 rounded-md">
-              {successMessage}
-            </Text>
-          ) : null}
-          {errorMessage ? (
-            <Text className="bg-red-300 p-3 rounded-lg">{errorMessage}</Text>
-          ) : null}
         </View>
       )}
     </ScrollView>
