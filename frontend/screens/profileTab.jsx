@@ -65,9 +65,9 @@ export default function ProfileTab({ setIsAuthorized }) {
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name="User Information">
+      <Stack.Screen name="User Information"> 
         {() => (
-          <UserInfo
+          <UserInfo 
             userInfo={{
               username: username,
               email: email,
@@ -75,17 +75,17 @@ export default function ProfileTab({ setIsAuthorized }) {
               DoB: "1969",
             }}
           />
-        )}
+        )} 
       </Stack.Screen>
       <Stack.Screen name="Notification Settings" component={UserNotif} />
       <Stack.Screen name="Biometrics">
         {(props) => (
-          <UserBiometrics
+          <UserBiometrics 
             {...props}
             biometrics={{
-              heightCM: 178,
-              weightKG: 70,
-              heightIN: 0,
+              heightCM: 178, 
+              weightKG: 70, 
+              heightIN: 0, 
               weightLBS: 0,
             }}
           />
