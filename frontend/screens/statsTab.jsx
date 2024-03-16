@@ -13,14 +13,19 @@ export default function StatsTab() {
         tabBarIndicatorStyle: { backgroundColor: '#38A3A5'},
     
       }}>
-        <Tab.Screen name="Graphs" component={(props) => (
+
+
+        <Tab.Screen name="Graphs">
+        {(props) => (
           <StatsGraphs 
             {...props}
             statsGraph={{
-              exercise: "Bench Press", 
+              exercises: ["Bench Press", "Squats", "Shoulder Press", "Lunges"], 
             }}
           />
-        )} />
+        )}
+        </Tab.Screen>
+
         <Tab.Screen name="Calendar" component={StatsCalendar} />
       </Tab.Navigator>
   );
