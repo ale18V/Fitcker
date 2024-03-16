@@ -3,7 +3,6 @@ import { Text, View, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from 'expo-image-picker';
-import MaskedView from '@react-native-community/masked-view';
 
 export default function Profile({ navigation, profile, setIsAuthorized }) {
   const { username } = profile;
