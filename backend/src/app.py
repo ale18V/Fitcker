@@ -11,6 +11,7 @@ def create_app():
     async def lifespan(app: FastAPI):
         db.create_tables()
         yield
+        db.drop_tables()
 
     app = FastAPI(lifespan=lifespan)
 
