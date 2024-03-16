@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState, useEffect} from "react";
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Button, } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-//import Checkbox from 'expo-checkbox';
 import WorkoutSelect from "./workoutSelect.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -113,7 +112,7 @@ const MarkSets = () => {
     <View style={styles.container}>
       {<TouchableOpacity onPress={() => setShowTemplates(!showTemplates)}>
         <View style={styles.row}>
-          <Text style={styles.header}>My Workouts</Text>
+          <Text style={styles.header}>Workout Notes</Text>
           <MaterialIcons
             name={
               showTemplates === true
