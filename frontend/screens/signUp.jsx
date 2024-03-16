@@ -57,6 +57,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
       }
 
       await AsyncStorage.setItem("access_token", signInData.access_token);
+      await AsyncStorage.setItem("username", username);
       setIsAuthorized(true);
     } catch (error) {
       setErrorMessage(error.message);

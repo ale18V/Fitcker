@@ -28,8 +28,8 @@ export default function UserBiometrics({ biometrics }) {
   useEffect(() => {
     const retrieveBiometricsFromStorage = async () => {
       try {
-        const token = await AsyncStorage.getItem("access_token");
-        const biometricsData = await AsyncStorage.getItem(token+'@biometrics');
+        const username = await AsyncStorage.getItem("username");
+        const biometricsData = await AsyncStorage.getItem(username+'@biometrics');
         if (biometricsData !== null) {
           const { heightCM, weightKG } = JSON.parse(biometricsData);
           setHeight(heightCM);
@@ -58,7 +58,7 @@ export default function UserBiometrics({ biometrics }) {
 
   const saveBiometricsToStorage = async () => {
     try {
-      const token = await AsyncStorage.getItem("access_token");
+      const username = await AsyncStorage.getItem("username");
       if (!isMetric) {
         tempHeight = height / 2.54; // Convert height to cm
         tempWeight = weight / 0.45359237; // Convert weight to kg
@@ -68,7 +68,7 @@ export default function UserBiometrics({ biometrics }) {
         tempWeight = weight;
       }
       const biometricsData = { heightCM: tempHeight, weightKG: tempWeight };
-      await AsyncStorage.setItem(token+'@biometrics', JSON.stringify(biometricsData));
+      await AsyncStorage.setItem(username+'@biometrics', JSON.stringify(biometricsData));
       alert("saved" + biometricsData);
     } catch (error) {
       console.error('Error saving biometrics data:', error);

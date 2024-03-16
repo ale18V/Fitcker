@@ -13,13 +13,15 @@ const MarkSets = () => {
   const [sets, setSets] = React.useState("");
   const [reps, setReps] = React.useState("");
   const [rest, setRest] = React.useState("");
+  const [note, setNote] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
     const loadNotes = async () => {
       try {
-        const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+        const username = await AsyncStorage.getItem("username");
+        const storedTemplates = await AsyncStorage.getItem(username+"workoutNotes");
         if (storedTemplates !== null) {
           setNotes(JSON.parse(storedTemplates));
         }
@@ -41,12 +43,16 @@ const MarkSets = () => {
       setReps(notes[index].reps);
       setRest(notes[index].rest);
       setSets(notes[index].sets);
+      if (notes[index].note != "undefined") {
+      setNote(notes[index].note);
+      }
       }
       else{
       setWeight("");
       setReps("");
       setRest("");
       setSets("");
+      setNote("");
       }
     }
 
@@ -67,15 +73,16 @@ const MarkSets = () => {
     try {
 
       const newTemplate = { workout: workout, routine: routine, weight: weight,
-                               sets: sets, reps: reps, rest: rest, };
+                               sets: sets, reps: reps, rest: rest, note: note};
       let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+      const username = await AsyncStorage.getItem("username");
+      const storedTemplates = await AsyncStorage.getItem(username+"workoutNotes");
       if (storedTemplates !== null) {
         updatedTemplates = JSON.parse(storedTemplates);
       }
       updatedTemplates.push(newTemplate);
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"workoutNotes",
         JSON.stringify(updatedTemplates)
       );
       //alert(JSON.stringify(newTemplate));
@@ -91,14 +98,15 @@ const MarkSets = () => {
 
   const saveEditedNote = async () => {
     try {
+      const username = await AsyncStorage.getItem("username");
       const updatedTemplates = [...notes];
       var index = updatedTemplates.findIndex(function (element) {
         return (element.routine === routine && element.workout===workout)
       })
       updatedTemplates[index] = { workout: workout, routine: routine, weight: weight,
-        sets: sets, reps: reps, rest: rest, };
+        sets: sets, reps: reps, rest: rest, note: note};
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"workoutNotes",
         JSON.stringify(updatedTemplates)
       );
 
@@ -132,7 +140,7 @@ const MarkSets = () => {
       <Text>Weight: </Text>
       <TextInput style={styles.input}
         value={weight}
-        placeholder={''}
+        placeholder={'weight lifted in whatever units you want (default is pounds)'}
         onChangeText={(text) => {
           setWeight(text);
         }} />
@@ -140,7 +148,7 @@ const MarkSets = () => {
       <Text>Sets: </Text>
       <TextInput style={styles.input}
         value={sets}
-        placeholder={''}
+        placeholder={'number of sets done'}
         onChangeText={(text) => {
           setSets(text);
         }} />
@@ -149,7 +157,7 @@ const MarkSets = () => {
       <Text>Reps: </Text>
       <TextInput style={styles.input}
         value={reps}
-        placeholder={''}
+        placeholder={'numbers of reps in each set'}
         onChangeText={(text) => {
           setReps(text);
         }} />
@@ -157,10 +165,20 @@ const MarkSets = () => {
       <Text>Rest: </Text>
       <TextInput style={styles.input}
         value={rest}
-        placeholder={''}
+        placeholder={'seconds of rest between sets'}
         onChangeText={(text) => {
           setRest(text);
         }} />
+
+      <Text>Notes: </Text>
+      <TextInput style={styles.input2}
+        value={note}
+        placeholder={'Feel free to write down notes here to refer back to'}
+        onChangeText={(text) => {
+          setNote(text);
+        }} 
+        multiline={true}
+        />
 
       <View style={styles.button}>
       <Button
@@ -234,6 +252,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 4,
     borderWidth: 1,
+  },
+  input2: {
+    height: 300,
+    padding: 10,
+    borderRadius: 4,
+    borderWidth: 1,
+    alignContent: "flex-start",
+    textAlignVertical: 'top'
   },
 });
 
