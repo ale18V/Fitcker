@@ -108,7 +108,7 @@ const WorkoutInput = (props) => {
         // Handle case when token is not found in AsyncStorage
         throw new Error("Token not found");
       }
-
+      //add routine id
       /* const newTemplate = { exercise: data.exercise_id, weight: data.weight, reps: data.reps, set: data.sets, rest: data.rest, day: data.day };
       //alert(JSON.stringify(newTemplate));
       let updatedTemplates = [];
@@ -297,7 +297,7 @@ const WorkoutInput = (props) => {
                 mode="date" // You can use "time" or "datetime" for different modes
                 is24Hour={true}
                 timeZoneName={"US/Pacific"}
-                display="spinner"
+                display="default"
                 onChange={(event, selectedDate) => {
                   if (selectedDate) {
                   field.onChange(selectedDate);

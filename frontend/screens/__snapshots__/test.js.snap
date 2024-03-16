@@ -135,7 +135,7 @@ exports[`Landing Page renders correctly 1`] = `
 </View>
 `;
 
-exports[`LogTab Component renders correctly 1`] = `
+exports[`LogTab Page renders correctly 1`] = `
 <RCTScrollView
   style={
     {

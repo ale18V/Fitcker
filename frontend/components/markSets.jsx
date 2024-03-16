@@ -19,7 +19,8 @@ const MarkSets = () => {
   useEffect(() => {
     const loadNotes = async () => {
       try {
-        const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+        const username = await AsyncStorage.getItem("username");
+        const storedTemplates = await AsyncStorage.getItem(username+"workoutNotes");
         if (storedTemplates !== null) {
           setNotes(JSON.parse(storedTemplates));
         }
@@ -69,13 +70,14 @@ const MarkSets = () => {
       const newTemplate = { workout: workout, routine: routine, weight: weight,
                                sets: sets, reps: reps, rest: rest, };
       let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem("workoutNotes");
+      const username = await AsyncStorage.getItem("username");
+      const storedTemplates = await AsyncStorage.getItem(username+"workoutNotes");
       if (storedTemplates !== null) {
         updatedTemplates = JSON.parse(storedTemplates);
       }
       updatedTemplates.push(newTemplate);
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"workoutNotes",
         JSON.stringify(updatedTemplates)
       );
       //alert(JSON.stringify(newTemplate));
@@ -91,6 +93,7 @@ const MarkSets = () => {
 
   const saveEditedNote = async () => {
     try {
+      const username = await AsyncStorage.getItem("username");
       const updatedTemplates = [...notes];
       var index = updatedTemplates.findIndex(function (element) {
         return (element.routine === routine && element.workout===workout)
@@ -98,7 +101,7 @@ const MarkSets = () => {
       updatedTemplates[index] = { workout: workout, routine: routine, weight: weight,
         sets: sets, reps: reps, rest: rest, };
       await AsyncStorage.setItem(
-        "workoutNotes",
+        username+"workoutNotes",
         JSON.stringify(updatedTemplates)
       );
 

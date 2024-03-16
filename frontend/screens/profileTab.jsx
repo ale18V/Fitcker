@@ -53,8 +53,7 @@ export default function ProfileTab({ setIsAuthorized }) {
 
     const retrieveBiometricsFromStorage = async () => {
       try {
-        const token = await AsyncStorage.getItem("access_token");
-        const biometricsData = await AsyncStorage.getItem(token+'@biometrics');
+        const biometricsData = await AsyncStorage.getItem(username+'@biometrics');
         if (biometricsData !== null) {
           const { heightCM, weightKG } = JSON.parse(biometricsData);
           setHeight(heightCM);
