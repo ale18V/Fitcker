@@ -13,6 +13,8 @@ export default function ProfileTab({ setIsAuthorized }) {
   const [email, setemail] = useState(null);
   const [height, setHeight]= useState(null);
   const [weight, setWeight] = useState(null);
+  const [gender, setGender] = useState("");
+  const [DoB, setDoB] = useState("");
 
   useEffect(() => {
     const getUsernameFromApi = async () => {
@@ -64,8 +66,23 @@ export default function ProfileTab({ setIsAuthorized }) {
       }
     };
 
+    const retrieveUserInfo = async () => {
+      try {
+        const username = await AsyncStorage.getItem("username");
+        const userInfo = await AsyncStorage.getItem(username+'@userinfo');
+        if (userInfo !== null) {
+          const { genderr, dateBirth } = JSON.parse(userInfo);
+          setGender(genderr);
+          setDoB(dateBirth);
+        }
+      } catch (error) {
+        console.error('Error retrieving user data:', error);
+      }
+    };
+
     getUsernameFromApi();
     retrieveBiometricsFromStorage();
+    retrieveUserInfo();
   }, [setIsAuthorized]);
 
   
@@ -89,8 +106,8 @@ export default function ProfileTab({ setIsAuthorized }) {
             userInfo={{
               username: username,
               email: email,
-              gender: "female",
-              DoB: "1969",
+              gender: gender,
+              DoB: DoB,
             }}
           />
         )}
