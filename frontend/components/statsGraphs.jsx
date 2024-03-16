@@ -7,7 +7,7 @@ import {LineChart} from "react-native-chart-kit";
 export default function StatsGraphs({ statsGraph }) {
   const { exercises } = statsGraph;
   const [selectedExercise, setSelectedExercise] = useState(exercises[0]);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([0,0,0,0,0,0]);
 
   useEffect(() => {
     generateChartData();
