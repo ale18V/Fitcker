@@ -172,7 +172,7 @@ export default function workoutPlanForm({
         <Text className="font-bold mb-2">End Date</Text>
         <TouchableOpacity
           onPress={() => setShowEndDatePicker(!showEndDatePicker)}
-          className="border border-gray-400 rounded px-4 py-2 mb-4"
+          className="border border-gray-400 rounded px-4 py-2 "
         >
           <Text>{endDate.toDateString()}</Text>
         </TouchableOpacity>
@@ -187,11 +187,13 @@ export default function workoutPlanForm({
       </View>
       {successMessage ? (
         <View className="bg-green-300 p-3 rounded-lg mb-2">
-          <Text className="">{successMessage}</Text>
+          <Text>{successMessage}</Text>
         </View>
       ) : null}
       {errorMessage ? (
-        <Text className="bg-red-300 p-3 rounded-lg mb-2">{errorMessage}</Text>
+        <View className="bg-red-300 p-3 rounded-lg mb-2">
+          <Text>{errorMessage}</Text>
+        </View>
       ) : null}
       <CustomButton
         title={route ? "Update Plan" : "Create Plan"}

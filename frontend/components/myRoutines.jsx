@@ -4,33 +4,53 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function myRoutines() {
+export default function myRoutines({ reRender, navigation }) {
   const [routines, setRoutines] = useState([]);
   const [expanded, setExpanded] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loadedFromServer, setLoadedFromServer] = useState(true);
+
+  const navigateToEditRoutine = (routine) => {
+    console.log(routine);
+    navigation.navigate("EditRoutine", { routine });
+  };
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
 
   useEffect(() => {
-    // Fetch routines from local storage
     const fetchRoutines = async () => {
-      console.log("FETCH");
       try {
-        const routinesString = await AsyncStorage.getItem("routines");
-        if (routinesString) {
-          const routines = JSON.parse(routinesString);
-          setRoutines(routines);
+        // Check if data is already loaded from the server
+        if (!loadedFromServer) {
+          const token = await AsyncStorage.getItem("access_token");
+          let response = await fetch("http://localhost:8000/api/v1/routines/", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setRoutines(data);
+            await AsyncStorage.setItem("routines", JSON.stringify(data));
+            setLoadedFromServer(true);
+          }
+        } else {
+          const routinesString = await AsyncStorage.getItem("routines");
+          if (routinesString) {
+            const routines = JSON.parse(routinesString);
+            setRoutines(routines);
+          }
         }
       } catch (error) {
-        console.error("Error fetching workout routines:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchRoutines();
-  }, []);
+  }, [reRender]);
 
   return (
     <ScrollView>
@@ -49,7 +69,10 @@ export default function myRoutines() {
         <View className="p-4">
           {routines.length > 0 ? (
             routines.map((routine) => (
-              <TouchableOpacity key={routine.id}>
+              <TouchableOpacity
+                key={routine.id}
+                onPress={() => navigateToEditRoutine(routine)}
+              >
                 <LinearGradient
                   colors={[
                     "rgba(56, 163, 165, 0.5)",
@@ -67,14 +90,6 @@ export default function myRoutines() {
           ) : (
             <Text>No routines exist.</Text>
           )}
-          {successMessage ? (
-            <Text className="bg-green-300 p-3 border border-gray-400 rounded-md">
-              {successMessage}
-            </Text>
-          ) : null}
-          {errorMessage ? (
-            <Text className="bg-red-300 p-3 rounded-lg">{errorMessage}</Text>
-          ) : null}
         </View>
       )}
     </ScrollView>

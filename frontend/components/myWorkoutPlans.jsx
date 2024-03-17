@@ -84,10 +84,7 @@ export default function MyWorkoutPlans({ reRender, navigation }) {
                   ]}
                   className="p-4 rounded-xl mb-4"
                 >
-                  <View
-                    key={plan.id}
-                    className="text-lg flex-row items-center justify-between"
-                  >
+                  <View className="text-lg flex-row items-center justify-between">
                     <Text className="font-bold ">{plan.name}</Text>
                     <MaterialIcons name="edit" size={20} color="teal" />
                   </View>

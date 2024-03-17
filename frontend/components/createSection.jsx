@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Text, ScrollView, TouchableOpacity } from "react-native";
-
 import { MaterialIcons } from "@expo/vector-icons";
-import WorkoutPlanForm from "./workoutPlanForm";
 
-const CreateWorkoutPlan = ({ reRender, setreRender }) => {
+const CreateSection = ({ title, children }) => {
   const [expanded, setExpanded] = useState(false);
+
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
@@ -16,18 +15,16 @@ const CreateWorkoutPlan = ({ reRender, setreRender }) => {
         onPress={toggleExpanded}
         className="flex-row justify-between items-center"
       >
-        <Text className="font-bold text-2xl m-4">Create Workout Plan</Text>
+        <Text className="font-bold text-2xl m-4">{title}</Text>
         <MaterialIcons
           name={expanded ? "keyboard-arrow-down" : "keyboard-arrow-up"}
           size={24}
           color="black"
         />
       </TouchableOpacity>
-      {expanded && (
-        <WorkoutPlanForm reRender={reRender} setreRender={setreRender} />
-      )}
+      {expanded && children()}
     </ScrollView>
   );
 };
 
-export default CreateWorkoutPlan;
+export default CreateSection;

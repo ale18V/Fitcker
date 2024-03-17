@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
-import CreateWorkoutPlan from "../components/createWorkoutPlan";
-import CreateRoutine from "../components/createRoutine";
-import CreateExercise from "../components/createExercise";
 import MyWorkoutPlans from "../components/myWorkoutPlans";
 import MyRoutines from "../components/myRoutines";
 import MyExercises from "../components/myExercises";
 import WorkoutPlanForm from "../components/workoutPlanForm";
+import RoutineForm from "../components/routineForm";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import CreateSection from "../components/createSection";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -41,6 +40,20 @@ export default function CreateTab() {
           </View>
         )}
       </Stack.Screen>
+      <Stack.Screen
+        name="EditRoutine"
+        options={{ headerShown: false, presentation: "modal" }}
+      >
+        {(props) => (
+          <View className="">
+            <RoutineForm
+              {...props}
+              setreRender={setreRender}
+              reRender={reRender}
+            />
+          </View>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
@@ -57,13 +70,20 @@ const TabNavigator = ({ setreRender, reRender }) => (
     <Tab.Screen name="Create">
       {(props) => (
         <ScrollView className="flex-1 mt-5">
-          <CreateWorkoutPlan
+          <CreateSection
             {...props}
-            reRender={reRender}
-            setreRender={setreRender}
+            title="Create Workout Plan"
+            children={() => (
+              <WorkoutPlanForm reRender={reRender} setreRender={setreRender} />
+            )}
           />
-          <CreateRoutine {...props} reRender={reRender} />
-          <CreateExercise />
+          <CreateSection
+            {...props}
+            title="Create Routine"
+            children={() => (
+              <RoutineForm reRender={reRender} setreRender={setreRender} />
+            )}
+          />
         </ScrollView>
       )}
     </Tab.Screen>
@@ -71,8 +91,8 @@ const TabNavigator = ({ setreRender, reRender }) => (
       {(props) => (
         <ScrollView className="flex-1 mt-5">
           <MyWorkoutPlans {...props} reRender={reRender} />
-          <MyRoutines />
-          <MyExercises />
+          <MyRoutines {...props} reRender={reRender} />
+          <MyExercises {...props} reRender={reRender} />
         </ScrollView>
       )}
     </Tab.Screen>
