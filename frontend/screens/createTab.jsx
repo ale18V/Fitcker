@@ -5,6 +5,7 @@ import MyRoutines from "../components/myRoutines";
 import MyExercises from "../components/myExercises";
 import WorkoutPlanForm from "../components/workoutPlanForm";
 import RoutineForm from "../components/routineForm";
+import ExerciseForm from "../components/exerciseForm";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import CreateSection from "../components/createSection";
@@ -31,7 +32,7 @@ export default function CreateTab() {
         options={{ headerShown: false, presentation: "modal" }}
       >
         {(props) => (
-          <View className="">
+          <View>
             <WorkoutPlanForm
               {...props}
               setreRender={setreRender}
@@ -45,8 +46,22 @@ export default function CreateTab() {
         options={{ headerShown: false, presentation: "modal" }}
       >
         {(props) => (
-          <View className="">
+          <View>
             <RoutineForm
+              {...props}
+              setreRender={setreRender}
+              reRender={reRender}
+            />
+          </View>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="EditExercise"
+        options={{ headerShown: false, presentation: "modal" }}
+      >
+        {(props) => (
+          <View>
+            <ExerciseForm
               {...props}
               setreRender={setreRender}
               reRender={reRender}
@@ -82,6 +97,13 @@ const TabNavigator = ({ setreRender, reRender }) => (
             title="Create Routine"
             children={() => (
               <RoutineForm reRender={reRender} setreRender={setreRender} />
+            )}
+          />
+          <CreateSection
+            {...props}
+            title="Create Exercise"
+            children={() => (
+              <ExerciseForm reRender={reRender} setreRender={setreRender} />
             )}
           />
         </ScrollView>

@@ -4,33 +4,57 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function myExercises() {
+export default function MyExercises({ reRender, navigation }) {
   const [exercises, setExercises] = useState([]);
   const [expanded, setExpanded] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loadedFromServer, setLoadedFromServer] = useState(false);
+
+  const navigateToEditExercise = (exercise) => {
+    console.log(exercise);
+    navigation.navigate("EditExercise", { exercise });
+  };
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
 
   useEffect(() => {
-    // Fetch exercises from local storage
-    const fetchexercises = async () => {
-      console.log("FETCH");
+    const fetchExercises = async () => {
       try {
-        const exercisesString = await AsyncStorage.getItem("exercises");
-        if (exercisesString) {
-          const exercises = JSON.parse(exercisesString);
-          setExercises(exercises);
+        // Check if data is already loaded from the server
+        if (!loadedFromServer) {
+          const token = await AsyncStorage.getItem("access_token");
+          let response = await fetch(
+            "http://localhost:8000/api/v1/exercises/",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setExercises(data);
+            await AsyncStorage.setItem("exercises", JSON.stringify(data));
+            setLoadedFromServer(true);
+          }
+        } else {
+          // Fetch exercises from local storage
+          const exercisesString = await AsyncStorage.getItem("exercises");
+          if (exercisesString) {
+            const exercises = JSON.parse(exercisesString);
+            setExercises(exercises);
+          }
         }
       } catch (error) {
         console.error("Error fetching exercises:", error);
       }
     };
 
-    fetchexercises();
-  }, []);
+    fetchExercises();
+  }, [reRender]);
 
   return (
     <ScrollView>
@@ -49,7 +73,10 @@ export default function myExercises() {
         <View className="p-4">
           {exercises.length > 0 ? (
             exercises.map((exercise) => (
-              <TouchableOpacity key={exercise.id}>
+              <TouchableOpacity
+                key={exercise.id}
+                onPress={() => navigateToEditExercise(exercise)}
+              >
                 <LinearGradient
                   colors={[
                     "rgba(56, 163, 165, 0.5)",
@@ -57,10 +84,7 @@ export default function myExercises() {
                   ]}
                   className="p-4 rounded-xl mb-4"
                 >
-                  <View
-                    key={exercise.id}
-                    className="text-lg flex-row items-center justify-between"
-                  >
+                  <View className="text-lg flex-row items-center justify-between">
                     <Text className="font-bold ">{exercise.name}</Text>
                     <MaterialIcons name="edit" size={20} color="teal" />
                   </View>
@@ -70,14 +94,6 @@ export default function myExercises() {
           ) : (
             <Text>No exercises exist.</Text>
           )}
-          {successMessage ? (
-            <Text className="bg-green-300 p-3 border border-gray-400 rounded-md">
-              {successMessage}
-            </Text>
-          ) : null}
-          {errorMessage ? (
-            <Text className="bg-red-300 p-3 rounded-lg">{errorMessage}</Text>
-          ) : null}
         </View>
       )}
     </ScrollView>
