@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 import db
 from models.user import UserCreate, UserRead
-from models.db import User
+from models.tables import User
 import security
 
 router = APIRouter(prefix="/users")
