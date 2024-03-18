@@ -11,7 +11,7 @@ class RoutineRead(RoutineBase):
 
 
 class RoutineCreate(RoutineBase):
-    plan_id: int
+    pass
 
 
 class RoutineUpdate(RoutineBase):
