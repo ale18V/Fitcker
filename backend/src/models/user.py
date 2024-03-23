@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, field_validator
 import string
 
 
@@ -17,7 +17,8 @@ class UserCreate(UserBase):
     password: str = Field(
         min_length=1, description=f"Only alphanumeric characters and {string.punctuation} are allowed in this field")
 
-    @validator("password")
+    @field_validator("password")
+    @classmethod
     def check_password_characters(cls, value: str):
         allowed = set(string.ascii_letters + string.digits + string.punctuation)
         if not all([c in allowed for c in value]):
