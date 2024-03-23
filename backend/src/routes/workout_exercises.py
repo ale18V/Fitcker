@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 import db
-from models.db import Exercise, Routine, WorkoutExerciseLink
+from models.tables import WorkoutExerciseLink
 import security
 
 
@@ -36,10 +36,6 @@ async def read_routine_exercise_pairs(
         query = query.where(WorkoutExerciseLink.exercise_id == exercise_id)
 
     res = con.exec(query).all()
-    if not res:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="Routine not found")
-
     return res
 
 
@@ -54,7 +50,7 @@ async def delete_exercise_from_routine(
         WorkoutExerciseLink, {"workout_id": workout_id, "exercise_id": exercise_id})
     if not routine_exercise_pair:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="Exercise-Routine pair not found")
+                            detail="Workout-Exercise pair not found")
 
     con.delete(routine_exercise_pair)
     con.commit()

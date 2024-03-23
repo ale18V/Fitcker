@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 
 import db
 from models.plan import PlanCreate, PlanRead, PlanUpdate
-from models.db import Plan
+from models.tables import Plan
 import security
 
 
@@ -48,7 +48,7 @@ async def create_workout_plan(
 async def update_workout_plan(id: int,
                               workout_plan: PlanUpdate,
                               con: Annotated[Session, Depends(db.get_session)],
-                              user_id: Annotated[int, Depends(security.get_current_user_id)]) -> Plan:
+                              user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
     db_workout_plan = con.get(Plan, id)
     if not db_workout_plan:
