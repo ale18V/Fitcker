@@ -19,6 +19,9 @@ async def read_routines(
 
     if plan_id is None:
         user = con.get(User, user_id)
+        # TODO
+        # Handle the case where for some reason the id stored in the jwt is not valid
+        # This could happen if user deletion is implemented
         return user.routines
     else:
         plan = con.get(Plan, plan_id)
@@ -58,14 +61,14 @@ async def create_routine(
     return db_routine
 
 
-@router.patch("/{routine_id}", response_model=RoutineRead)
+@router.patch("/{id}", response_model=RoutineRead)
 async def update_routine(
-        routine_id: int,
+        id: int,
         routine: RoutineUpdate,
         con: Annotated[Session, Depends(db.get_session)],
         user_id: Annotated[int, Depends(security.get_current_user_id)]):
 
-    db_routine = con.get(Routine, routine_id)
+    db_routine = con.get(Routine, id)
     if not db_routine:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
