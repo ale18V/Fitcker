@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiURL } from "../config"
 
 const SignUp = ({ navigation, setIsAuthorized }) => {
   const [username, setUsername] = useState("");
@@ -13,7 +14,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   const handleSignUp = async () => {
     try {
       const signUpResponse = await fetch(
-        "http://localhost:8000/api/v1/users/",
+        `${apiURL}/api/v1/users/`,
         {
           method: "POST",
           headers: {
@@ -40,7 +41,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
       formData.append("password", password);
 
       const signInResponse = await fetch(
-        "http://localhost:8000/api/v1/users/login",
+        `${apiURL}/api/v1/users/login`,
         {
           method: "POST",
           headers: {

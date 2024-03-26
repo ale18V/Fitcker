@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, Button } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from 'expo-constants';
+import { apiURL } from "../config"
 
 const WorkoutSelect = (props) => {
 
@@ -32,7 +33,7 @@ const WorkoutSelect = (props) => {
 
           if (token) {
             const planResponse = await fetch(
-              "http://localhost:8000/api/v1/plans/",
+              `${apiURL}/api/v1/plans/`,
               {
                 method: "GET",
                 headers: {
@@ -85,7 +86,7 @@ const WorkoutSelect = (props) => {
           const token = await AsyncStorage.getItem("access_token");
 
           if (token) {
-            var url = new URL("http://localhost:8000/api/v1/routines/"),
+            var url = new URL(`${apiURL}/api/v1/routines/`),
               params = { plan_id: planID }
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
@@ -150,7 +151,7 @@ const WorkoutSelect = (props) => {
         const token = await AsyncStorage.getItem("access_token");
 
         if (token) {
-          var url = new URL("http://localhost:8000/api/v1/exercises/"),
+          var url = new URL(`${apiURL}/api/v1/exercises/`),
             params = {}
           Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
           const exerciseResponse = await fetch(
@@ -402,7 +403,7 @@ export default WorkoutSelect;
 
 
 const routineResponse = await fetch(
-  "http://localhost:8000/api/v1/routines/",
+  `${apiURL}/api/v1/routines/`,
   {
     method: "GET",
     headers: {
@@ -424,7 +425,7 @@ if (routineResponse.ok) {
 
 
 const exerciseResponse = await fetch(
-  "http://localhost:8000/api/v1/exercises/",
+  `${apiURL}/api/v1/exercises/`,
   {
     method: "GET",
     headers: {
@@ -446,7 +447,7 @@ if (exerciseResponse.ok) {
 
 
 const linkResponse = await fetch(
-  "http://localhost:8000/api/v1/routines-exercises/",
+  `${apiURL}/api/v1/routines-exercises/`,
   {
     method: "GET",
     headers: {

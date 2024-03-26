@@ -12,6 +12,7 @@ import { useForm, Controller } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import WorkoutSelect from "./workoutSelect.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiURL } from "../config"
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -57,7 +58,7 @@ const WorkoutInput = (props) => {
 
         console.log(JSON.stringify(workoutCreateData));
 
-        const workoutCreate = await fetch("http://localhost:8000/api/v1/workouts/", {
+        const workoutCreate = await fetch(`${apiURL}/api/v1/workouts/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +86,7 @@ const WorkoutInput = (props) => {
       }
 
       const workExerLink = await fetch(
-        "http://localhost:8000/api/v1/workout-exercises/",
+        `${apiURL}/api/v1/workout-exercises/`,
         {
           method: "POST",
           headers: {
