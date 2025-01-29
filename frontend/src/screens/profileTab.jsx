@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import UserInfo from "../components/userInfo";
 import UserNotif from "../components/userNotif";
 import UserBiometrics from "../components/userBiometrics";
+import { API_URL } from "../constants";
 
 const Stack = createStackNavigator();
 
@@ -25,7 +26,7 @@ export default function ProfileTab({ setIsAuthorized }) {
         if (token) {
           // Make a GET request to the API endpoint with the token included in the Authorization header
           const response = await fetch(
-            "http://localhost:8000/api/v1/users/me",
+            `${API_URL}/users/me`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

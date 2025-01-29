@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
+import { API_URL } from "../constants";
 
 const CreateExercise = () => {
   const [name, setName] = useState("");
@@ -38,7 +39,8 @@ const CreateExercise = () => {
 
     try {
       const token = await AsyncStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/v1/exercises/", {
+      
+      const response = await fetch(`${API_URL}/exercises`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

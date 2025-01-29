@@ -10,6 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNPickerSelect from "react-native-picker-select";
 import { MaterialIcons } from "@expo/vector-icons";
+import { API_URL } from "../constants";
 
 const CreateRoutine = ({ newWorkoutPlan }) => {
   const [name, setName] = useState("");
@@ -58,7 +59,7 @@ const CreateRoutine = ({ newWorkoutPlan }) => {
 
     try {
       const token = await AsyncStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/v1/routines/", {
+      const response = await fetch(`${API_URL}/routines`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

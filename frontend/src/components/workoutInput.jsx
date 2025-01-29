@@ -57,7 +57,7 @@ const WorkoutInput = (props) => {
 
         console.log(JSON.stringify(workoutCreateData));
 
-        const workoutCreate = await fetch("http://localhost:8000/api/v1/workouts/", {
+        const workoutCreate = await fetch(`${API_URL}/workouts/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ const WorkoutInput = (props) => {
       }
 
       const workExerLink = await fetch(
-        "http://localhost:8000/api/v1/workout-exercises/",
+        `${API_URL}/workout-exercises/`,
         {
           method: "POST",
           headers: {

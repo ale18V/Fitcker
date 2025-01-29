@@ -10,6 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
+import { API_URL } from "../constants";
 
 const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
   const [name, setName] = useState("");
@@ -57,7 +58,7 @@ const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
 
     try {
       const token = await AsyncStorage.getItem("access_token");
-      const response = await fetch("http://localhost:8000/api/v1/plans/", {
+      const response = await fetch(`${API_URL}/plans`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { API_URL } from "../constants";
 
 const SignIn = ({ navigation, setIsAuthorized }) => {
   const [username, setUsername] = useState("");
@@ -14,7 +15,7 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+      const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
