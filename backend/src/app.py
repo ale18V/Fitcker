@@ -14,14 +14,14 @@ def create_app():
 
     api = FastAPI(lifespan=lifespan)
 
-    api.include_router(router=users.router)
-    api.include_router(router=plans.router)
-    api.include_router(router=routines.router)
-    api.include_router(router=exercises.router)
-    api.include_router(router=workouts.router)
-    api.include_router(router=routines_exercises.router)
-    api.include_router(router=workout_exercises.router)
-    api.include_router(router=plans_routines.router)
+    api.include_router(users.router, tags=["Users"])
+    api.include_router(plans.router, tags=["Plans"])
+    api.include_router(routines.router, tags=["Routines"])
+    api.include_router(exercises.router, tags=["Exercises"])
+    api.include_router(workouts.router, tags=["Workouts"])
+    api.include_router(routines_exercises.router, tags=["Routines", "Exercises"])
+    api.include_router(workout_exercises.router, tags=["Workouts", "Exercises"])
+    api.include_router(plans_routines.router, tags=["Plans", "Routines"])
 
     app = FastAPI()
     app.mount("/api/v1", api)
