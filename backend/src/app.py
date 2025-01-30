@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-from fastapi.routing import APIRouter
 import db
-from routes import exercises, plans, plans_routines, routines, \
-    routines_exercises, users, workout_exercises, workouts
+from routes import exercises, plans, plans_routines, routines, routines_exercises, users, workout_exercises, workouts
 from contextlib import asynccontextmanager
 
 
@@ -14,9 +12,8 @@ def create_app():
         yield
         # db.drop_tables()
 
-    app = FastAPI(lifespan=lifespan)
+    api = FastAPI(lifespan=lifespan)
 
-    api = APIRouter(prefix="/api/v1")
     api.include_router(router=users.router)
     api.include_router(router=plans.router)
     api.include_router(router=routines.router)
@@ -26,5 +23,6 @@ def create_app():
     api.include_router(router=workout_exercises.router)
     api.include_router(router=plans_routines.router)
 
-    app.include_router(api)
+    app = FastAPI()
+    app.mount("/api/v1", api)
     return app

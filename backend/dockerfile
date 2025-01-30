@@ -5,10 +5,7 @@ RUN apt-get update -y \
     && apt-get autoremove -y \
     && rm -rfd /tmp/* /var/lib/apt/lists/*
 
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt && \
-    rm -rdf /tmp/*
-
 WORKDIR /srv/app/
 COPY src .
+RUN python3 -m pip install --no-cache-dir .
 ENV PYTHONPYCACHEPREFIX=/tmp
