@@ -1,6 +1,6 @@
 import * as React from "react";
-import StatsCalendar from "../components/statsCalendar";
-import StatsGraphs from "../components/statsGraphs";
+import StatsCalendar from "$/components/statsCalendar";
+import StatsGraphs from "$/components/statsGraphs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 const Tab = createMaterialTopTabNavigator();

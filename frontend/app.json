@@ -4,7 +4,8 @@
     "slug": "CS180",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon1.png",
+    "scheme": "fitcker",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -20,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon1.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -36,8 +37,12 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "expo-router"
     ],
+    "experiments": {
+    	"typedRoutes": true
+    },
     "extra": {
       "eas": {
         "projectId": "204a1e78-8d80-401b-8ea1-4b27c78868dd"

@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../constants";
+import { useNavigation } from "expo-router";
 
-const SignUp = ({ navigation, setIsAuthorized }) => {
+const Register: FunctionComponent = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-
+  const navigation = useNavigation()
   const handleSignUp = async () => {
     try {
       const signUpResponse = await fetch(
@@ -35,38 +35,16 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
         throw new Error(signUpData.detail || "Something went wrong");
       }
 
-      // Log user in automatically
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("password", password);
-
-      const signInResponse = await fetch(
-        `${API_URL}/users/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: formData,
-        }
-      );
-
-      const signInData = await signInResponse.json();
-
-      if (!signInResponse.ok) {
-        throw new Error(data2.detail || "Something went wrong");
-      }
-
-      await AsyncStorage.setItem("access_token", signInData.access_token);
-      await AsyncStorage.setItem("username", username);
-      setIsAuthorized(true);
+      navigation.navigate("/login")
+      
+      
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
   const handleAlreadyHaveAccount = () => {
-    navigation.navigate("SignIn");
+    navigation.navigate("/login")
   };
 
   return (
@@ -108,7 +86,7 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
 
         <TouchableOpacity
           onPress={handleSignUp}
-          className="py-2 px-6 bg-teal-600 px-6 py-2 rounded-lg"
+          className="bg-teal-600 px-6 py-2 rounded-lg"
         >
           <Text className="flex items-center text-white font-medium text-lg ">
             Sign Up
@@ -127,4 +105,4 @@ const SignUp = ({ navigation, setIsAuthorized }) => {
   );
 };
 
-export default SignUp;
+export default Register;

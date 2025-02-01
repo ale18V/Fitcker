@@ -1,12 +1,10 @@
-import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "react-native";
+import { useNavigation } from "expo-router";
 
-const Landing = ({ navigation }) => {
-  const handleOnPress = () => {
-    navigation.navigate("SignUp");
-  };
+const Landing = () => {
+  const navigation = useNavigation()
   return (
    
     <View className="flex-1">
@@ -15,13 +13,13 @@ const Landing = ({ navigation }) => {
     style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}  
     >
       <Image
-          source={require("../assets/icon1.png")} 
+          source={require("../../assets/icon1.png")} 
           style={{ width: 150, height: 150 }}
           className="mt-20 shadow-md"
         />
       <Text className="text-2xl text-teal-700 font-bold mt-5">Fitness Tracker</Text>
       <TouchableOpacity
-        onPress={handleOnPress}
+        onPress={() => navigation.navigate("/register")}
         className="bg-teal-600 px-6 py-2 rounded-lg mt-40"
       >
         <Text className="text-white text-lg">Get Started</Text>

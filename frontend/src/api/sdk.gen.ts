@@ -13,7 +13,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     client?: Client;
 };
 
-export class DefaultService {
+export class UsersService {
     /**
      * Register
      */
@@ -59,6 +59,9 @@ export class DefaultService {
         });
     }
     
+}
+
+export class PlansService {
     /**
      * Read Workout Plans
      */
@@ -132,6 +135,61 @@ export class DefaultService {
     }
     
     /**
+     * Delete Routine From Plan
+     */
+    public static deletePlansRoutines<ThrowOnError extends boolean = false>(options: Options<DeletePlansRoutinesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).delete<DeletePlansRoutinesResponse, DeletePlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options
+        });
+    }
+    
+    /**
+     * Read Plan Routine Pairs
+     */
+    public static getPlansRoutines<ThrowOnError extends boolean = false>(options?: Options<GetPlansRoutinesData, ThrowOnError>) {
+        return (options?.client ?? _heyApiClient).get<GetPlansRoutinesResponse, GetPlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Routine To Plan
+     */
+    public static postPlansRoutines<ThrowOnError extends boolean = false>(options: Options<PostPlansRoutinesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).post<PostPlansRoutinesResponse, PostPlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+}
+
+export class RoutinesService {
+    /**
      * Read Routines
      */
     public static getRoutines<ThrowOnError extends boolean = false>(options?: Options<GetRoutinesData, ThrowOnError>) {
@@ -204,6 +262,97 @@ export class DefaultService {
     }
     
     /**
+     * Delete Exercise From Routine
+     */
+    public static deleteRoutinesExercises<ThrowOnError extends boolean = false>(options: Options<DeleteRoutinesExercisesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).delete<DeleteRoutinesExercisesResponse, DeleteRoutinesExercisesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/routines-exercises/',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Exercise To Routine
+     */
+    public static postRoutinesExercises<ThrowOnError extends boolean = false>(options: Options<PostRoutinesExercisesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).post<PostRoutinesExercisesResponse, PostRoutinesExercisesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/routines-exercises/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Delete Routine From Plan
+     */
+    public static deletePlansRoutines<ThrowOnError extends boolean = false>(options: Options<DeletePlansRoutinesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).delete<DeletePlansRoutinesResponse, DeletePlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options
+        });
+    }
+    
+    /**
+     * Read Plan Routine Pairs
+     */
+    public static getPlansRoutines<ThrowOnError extends boolean = false>(options?: Options<GetPlansRoutinesData, ThrowOnError>) {
+        return (options?.client ?? _heyApiClient).get<GetPlansRoutinesResponse, GetPlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Routine To Plan
+     */
+    public static postPlansRoutines<ThrowOnError extends boolean = false>(options: Options<PostPlansRoutinesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).post<PostPlansRoutinesResponse, PostPlansRoutinesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/plans-routines/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+}
+
+export class ExercisesService {
+    /**
      * Read Exercises
      */
     public static getExercises<ThrowOnError extends boolean = false>(options?: Options<GetExercisesData, ThrowOnError>) {
@@ -267,62 +416,6 @@ export class DefaultService {
                 }
             ],
             url: '/exercises/{exercise_id}',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * Read Workouts
-     */
-    public static getWorkouts<ThrowOnError extends boolean = false>(options?: Options<GetWorkoutsData, ThrowOnError>) {
-        return (options?.client ?? _heyApiClient).get<GetWorkoutsResponse, unknown, ThrowOnError>({
-            security: [
-                {
-                    scheme: 'bearer',
-                    type: 'http'
-                }
-            ],
-            url: '/workouts/',
-            ...options
-        });
-    }
-    
-    /**
-     * Create Workout
-     */
-    public static postWorkouts<ThrowOnError extends boolean = false>(options: Options<PostWorkoutsData, ThrowOnError>) {
-        return (options.client ?? _heyApiClient).post<PostWorkoutsResponse, PostWorkoutsError, ThrowOnError>({
-            security: [
-                {
-                    scheme: 'bearer',
-                    type: 'http'
-                }
-            ],
-            url: '/workouts/',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * Update Workout
-     */
-    public static patchWorkoutsByWorkoutId<ThrowOnError extends boolean = false>(options: Options<PatchWorkoutsByWorkoutIdData, ThrowOnError>) {
-        return (options.client ?? _heyApiClient).patch<PatchWorkoutsByWorkoutIdResponse, PatchWorkoutsByWorkoutIdError, ThrowOnError>({
-            security: [
-                {
-                    scheme: 'bearer',
-                    type: 'http'
-                }
-            ],
-            url: '/workouts/{workout_id}',
             ...options,
             headers: {
                 'Content-Type': 'application/json',
@@ -419,50 +512,109 @@ export class DefaultService {
         });
     }
     
+}
+
+export class WorkoutsService {
     /**
-     * Delete Routine From Plan
+     * Read Workouts
      */
-    public static deletePlansRoutines<ThrowOnError extends boolean = false>(options: Options<DeletePlansRoutinesData, ThrowOnError>) {
-        return (options.client ?? _heyApiClient).delete<DeletePlansRoutinesResponse, DeletePlansRoutinesError, ThrowOnError>({
+    public static getWorkouts<ThrowOnError extends boolean = false>(options?: Options<GetWorkoutsData, ThrowOnError>) {
+        return (options?.client ?? _heyApiClient).get<GetWorkoutsResponse, unknown, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/plans-routines/',
+            url: '/workouts/',
             ...options
         });
     }
     
     /**
-     * Read Plan Routine Pairs
+     * Create Workout
      */
-    public static getPlansRoutines<ThrowOnError extends boolean = false>(options?: Options<GetPlansRoutinesData, ThrowOnError>) {
-        return (options?.client ?? _heyApiClient).get<GetPlansRoutinesResponse, GetPlansRoutinesError, ThrowOnError>({
+    public static postWorkouts<ThrowOnError extends boolean = false>(options: Options<PostWorkoutsData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).post<PostWorkoutsResponse, PostWorkoutsError, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/plans-routines/',
+            url: '/workouts/',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Update Workout
+     */
+    public static patchWorkoutsByWorkoutId<ThrowOnError extends boolean = false>(options: Options<PatchWorkoutsByWorkoutIdData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).patch<PatchWorkoutsByWorkoutIdResponse, PatchWorkoutsByWorkoutIdError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/workouts/{workout_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Delete Exercise From Routine
+     */
+    public static deleteWorkoutExercises<ThrowOnError extends boolean = false>(options: Options<DeleteWorkoutExercisesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).delete<DeleteWorkoutExercisesResponse, DeleteWorkoutExercisesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/workout-exercises/',
             ...options
         });
     }
     
     /**
-     * Add Routine To Plan
+     * Read Routine Exercise Pairs
      */
-    public static postPlansRoutines<ThrowOnError extends boolean = false>(options: Options<PostPlansRoutinesData, ThrowOnError>) {
-        return (options.client ?? _heyApiClient).post<PostPlansRoutinesResponse, PostPlansRoutinesError, ThrowOnError>({
+    public static getWorkoutExercises<ThrowOnError extends boolean = false>(options?: Options<GetWorkoutExercisesData, ThrowOnError>) {
+        return (options?.client ?? _heyApiClient).get<GetWorkoutExercisesResponse, GetWorkoutExercisesError, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/plans-routines/',
+            url: '/workout-exercises/',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Workout Stats
+     */
+    public static postWorkoutExercises<ThrowOnError extends boolean = false>(options: Options<PostWorkoutExercisesData, ThrowOnError>) {
+        return (options.client ?? _heyApiClient).post<PostWorkoutExercisesResponse, PostWorkoutExercisesError, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/workout-exercises/',
             ...options,
             headers: {
                 'Content-Type': 'application/json',

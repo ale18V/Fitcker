@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { API_URL } from "../constants";
+import { PlansService } from "$/api";
 
-const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
+const CreateWorkoutPlan: FunctionComponent = () => {
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -22,19 +21,6 @@ const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleStartDateChange = (event, selectedDate) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) {
-      setStartDate(selectedDate);
-    }
-  };
-
-  const handleEndDateChange = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) {
-      setEndDate(selectedDate);
-    }
-  };
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -50,43 +36,23 @@ const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
       return;
     }
 
-    const planData = {
-      name: name,
-      start_date: startDate.toISOString().split("T")[0],
-      end_date: endDate.toISOString().split("T")[0],
-    };
 
     try {
-      const token = await AsyncStorage.getItem("access_token");
-      const response = await fetch(`${API_URL}/plans`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(planData),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        // Retrieve existing plans from local storage
-        const existingPlans = await AsyncStorage.getItem("workoutPlans");
-        let plans = [];
-        if (existingPlans) {
-          plans = JSON.parse(existingPlans);
+      const response = await PlansService.postPlans({
+        body: {
+          name,
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
         }
+      })
+      if (response.data) {
 
-        // Append the new plan to the array
-        plans.push(data);
-
-        // Store the updated plans back into local storage
-        await AsyncStorage.setItem("workoutPlans", JSON.stringify(plans));
         setSuccessMessage("Workout plan successfully created.");
         setErrorMessage("");
         // Clear form fields
         setName("");
         setStartDate(new Date());
         setEndDate(new Date());
-        setNewWorkoutPlan(!newWorkoutPlan);
         setTimeout(() => {
           setSuccessMessage("");
         }, 3000);
@@ -135,7 +101,12 @@ const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
                 value={startDate}
                 mode="date"
                 display="spinner"
-                onChange={handleStartDateChange}
+                onChange={(event, selectedDate) => {
+                  setShowStartDatePicker(false);
+                  if (selectedDate) {
+                    setStartDate(selectedDate);
+                  }
+                }}
               />
             )}
           </View>
@@ -152,7 +123,12 @@ const CreateWorkoutPlan = ({ newWorkoutPlan, setNewWorkoutPlan }) => {
                 value={endDate}
                 mode="date"
                 display="spinner"
-                onChange={handleEndDateChange}
+                onChange={(event, selectedDate) => {
+                  setShowEndDatePicker(false);
+                  if (selectedDate) {
+                    setEndDate(selectedDate);
+                  }
+                }}
               />
             )}
           </View>

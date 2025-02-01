@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from "expo-router";
 
-export default function Profile({ navigation, profile, setIsAuthorized }) {
+type Props = {
+  profile: {
+    username: string;
+  }
+}
+
+const Profile: FunctionComponent<Props> = ({ profile }) => {
   const { username } = profile;
   const [image, setImage] = useState(null);
   const [defaultPic, setDefaultPic] = useState(true);
-
+  const navigation = useNavigation()
   const handleLogout = () => {
-    setIsAuthorized(false);
+    // setIsAuthorized(false);
   };
   const navigateToInfo = () => {
-    navigation.navigate("User Information");
+    navigation.navigate("userInfo");
   };
   const navigateToNotif = () => {
-    navigation.navigate("Notification Settings");
+    navigation.navigate("userNotif");
   };
   const navigateToBiometrics = () => {
     navigation.navigate("Biometrics");
@@ -60,7 +67,7 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
           width: 75,
           borderRadius: 35,
         }} />}
-        {defaultPic && <Image source={require("../assets/account.png")} style={{
+        {defaultPic && <Image source={require("../../../../assets/account.png")} style={{
           height: 75,
           width: 75,
           borderRadius: 35,
@@ -74,7 +81,7 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
 
       {/*       <TouchableOpacity onPress={pickImage}>
       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-      {defaultPic && <Image source={require("../assets/account.png")} style={{ width: 80, height: 80 }} />}
+      {defaultPic && <Image source={account.png} style={{ width: 80, height: 80 }} />}
       {<MaterialCommunityIcons name="account-circle" size={80} />}
       </TouchableOpacity>
       <Text className="font-bold text-2xl mb-10">{username}</Text> */}
@@ -132,3 +139,4 @@ export default function Profile({ navigation, profile, setIsAuthorized }) {
 
 
 
+export default Profile;

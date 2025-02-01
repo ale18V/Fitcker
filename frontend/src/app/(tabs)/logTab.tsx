@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Text,
   View,
@@ -10,21 +9,17 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import MarkSets from "../components/markSets.jsx";
-import WorkoutInput from "../components/workoutInput.jsx";
+import WorkoutInput from "$/components/workoutInput.tsx";
 
-export default function LogTab() {
+const LogTab = () => {
   const [markModalVisible, setMarkModalVisible] = useState(false);
   const [logModal, setLogModal] = useState(false);
-  const [error, setError] = useState(false);
-  const [workoutTemplates, setWorkoutTemplates] = useState([]);
 
-  const done = (status) => {
+  const done = (status: boolean) => {
     setLogModal(status);
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     const loadWorkoutTemplates = async () => {
       try {
         const storedTemplates = await AsyncStorage.getItem("workoutTemplates");
@@ -37,7 +32,7 @@ export default function LogTab() {
       }
     };
     loadWorkoutTemplates();
-  }, []);
+  }, []); */
 
   return (
     <ScrollView style={styles.outerContainer}>
@@ -49,7 +44,7 @@ export default function LogTab() {
           <View style={styles.buttonContainer}>
             <Text style={styles.text}>My Workouts</Text>
             <Image
-              source={require("../assets/icon1.png")}
+              source={require("../../../assets/icon1.png")}
               style={styles.image}
             />
           </View>
@@ -62,7 +57,7 @@ export default function LogTab() {
           <View style={styles.buttonContainer}>
             <Text style={styles.text2}>Log Workouts</Text>
             <Image
-              source={require("../assets/icon2.png")}
+              source={require("../../../assets/icon2.png")}
               style={styles.logimage}
               resizeMode="contain"
             />
@@ -80,7 +75,8 @@ export default function LogTab() {
       >
         <ScrollView style={styles.modalContainer}>
           <View style={styles.container}>
-            <MarkSets></MarkSets>
+            {/*<MarkSets></MarkSets>*/}
+            <Text>Mark sets</Text>
           </View>
           <View style={styles.container}>
             <Pressable
@@ -103,7 +99,7 @@ export default function LogTab() {
       >
         <ScrollView style={styles.modalContainer}>
           <View style={styles.container}>
-            {!error && <WorkoutInput toggle={done}></WorkoutInput>}
+            <WorkoutInput toggle={done} />
           </View>
           <View style={styles.container}>
             <Pressable
@@ -135,6 +131,8 @@ export default function LogTab() {
     </ScrollView>
   );
 }
+
+export default LogTab;
 
 const styles = StyleSheet.create({
   container: {

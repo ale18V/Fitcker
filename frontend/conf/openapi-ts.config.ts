@@ -1,7 +1,7 @@
 import { defaultPlugins, defineConfig } from "@hey-api/openapi-ts"
 
 export default defineConfig({
-    input: "openapi.json",
+    input: "conf/openapi.json",
     output: "src/api/",
     plugins: [
        "@hey-api/typescript",
@@ -11,7 +11,11 @@ export default defineConfig({
        {
         name: "@hey-api/sdk",
         asClass: true,
-        operationId: false
+        operationId: false,
+       },
+       {
+        name: "@hey-api/client-fetch",
+        runtimeConfigPath: "./src/utils/hey-api.ts",
        }
     ],
     logs: { level: "silent" }

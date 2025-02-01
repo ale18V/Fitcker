@@ -1,22 +1,26 @@
-import React from "react";
+import { FunctionComponent } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import CreateTab from "./createTab.jsx";
-import LogTab from "./logTab.jsx";
-import ProfileTab from "./profileTab.jsx";
-import StatsTab from "./statsTab.jsx";
-import Landing from "./landing.jsx";
-import SignIn from "./signIn.jsx";
-import SignUp from "./signUp.jsx";
+import CreateTab from "./app/(tabs)/createTab.tsx";
+import LogTab from "./app/(tabs)/logTab.tsx";
+import ProfileTab from "./app/(tabs)/profileTab.tsx";
+import StatsTab from "./app/(tabs)/statsTab.tsx";
+import Landing from "./app/index.tsx";
+import SignIn from "./signIn.tsx";
+import SignUp from "./signUp.tsx";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export default function MyTabs({ authorized, setIsAuthorized }) {
-  return authorized ? (
-    <Tab.Navigator
+type Props = {
+  authorized: boolean;
+  setIsAuthorized: (value: boolean) => void;
+}
+
+const TabScreens: FunctionComponent<> = (props) => {
+<Tab.Navigator
       initialRouteName="CreateTab"
       screenOptions={{
         tabBarActiveTintColor: "#38A3A5",
@@ -83,8 +87,17 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
         {(props) => <ProfileTab {...props} setIsAuthorized={setIsAuthorized} />}
       </Tab.Screen>
     </Tab.Navigator>
-  ) : (
+}
+
+const MyTabs: FunctionComponent<Props> = ({ authorized, setIsAuthorized }) => {
+  return (
     <Stack.Navigator initialRouteName="Landing">
+    <Stack.Screen
+    component={TabScreens}
+    name="Home"
+
+    />
+    
       <Stack.Screen
         name="Landing"
         component={Landing}
@@ -99,3 +112,5 @@ export default function MyTabs({ authorized, setIsAuthorized }) {
     </Stack.Navigator>
   );
 }
+
+export default MyTabs;

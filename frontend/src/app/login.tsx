@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_URL } from "../constants";
+import { useNavigation } from "expo-router";
+import user from "$/stores/user";
 
-const SignIn = ({ navigation, setIsAuthorized }) => {
+const Login: FunctionComponent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const navigation = useNavigation()
   const handleSignIn = async () => {
     try {
       // Use form data for login backend api standard
@@ -18,7 +20,7 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
       const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: formData,
       });
@@ -30,16 +32,18 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
         throw new Error(data.detail || "Something went wrong");
       }
 
-      await AsyncStorage.setItem("access_token", data.access_token);
-      await AsyncStorage.setItem("username", username);
-      setIsAuthorized(true);
+      user.setState(s => ({
+        ...s,
+        authToken: data.access_token,
+        username: username,
+      }))
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
   const handleCreateAccount = () => {
-    navigation.navigate("SignUp");
+    navigation.navigate("/register");
   };
 
   return (
@@ -67,7 +71,7 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
 
         <TouchableOpacity
           onPress={handleSignIn}
-          className="py-2 px-6 bg-teal-600 px-6 py-2 rounded-lg"
+          className="py-2 px-6 bg-teal-600 rounded-lg"
         >
           <Text className="flex items-center text-white font-medium text-lg">
             Sign In
@@ -86,4 +90,4 @@ const SignIn = ({ navigation, setIsAuthorized }) => {
   );
 };
 
-export default SignIn;
+export default Login;

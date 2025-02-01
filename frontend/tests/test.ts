@@ -4,24 +4,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Landing from './landing';
-import SignUp from './signUp.jsx';
-import SignIn from './signIn.jsx';
-import CreateTab from './createTab.jsx';
-import CreateExercise from '../components/createExercise.jsx';
-import CreateRoutine from '../components/createRoutine.jsx';
-import CreateWorkoutPlan from '../components/createWorkoutPlan.jsx';
-import LogTab from "./logTab.jsx";
-import WorkoutInput from '../components/workoutInput.jsx';
-import WorkoutSelect from '../components/workoutSelect.jsx';
-import MarkSets from '../components/markSets.jsx';
-import StatsTab from './statsTab.jsx'
-import StatsCalendar from "../components/statsCalendar.jsx";
-import StatsGraphs from "../components/statsGraphs.jsx";
-import ProfileTab from './profileTab.jsx';
-import Profile from '../components/profile.jsx';
-import UserInfo from '../components/userInfo.jsx';
-import UserNotif from '../components/userNotif.jsx';
-import UserBiometrics from '../components/userBiometrics.jsx';
+import SignUp from './signUp.tsx';
+import SignIn from './signIn.tsx';
+import CreateTab from './createTab.tsx';
+import CreateExercise from '../components/createExercise.tsx';
+import CreateRoutine from '../components/createRoutine.tsx';
+import CreateWorkoutPlan from '../components/createWorkoutPlan.tsx';
+import LogTab from "./logTab.tsx";
+import WorkoutInput from '../components/workoutInput.tsx';
+import WorkoutSelect from '../components/workoutSelect.tsx';
+import MarkSets from '../components/markSets.tsx';
+import StatsTab from './statsTab.tsx'
+import StatsCalendar from "$/components/statsCalendar.tsx";
+import StatsGraphs from "$/components/statsGraphs.tsx";
+import ProfileTab from './profileTab.tsx';
+import Profile from '../components/profile.tsx';
+import UserInfo from '../components/userInfo.tsx';
+import UserNotif from '../components/userNotif.tsx';
+import UserBiometrics from '../components/userBiometrics.tsx';
 
 jest.useFakeTimers();
 

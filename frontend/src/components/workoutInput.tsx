@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useEffect } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   Text,
   View,
@@ -10,22 +9,21 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import WorkoutSelect from "./workoutSelect.jsx";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import WorkoutSelect from "./workoutSelect.tsx";
+import { sleep } from "$/utils/index.ts";
+import { WorkoutsService } from "$/api/sdk.gen.ts";
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+type Props = {
+  toggle: (status: boolean) => void;
+}
 
-const WorkoutInput = (props) => {
-  const [routine, setRoutine] = React.useState(-1);
-  const [workoutID, setWorkoutID] = React.useState(0);
-  const [exerciseName, setExerciseName]= React.useState("");
+const WorkoutInput: FunctionComponent<Props> = ({ toggle }) => {
+  const [routineId, setRoutineId] = useState(0);
 
   const {
     handleSubmit,
     control,
     reset,
-    formState,
-    formState: { isSubmitSuccessful },
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -38,124 +36,19 @@ const WorkoutInput = (props) => {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     await sleep(2000);
-    //alert(JSON.stringify(data) + "{routine: " + routine + "}");
-    //props.toggle.bind(this, false);
     try {
-
-      //const token = await AsyncStorage.getItem("access_token");
-
-      /* if (token) {
-
-        //var date = data.day.toISOString().split("T", 1)[0];
-
-        const workoutCreateData = {
-          "date": data.day.toISOString().split("T")[0],
-          "routine_id": routine
-        };
-
-        console.log(JSON.stringify(workoutCreateData));
-
-        const workoutCreate = await fetch(`${API_URL}/workouts/`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(workoutCreateData),
-        });
-        
-      const workout = await workoutCreate.json();
-
-      // Check if the response was successful
-      if (!workoutCreate.ok) {
-        throw new Error(workout.detail || "Something went wrong");
-      }
-
-     setWorkoutID(workout.id);
-
-      /* const statSubmit = {
-        "workout_id": workoutID,
-        "exercise_id": data.exercise_id,
-        "sets": data.sets,
-        "reps": data.reps,
-        "seconds_of_rest": data.rest,
-        "weight": data.weight
-      }
-
-      const workExerLink = await fetch(
-        `${API_URL}/workout-exercises/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(statSubmit),
+      await WorkoutsService.postWorkoutExercises({
+        body: {
+          exercise_id: +data.exercise_id,
+          sets: +data.sets,
+          reps: +data.reps,
+          seconds_of_rest: +data.rest,
+          weight: +data.weight,
+          workout_id: 0
         }
-      );
-        
-      const link = await workExerLink.json();
-
-      // Check if the response was successful
-      if (!workExerLink.ok) {
-        throw new Error(workout.detail || "Something went wrong");
-      } 
-
-
-
-      } else {
-        // Handle case when token is not found in AsyncStorage
-        throw new Error("Token not found");
-      } */
-
-      const existingExercises = await AsyncStorage.getItem("exercises");
-        let exercises = [];
-        if (existingExercises) {
-          exercises = JSON.parse(existingExercises);
-        }
-
-        let found = exercises.findIndex(function (element) {
-          return (element.id === data.exercise_id);
-      });
-
-      let tempName = exercises[found].name;
-      setExerciseName(tempName);
-
-
-      const username = await AsyncStorage.getItem("username");
-
-      const newTemplate = { exerID: data.exercise_id, weight: data.weight, reps: data.reps, 
-                            set: data.sets, rest: data.rest, day: data.day, exercise: exerciseName, 
-                            routine_id: routine };
-      alert(JSON.stringify(newTemplate));
-      let updatedTemplates = [];
-      const storedTemplates = await AsyncStorage.getItem(username+"@workoutLogs");
-      if (storedTemplates !== null) {
-        updatedTemplates = JSON.parse(storedTemplates);
-      }
-      //alert(JSON.stringify(updatedTemplates));
-      updatedTemplates.push(newTemplate);
-      console.log(JSON.stringify(newTemplate));
-      console.log(JSON.stringify(updatedTemplates));
-      await AsyncStorage.setItem(
-        username+"@workoutLogs",
-        JSON.stringify(updatedTemplates)
-      );
-
-
-  
-
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  console.log("errors", errors);
-
-  useEffect(() => {
-    if (formState.isSubmitSuccessful) {
+      })
       reset({
         weight: "",
         reps: "",
@@ -163,8 +56,13 @@ const WorkoutInput = (props) => {
         rest: "",
         day: new Date(),
       });
+
+    } catch (error) {
+      console.error(error);
     }
-  }, [formState, reset]);
+  });
+
+  console.log("errors", errors);
 
   return (
     <View style={styles.container}>
@@ -186,9 +84,8 @@ const WorkoutInput = (props) => {
                   <Text style={styles.text}> {errors.exercise_id.message}</Text>
                 )}
                 <WorkoutSelect
-                  routine={routine}
-                  setRoutine={setRoutine}
-                  workout={value}
+                  routineId={routineId}
+                  setRoutineId={setRoutineId}
                   setWorkout={(workout) => {
                     onChange(workout);
                   }}
@@ -330,17 +227,17 @@ const WorkoutInput = (props) => {
             <Button
               title="Submit"
               color="#f3fff5"
-              onPress={handleSubmit(onSubmit)}
+              onPress={onSubmit}
             />
           </View>
 
-          {/* <View style={styles.button}>
+          <View style={styles.button}>
             <Button
               title="Done"
               color="#f3fff5"
-              onPress={props.toggle.bind(this, false)}
+              onPress={toggle.bind(this, false)}
             />
-          </View> */}
+          </View>
         </View>
 
         {/* <Text> {routine} </Text>

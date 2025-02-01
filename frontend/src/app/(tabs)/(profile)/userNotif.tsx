@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import { Text, View, Switch } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function UserNotif() {
+const Notifications = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   return (
@@ -34,3 +34,5 @@ export default function UserNotif() {
     </View>
   );
 }
+
+export default Notifications;

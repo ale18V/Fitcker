@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
-import { API_URL } from "../constants";
+import { ExerciseCreate, ExercisesService } from "$/api";
+import user from "$/stores/user";
+import exerciseStore from "$/stores/exercise";
 
 const CreateExercise = () => {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ const CreateExercise = () => {
   const [expanded, setExpanded] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const addExercise = exerciseStore.use.addExercise()
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
@@ -32,33 +33,19 @@ const CreateExercise = () => {
       return;
     }
 
-    const exerciseData = {
+    const exerciseData: ExerciseCreate = {
       name: name,
       description: description,
     };
 
     try {
-      const token = await AsyncStorage.getItem("access_token");
-      
-      const response = await fetch(`${API_URL}/exercises`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(exerciseData),
-      });
-      if (response.ok) {
-        const data = await response.json();
-
-        // Save response data to local storage under "exercises"
-        const existingExercises = await AsyncStorage.getItem("exercises");
-        let exercises = [];
-        if (existingExercises) {
-          exercises = JSON.parse(existingExercises);
-        }
-        exercises.push(data);
-        await AsyncStorage.setItem("exercises", JSON.stringify(exercises));
+      const response = await ExercisesService.postExercises({
+        body: exerciseData,
+        auth: () => user.getState().authToken
+      })
+    
+      if (!response.error) {        
+        addExercise(response.data);
 
         // Handle success
         setSuccessMessage("Exercise successfully created.");
