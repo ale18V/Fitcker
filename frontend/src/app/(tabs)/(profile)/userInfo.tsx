@@ -2,7 +2,7 @@ import { useState, FunctionComponent } from "react";
 import { Text, View, TouchableOpacity, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import user, { useUser, type UserInfo } from "$/stores/user";
+import user, { useUser, type UserInfo as UserInfoType } from "$/stores/user";
 
 const UserInfo: FunctionComponent = () => {
   const { email, username, DoB, gender } = useUser(

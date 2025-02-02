@@ -5,14 +5,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "expo-router";
 
-type Props = {
-  profile: {
-    username: string;
-  }
-}
 
-const Profile: FunctionComponent<Props> = ({ profile }) => {
-  const { username } = profile;
+const Profile: FunctionComponent = () => {
+  const username = "foo"
   const [image, setImage] = useState(null);
   const [defaultPic, setDefaultPic] = useState(true);
   const navigation = useNavigation()

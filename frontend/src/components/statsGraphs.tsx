@@ -2,7 +2,6 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import {LineChart} from "react-native-chart-kit";
 
 export default function StatsGraphs({ statsGraph }) {
   const { exercises } = statsGraph;

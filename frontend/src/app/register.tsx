@@ -2,7 +2,9 @@ import { FunctionComponent, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_URL } from "../constants";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { UsersService } from "$/api";
 
 const Register: FunctionComponent = () => {
   const [username, setUsername] = useState("");
@@ -10,29 +12,21 @@ const Register: FunctionComponent = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigation = useNavigation()
+  const navigation = useRouter()
   const handleSignUp = async () => {
     try {
-      const signUpResponse = await fetch(
-        `${API_URL}/users/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            password: password,
-          }),
+      const signupResponse = await UsersService.postUsers({
+        body: {
+          email,
+           password,
+           username
         }
-      );
+      })
 
-      const signUpData = await signUpResponse.json();
-
+      console.log(signupResponse.request)
       // Check if the response was successful
-      if (!signUpResponse.ok) {
-        throw new Error(signUpData.detail || "Something went wrong");
+      if (!signupResponse.data) {
+        throw signupResponse.error || new Error("Something went wrong");
       }
 
       navigation.navigate("/login")
@@ -52,7 +46,7 @@ const Register: FunctionComponent = () => {
       colors={["rgba(56, 163, 165, 0.5)", "rgba(128, 237, 153, 0.5)"]}
       style={{ flex: 1 }}
     >
-      <View className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg">
+      <SafeAreaView className="flex flex-1 mx-10 my-40 p-5 justify-center items-center rounded-md bg-white shadow-lg">
         <Text className="text-3xl mb-8 text-teal-600 font-semibold">
           Sign Up
         </Text>
@@ -100,7 +94,7 @@ const Register: FunctionComponent = () => {
             Already have an account? Sign In
           </Text>
         </TouchableOpacity>
-      </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
