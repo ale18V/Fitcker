@@ -1,19 +1,24 @@
 import { Stack } from "expo-router";
-import Landing from ".";
-import { SafeAreaView } from "react-native-safe-area-context";
+import "../../styles/global.css";
+import Toaster from "$/components/toast/Toaster";
+import React from "react";
 
 export default function RootLayout() {
-    return (
-
-            <Stack screenOptions={{
-                headerShown: false
-            }}>
-                <Stack.Screen
-                    name="(tabs)"
-                    options={{
-                        title: "Home"
-                    }}
-                />
-            </Stack>
-    )
+  return (
+    <React.Fragment>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            title: "Home",
+          }}
+        />
+      </Stack>
+      <Toaster />
+    </React.Fragment>
+  );
 }
