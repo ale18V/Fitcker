@@ -47,4 +47,6 @@ export const useUser = create<Partial<UserStore>>()(
 )
 
 
-export default createSelectors(useUser)
+export default createSelectors(useUser, {
+  isLoggedIn: (state) => !!state.authToken,
+})

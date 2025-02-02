@@ -1,3 +1,5 @@
+import classNames from "classnames";
+import { twMerge } from "tailwind-merge";
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -18,3 +20,6 @@ const parseDate = (dateString: string) => {
     )
   );
 };
+
+export const cn = (...args: classNames.ArgumentArray): string =>
+  twMerge(classNames(args));
