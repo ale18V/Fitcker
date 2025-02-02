@@ -12,7 +12,17 @@ def create_app():
         yield
         # db.drop_tables()
 
-    api = FastAPI(lifespan=lifespan)
+    api = FastAPI(
+        title="Fitcker",
+        description="A simple workout tracker",
+        openapi_tags=[
+            {"name": "Users", "description": "Register and login users"},
+            {"name": "Plans", "description": "Operations with plans"},
+            {"name": "Routines", "description": "Operations with routines"},
+            {"name": "Exercises", "description": "Operations with exercises"},
+            {"name": "Workouts", "description": "Operations with workouts"},
+        ],
+    )
 
     api.include_router(users.router, tags=["Users"])
     api.include_router(plans.router, tags=["Plans"])
@@ -23,6 +33,7 @@ def create_app():
     api.include_router(workout_exercises.router, tags=["Workouts", "Exercises"])
     api.include_router(plans_routines.router, tags=["Plans", "Routines"])
 
-    app = FastAPI()
+    # Lifespan on sub-mounted apps is not supported ATM
+    app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
     app.mount("/api/v1", api)
     return app

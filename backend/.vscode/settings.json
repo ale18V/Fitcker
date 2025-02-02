@@ -12,7 +12,7 @@
         ],
         "editor.formatOnType": true,
         "editor.wordBasedSuggestions": "off",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": false,
     },
     "python.defaultInterpreterPath": ".venv/bin/python",
 }

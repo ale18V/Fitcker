@@ -9,9 +9,7 @@ from db import get_session
 
 @pytest.fixture(name="session")
 def session_fixture():
-    engine = create_engine(
-        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool, echo=False
-    )
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool, echo=False)
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         yield session
@@ -21,24 +19,26 @@ def session_fixture():
 def client_fixture(session: Session):
     def get_session_override():
         return session
+
     app = create_app()
     app.dependency_overrides[get_session] = get_session_override
 
-    client = TestClient(app)
+    client = TestClient(app=app)
     yield client
     app.dependency_overrides.clear()
 
 
 def register(client, user, passw, email):
-    resp = client.post(
-        "/api/v1/users", json={"username": user, "email": email, "password": passw}
-    )
+    resp = client.post("/api/v1/users", json={"username": user, "email": email, "password": passw})
     return resp
 
 
 def login(client, user, passw, email):
-    resp = resp = client.post("/api/v1/users/login", data={"username": user,
-                                                           "password": passw}, headers={"Content-Type": "application/x-www-form-urlencoded"})
+    resp = resp = client.post(
+        "/api/v1/users/login",
+        data={"username": user, "password": passw},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
     return resp
 
 
@@ -67,8 +67,7 @@ def test_current_user(client: TestClient):
     resp = login(client, user, passw, email)
     print(resp.text)
     access_token = resp.json()["access_token"]
-    resp = client.get("/api/v1/users/me",
-                      headers={"Authorization": f"Bearer {access_token}"})
+    resp = client.get("/api/v1/users/me", headers={"Authorization": f"Bearer {access_token}"})
     data = resp.json()
     print(resp.text)
     assert resp.status_code == status.HTTP_200_OK
