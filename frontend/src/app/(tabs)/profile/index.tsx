@@ -3,25 +3,28 @@ import { Text, View, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
+import user from "$/stores/user";
 
 
 const Profile: FunctionComponent = () => {
-  const username = "foo"
+  const username = user.use.username() || "foo";
+  const logout = user.use.logout()
   const [image, setImage] = useState(null);
   const [defaultPic, setDefaultPic] = useState(true);
-  const navigation = useNavigation()
+  const navigation = useRouter()
   const handleLogout = () => {
-    // setIsAuthorized(false);
+    logout()
+    navigation.navigate("/")
   };
   const navigateToInfo = () => {
-    navigation.navigate("userInfo");
+    navigation.navigate("/profile/userInfo");
   };
   const navigateToNotif = () => {
-    navigation.navigate("userNotif");
+    navigation.navigate("/profile/userNotif");
   };
   const navigateToBiometrics = () => {
-    navigation.navigate("Biometrics");
+    navigation.navigate("/profile/userBiometrics");
   };
 
 
