@@ -1,6 +1,7 @@
 import { createSelectors, MMKVStorage } from "$/utils/zustand"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
+import { immer } from "zustand/middleware/immer";
 
 const AUTH_STORE_NAME = "auth"
 
@@ -19,31 +20,46 @@ export type UserInfo = {
 
 
 
-type AuthStoreValues = {
+type Auth = {
   authToken: string | undefined
 
 }
 
+type State = WithUndefinedProperties<Auth & Biometrics & UserInfo>
 
-type UserStore = AuthStoreValues & Biometrics & UserInfo
+type Actions = {
+  logout: () => void
+  login: (authToken: string, username: string) => void
+}
 
-export const useUser = create<Partial<UserStore>>()(
-  persist(
-    (_) => ({
-        authToken: undefined,
-        heightCM: undefined,
-        email: undefined,
-        DoB: undefined,
-        gender: undefined,
-        username: undefined,
-        weightKG: undefined,
-        isMetric: true,
+type UserStore = State & Actions
+
+const initialState = {
+  authToken: undefined,
+  heightCM: undefined,
+  email: undefined,
+  DoB: undefined,
+  gender: undefined,
+  username: undefined,
+  weightKG: undefined,
+  isMetric: true,
+};
+export const useUser = create<UserStore>()(
+  immer(
+    persist(
+      (set) => ({
+        ...initialState,
+        login(authToken, username) {
+          set({ authToken, username });
+        },
+        logout: () => set({ ...initialState })
       }),
       {
-      name: AUTH_STORE_NAME,
-      storage: createJSONStorage(() => MMKVStorage),
-    },
-  ),
+        name: AUTH_STORE_NAME,
+        storage: createJSONStorage(() => MMKVStorage),
+      },
+    ),
+  )
 )
 
 

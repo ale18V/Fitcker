@@ -23,7 +23,7 @@ import { StoreApi, UseBoundStore } from "zustand"
 type WithSelectors<S, T = unknown> = S extends { getState: () => infer R }
   ? (S & {
     use: {
-      [K in keyof R]: () => R[K]
+      [K in keyof Required<R>]: () => R[K]
     } & (T extends CustomSelectors<R>
       ? { [K in keyof T]: () => ReturnType<T[K]> }
       : Record<string, never>

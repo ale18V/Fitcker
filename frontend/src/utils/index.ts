@@ -23,3 +23,7 @@ const parseDate = (dateString: string) => {
 
 export const cn = (...args: classNames.ArgumentArray): string =>
   twMerge(classNames(args));
+
+export const toISODateString = (date: Date) => {
+  return date.toISOString().split("T")[0];
+}
