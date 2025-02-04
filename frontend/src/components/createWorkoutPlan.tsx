@@ -10,6 +10,8 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { PlansService } from "$/api";
+import Toast from "$/components/toast";
+import { toISODateString } from "$/utils";
 
 const CreateWorkoutPlan: FunctionComponent = () => {
   const [name, setName] = useState("");
@@ -20,7 +22,6 @@ const CreateWorkoutPlan: FunctionComponent = () => {
   const [expanded, setExpanded] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -36,33 +37,28 @@ const CreateWorkoutPlan: FunctionComponent = () => {
       return;
     }
 
-
-    try {
-      const response = await PlansService.postPlans({
-        body: {
-          name,
-          start_date: startDate.toISOString(),
-          end_date: endDate.toISOString(),
-        }
-      })
-      if (response.data) {
-
-        setSuccessMessage("Workout plan successfully created.");
-        setErrorMessage("");
-        // Clear form fields
-        setName("");
-        setStartDate(new Date());
-        setEndDate(new Date());
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 3000);
-      } else {
-        setErrorMessage("Failed to create workout plan.");
+    const response = await PlansService.postPlans({
+      body: {
+        name,
+        start_date: toISODateString(startDate),
+        end_date: toISODateString(endDate),
+      },
+    });
+    if (response.data) {
+      Toast.success({
+        description: "Workout plan successfully created.",
+      });
+      // Clear form fields
+      setName("");
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setTimeout(() => {
         setSuccessMessage("");
-      }
-    } catch (error) {
-      setErrorMessage("Error creating workout plan.");
-      setSuccessMessage("");
+      }, 3000);
+    } else {
+      Toast.error({
+        description: "Error creating workout plan.",
+      });
     }
   };
 
